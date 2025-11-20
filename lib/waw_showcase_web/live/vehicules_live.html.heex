@@ -35,8 +35,141 @@
     </.waw_header>
   </:header>
   <:main>
-    <div class="container mx-auto px-4 py-8">
+    <div class="px-4 py-8">
       <h1>Véhicules</h1>
+      
+      <%= if @show_form do %>
+        <div class="mt-6">
+          <.waw_steps>
+            <:step status={if(@form_step >= 1, do: :valid, else: :disabled)} active={@form_step == 1}>
+              Informations générales
+            </:step>
+            <:step status={if(@form_step >= 2, do: :valid, else: if(@form_step == 2, do: :invalid, else: :disabled))} active={@form_step == 2}>
+              Détails véhicule
+            </:step>
+            <:step status={if(@form_step >= 3, do: :valid, else: if(@form_step == 3, do: :invalid, else: :disabled))} active={@form_step == 3}>
+              Kilométrage et carburant
+            </:step>
+            <:step status={if(@form_step == 4, do: :invalid, else: :disabled)} active={@form_step == 4}>
+              Confirmation
+            </:step>
+          </.waw_steps>
+
+          <div class="mt-6 space-y-4">
+            <%= cond do %>
+              <% @form_step == 1 -> %>
+                <form phx-change="update_form" class="space-y-4">
+                  <.input label="Marque" name="marque" type="text" placeholder="Marque du véhicule" value={@form_data.marque} />
+                  <.input label="Modèle" name="modele" type="text" placeholder="Modèle du véhicule" value={@form_data.modele} />
+                </form>
+              
+              <% @form_step == 2 -> %>
+                <form phx-change="update_form" class="space-y-4">
+                  <.input label="Année" name="annee" type="number" placeholder="Année" value={@form_data.annee} text_type="number" />
+                  <.input label="Plaque d'immatriculation" name="plaque" type="text" placeholder="Plaque" value={@form_data.plaque} />
+                </form>
+              
+              <% @form_step == 3 -> %>
+                <form phx-change="update_form" class="space-y-4">
+                  <.input label="Kilométrage" name="kilometrage" type="number" placeholder="Kilométrage" value={@form_data.kilometrage} text_type="number" />
+                  <.input label="Niveau de carburant" name="niveau_carburant" type="text" placeholder="Niveau de carburant" value={@form_data.niveau_carburant} />
+                </form>
+              
+              <% @form_step == 4 -> %>
+                <div class="space-y-2">
+                  <p><strong>Marque:</strong> {@form_data.marque}</p>
+                  <p><strong>Modèle:</strong> {@form_data.modele}</p>
+                  <p><strong>Année:</strong> {if @form_data.annee, do: @form_data.annee, else: "Non renseigné"}</p>
+                  <p><strong>Plaque:</strong> {@form_data.plaque}</p>
+                  <p><strong>Kilométrage:</strong> {if @form_data.kilometrage, do: @form_data.kilometrage, else: "Non renseigné"}</p>
+                  <p><strong>Niveau de carburant:</strong> {@form_data.niveau_carburant}</p>
+                </div>
+            <% end %>
+
+            <div class="flex justify-between mt-6">
+              <.waw_button
+                label="Précédent"
+                type="cancel"
+                size="md"
+                phx-click="previous_step"
+                disabled={@form_step == 1}
+              />
+              
+              <%= if @form_step == 4 do %>
+                <.waw_button
+                  label="Sauvegarder"
+                  type="submit"
+                  size="md"
+                  color="success"
+                  phx-click="save_vehicule"
+                />
+              <% else %>
+                <.waw_button
+                  label="Suivant"
+                  type="submit"
+                  size="md"
+                  phx-click="next_step"
+                />
+              <% end %>
+            </div>
+          </div>
+        </div>
+      <% else %>
+        <div class="mt-6">
+          <div class="flex justify-between items-center mb-4">
+            <.input
+              id="search-vehicules"
+              type="search"
+              placeholder="Rechercher un véhicule..."
+              value={@search_query}
+              phx-debounce="300"
+              phx-change="search"
+            />
+            <.waw_button
+              label="Ajouter un véhicule"
+              type="submit"
+              size="md"
+              phx-click="toggle_form"
+            />
+          </div>
+
+          <.waw_table>
+            <:thead>
+              <.waw_th>Nom</.waw_th>
+              <.waw_th>Plaque</.waw_th>
+              <.waw_th>Kilométrage</.waw_th>
+            </:thead>
+            <%= render_table_rows(@paginated_vehicules) %>
+          </.waw_table>
+
+          <div class="mt-4">
+            <.waw_pagination
+              label="Page"
+              total={@total_pages}
+              current_page={@current_page}
+            >
+              <:left>
+                <.waw_button_icon
+                  icon="caret-left"
+                  icon_size={5}
+                  disabled={@current_page == 1}
+                  phx-click="change_page"
+                  phx-value-page={@current_page - 1}
+                />
+              </:left>
+              <:right>
+                <.waw_button_icon
+                  icon="caret-right"
+                  icon_size={5}
+                  disabled={@current_page >= @total_pages}
+                  phx-click="change_page"
+                  phx-value-page={@current_page + 1}
+                />
+              </:right>
+            </.waw_pagination>
+          </div>
+        </div>
+      <% end %>
     </div>
   </:main>
   <:footer>

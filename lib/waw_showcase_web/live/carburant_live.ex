@@ -11,3 +11,4 @@ defmodule WawShowcaseWeb.CarburantLive do
     {:noreply, socket}
   end
 end
+

@@ -85,10 +85,10 @@ defmodule WawShowcaseWeb do
       # HTML escaping functionality
       import Phoenix.HTML
       # Core UI components
-      import WawShowcaseWeb.CoreComponents
-      import WawShowcaseWeb.Components.Layout
-      import WawShowcaseWeb.Components.Sidebar
-      import WawShowcaseWeb.Components.CodePreview
+            import WawShowcaseWeb.CoreComponents
+            import WawShowcaseWeb.Components.Layout
+            import WawShowcaseWeb.Components.Sidebar
+            import WawShowcaseWeb.Components.CodePreview
 
       # Waw Components imports
       import Waw.Icons, except: [icon: 1]

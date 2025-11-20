@@ -11,3 +11,4 @@ defmodule WawShowcaseWeb.RapportsLive do
     {:noreply, socket}
   end
 end
+
