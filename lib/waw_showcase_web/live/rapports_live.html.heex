@@ -2,7 +2,7 @@
   <:header>
     <.waw_header title="Démo" logout_url="" current_user_profile_url="">
       <:nav>
-        <.waw_navbar active={true} navigate={~p"/"} icon="speedometer">
+        <.waw_navbar active={false} navigate={~p"/"} icon="speedometer">
           Tableau de bord
         </.waw_navbar>
         <.waw_navbar active={false} navigate={~p"/vehicules"} icon="car">
@@ -11,7 +11,7 @@
         <.waw_navbar active={false} navigate={~p"/carburant"} icon="fuel-pump">
           Carburant
         </.waw_navbar>
-        <.waw_navbar active={false} navigate={~p"/rapports"} icon="doc-text">
+        <.waw_navbar active={true} navigate={~p"/rapports"} icon="doc-text">
           Rapports
         </.waw_navbar>
         <.waw_navbar active={false} navigate={~p"/carte"} icon="map">
@@ -35,16 +35,9 @@
     </.waw_header>
   </:header>
   <:main>
-    <div class="px-4 py-8">
-      <h1>Waw Showcase</h1>
+    <div class="container mx-auto px-4 py-8">
+      <h1>Rapports</h1>
     </div>
-    <.waw_card title="Driver Score Card Synthesis" tooltip_description="Sous forme d'une carte, présente une présentation graphique des trajectoires des véhicules.">
-  <:section>
-    <.waw_time_section label="Dernier Maj" value="12:30:05"></.waw_time_section>
-    <.waw_date_section label="Dernier CR disponible" value="Aujourd'hui"></.waw_date_section>
-    <.waw_date_section label="1er CR disponible" value="Aujourd'hui"></.waw_date_section>
-  </:section>
-</.waw_card>
   </:main>
   <:footer>
     <.waw_footer copyright_year={DateTime.utc_now().year} />

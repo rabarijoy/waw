@@ -6,6 +6,7 @@
 @source "../js";
 @source "../../lib/waw_showcase_web";
 @source "../../deps/waw/lib";
+@source "../../../waw-components/lib";
 
 /* A Tailwind plugin that makes "hero-#{ICON}" classes available.
    The heroicons installation itself is managed by your mix.exs */
@@ -103,7 +104,89 @@
 /* Make LiveView wrapper divs transparent for layout */
 [data-phx-session], [data-phx-teleported-src] { display: contents }
 
-/* Import Waw Components CSS from local dependency */
-@import "../../../waw-components/priv/static/css/waw.css";
+/* Ensure html and body take full height for waw_fixed_header_footer */
+html {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  width: 100%;
+}
+
+/* Import Waw Components CSS from local dependency - content included directly below */
 
 /* This file is for your main application CSS */
+/* WAW UI Utility Classes */
+
+/* Text Colors */
+.text-success { color: #6dd400; }
+.text-success-primary { color: #58ab00; }
+.text-info { color: #007aff; }
+.text-info-lite { color: #004fe9; }
+.text-info-primary { color: #004abb; }
+.text-info-dark { color: #002C70; }
+.text-danger-primary { color: #ff5660; }
+.text-danger { color: #e64a3f; }
+.text-danger-dark { color: #bf291e; }
+.text-orange { color: #f07430; }
+.text-default { color: #e2e2e2; }
+.text-default-lite { color: #9a9a9a; }
+.text-default-primary { color: #414141; }
+.text-dark { color: #262626; }
+.text-light { color: #ffffff; }
+.text-lite { color: #f4f4f4; }
+.text-primary { color: #efefef; }
+
+/* Background Colors */
+.bg-success { background-color: #6dd400; }
+.bg-success-primary { background-color: #58ab00; }
+.bg-info { background-color: #007aff; }
+.bg-info-lite { background-color: #004fe9; }
+.bg-info-primary { background-color: #004abb; }
+.bg-info-dark { background-color: #002C70; }
+.bg-danger-primary { background-color: #ff5660; }
+.bg-danger { background-color: #e64a3f; }
+.bg-danger-dark { background-color: #bf291e; }
+.bg-orange { background-color: #f07430; }
+.bg-default { background-color: #e2e2e2; }
+.bg-default-lite { background-color: #9a9a9a; }
+.bg-default-primary { background-color: #414141; }
+.bg-dark { background-color: #262626; }
+.bg-light { background-color: #ffffff; }
+.bg-lite { background-color: #f4f4f4; }
+.bg-primary { background-color: #efefef; }
+
+/* Border Colors */
+.border-success { border-color: #6dd400; }
+.border-success-primary { border-color: #58ab00; }
+.border-info { border-color: #007aff; }
+.border-info-lite { border-color: #004fe9; }
+.border-info-primary { border-color: #004abb; }
+.border-info-dark { border-color: #002C70; }
+.border-danger-primary { border-color: #ff5660; }
+.border-danger { border-color: #e64a3f; }
+.border-danger-dark { border-color: #bf291e; }
+.border-orange { border-color: #f07430; }
+.border-default { border-color: #e2e2e2; }
+.border-default-lite { border-color: #9a9a9a; }
+.border-default-primary { border-color: #414141; }
+.border-dark { border-color: #262626; }
+.border-light { border-color: #ffffff; }
+.border-lite { border-color: #f4f4f4; }
+.border-primary { border-color: #efefef; }
+
+/* Font Sizes */
+.text-size-25 { font-size: 1.563rem; }
+.text-size-17 { font-size: 1.065rem; }
+.text-size-15 { font-size: 0.938rem; }
+.text-size-13 { font-size: 0.813rem; }
+.text-size-11 { font-size: 0.688rem; }
+.text-size-10 { font-size: 0.625rem; }
+.text-size-9 { font-size: 0.575rem; }
+.text-size-8 { font-size: 0.5rem; }
+.text-size-7 { font-size: 0.25rem; }

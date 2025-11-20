@@ -18,6 +18,11 @@ defmodule WawShowcaseWeb.Router do
     pipe_through :browser
 
     live "/", HomeLive, :index
+    live "/vehicules", VehiculesLive, :index
+    live "/carburant", CarburantLive, :index
+    live "/rapports", RapportsLive, :index
+    live "/carte", CarteLive, :index
+    live "/reglages", ReglagesLive, :index
     live "/components/:component", ComponentDetailLive, :show
   end
 

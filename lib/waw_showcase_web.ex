@@ -92,21 +92,9 @@ defmodule WawShowcaseWeb do
 
       # Waw Components imports
       import Waw.Icons, except: [icon: 1]
-      import Waw.Button
-      import Waw.Badge
-      import Waw.Clickable
-      import Waw.StatusBlock
-      import Waw.Header
-      import Waw.Card
-      import Waw.Input
-      import Waw.Link
-      import Waw.Modal
-      import Waw.Table
-      import Waw.Tabs
-      import Waw.Pagination
       import Waw.Flash, except: [flash: 1, flash_group: 1]
-      import Waw.Loading
-      import Waw.Logo
+      import Waw.Header, except: [waw_navbar: 1]
+      import Waw.Delegates
 
       # Common modules used in templates
       alias Phoenix.LiveView.JS
