@@ -95,6 +95,10 @@ defmodule WawShowcaseWeb do
       import Waw.Flash, except: [flash: 1, flash_group: 1]
       import Waw.Header, except: [waw_navbar: 1]
       import Waw.Delegates
+      import Waw.Steps
+      import Waw.Pagination
+      import Waw.BlockTitle
+      import Waw.FuelCard
 
       # Common modules used in templates
       alias Phoenix.LiveView.JS

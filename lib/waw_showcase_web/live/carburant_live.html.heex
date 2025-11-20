@@ -35,8 +35,207 @@
     </.waw_header>
   </:header>
   <:main>
-    <div class="container mx-auto px-4 py-8">
+    <div class="px-4 py-8">
       <h1>Carburant</h1>
+      
+      <div class="mt-6 mb-6">
+        <.waw_button
+          label="Ajouter une entrée"
+          type="submit"
+          size="md"
+          phx-click="open_modal"
+        />
+      </div>
+
+      <.waw_modal id="carburant-modal" show={@show_modal}>
+        <:title>
+          Ajouter une entrée carburant
+        </:title>
+        <:cancel>
+          <.waw_button_icon icon="cancel" icon_size={5} stroke="none" phx-click="close_modal" />
+        </:cancel>
+        <:content>
+          <form phx-change="update_form" class="space-y-4">
+            <.input
+              label="Véhicule"
+              name="vehicule"
+              type="select"
+              value={@form_data.vehicule}
+            >
+              <option value="">Sélectionner un véhicule</option>
+              <%= for vehicule <- @vehicules do %>
+                <option value={vehicule} selected={@form_data.vehicule == vehicule}>
+                  {vehicule}
+                </option>
+              <% end %>
+            </.input>
+            
+            <.input
+              label="Date"
+              name="date"
+              type="datetime-local"
+              value={@form_data.date}
+            />
+            
+            <.input
+              label="Litres"
+              name="litres"
+              type="number"
+              placeholder="Litres"
+              value={@form_data.litres}
+            />
+            
+            <.input
+              label="Prix au litre"
+              name="prix_litre"
+              type="number"
+              placeholder="Prix au litre"
+              value={@form_data.prix_litre}
+            />
+          </form>
+        </:content>
+        <:actions>
+          <.waw_button
+            label="Annuler"
+            type="cancel"
+            size="md"
+            phx-click="close_modal"
+          />
+          <.waw_button
+            label="Valider"
+            type="submit"
+            size="md"
+            phx-click="save_entry"
+          />
+        </:actions>
+      </.waw_modal>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+        <div>
+          <.waw_block_title label="Consommation totale" icon="fuel-pump" />
+          <.waw_fuel_card
+            value="35"
+            number="1510"
+            title="Consommation totale de carburant de la flotte"
+          />
+        </div>
+        <div>
+          <.waw_block_title label="Dépense moyenne" icon="credit-card" />
+          <.waw_fuel_card
+            value="1.68"
+            number="2540"
+            title="Prix moyen au litre"
+          />
+        </div>
+      </div>
+
+      <div class="mt-6">
+        <h2 class="text-lg font-semibold mb-4">Historique des entrées</h2>
+        <.waw_table>
+          <:thead>
+            <.waw_th>Véhicule</.waw_th>
+            <.waw_th>Date</.waw_th>
+            <.waw_th>Litres</.waw_th>
+            <.waw_th>Prix au litre</.waw_th>
+            <.waw_th>Total</.waw_th>
+          </:thead>
+          <:tr state="normal">
+            <.waw_td>
+              <.waw_li>
+                {if length(@entries) > 0, do: Enum.at(@entries, 0).vehicule, else: ""}
+              </.waw_li>
+            </.waw_td>
+            <.waw_td>
+              <.waw_date value={if length(@entries) > 0, do: Enum.at(@entries, 0).date, else: DateTime.utc_now()} format={:short} />
+            </.waw_td>
+            <.waw_td>
+              <.waw_text value={if length(@entries) > 0, do: to_string(Enum.at(@entries, 0).litres) <> " L", else: ""} />
+            </.waw_td>
+            <.waw_td>
+              <.waw_text value={if length(@entries) > 0, do: to_string(Enum.at(@entries, 0).prix_litre) <> " €", else: ""} />
+            </.waw_td>
+            <.waw_td>
+              <.waw_text value={if length(@entries) > 0, do: to_string(Float.round(Enum.at(@entries, 0).litres * Enum.at(@entries, 0).prix_litre, 2)) <> " €", else: ""} />
+            </.waw_td>
+          </:tr>
+          <:tr state="normal">
+            <.waw_td>
+              <.waw_li>
+                {if length(@entries) > 1, do: Enum.at(@entries, 1).vehicule, else: ""}
+              </.waw_li>
+            </.waw_td>
+            <.waw_td>
+              <.waw_date value={if length(@entries) > 1, do: Enum.at(@entries, 1).date, else: DateTime.utc_now()} format={:short} />
+            </.waw_td>
+            <.waw_td>
+              <.waw_text value={if length(@entries) > 1, do: to_string(Enum.at(@entries, 1).litres) <> " L", else: ""} />
+            </.waw_td>
+            <.waw_td>
+              <.waw_text value={if length(@entries) > 1, do: to_string(Enum.at(@entries, 1).prix_litre) <> " €", else: ""} />
+            </.waw_td>
+            <.waw_td>
+              <.waw_text value={if length(@entries) > 1, do: to_string(Float.round(Enum.at(@entries, 1).litres * Enum.at(@entries, 1).prix_litre, 2)) <> " €", else: ""} />
+            </.waw_td>
+          </:tr>
+          <:tr state="normal">
+            <.waw_td>
+              <.waw_li>
+                {if length(@entries) > 2, do: Enum.at(@entries, 2).vehicule, else: ""}
+              </.waw_li>
+            </.waw_td>
+            <.waw_td>
+              <.waw_date value={if length(@entries) > 2, do: Enum.at(@entries, 2).date, else: DateTime.utc_now()} format={:short} />
+            </.waw_td>
+            <.waw_td>
+              <.waw_text value={if length(@entries) > 2, do: to_string(Enum.at(@entries, 2).litres) <> " L", else: ""} />
+            </.waw_td>
+            <.waw_td>
+              <.waw_text value={if length(@entries) > 2, do: to_string(Enum.at(@entries, 2).prix_litre) <> " €", else: ""} />
+            </.waw_td>
+            <.waw_td>
+              <.waw_text value={if length(@entries) > 2, do: to_string(Float.round(Enum.at(@entries, 2).litres * Enum.at(@entries, 2).prix_litre, 2)) <> " €", else: ""} />
+            </.waw_td>
+          </:tr>
+          <:tr state="normal">
+            <.waw_td>
+              <.waw_li>
+                {if length(@entries) > 3, do: Enum.at(@entries, 3).vehicule, else: ""}
+              </.waw_li>
+            </.waw_td>
+            <.waw_td>
+              <.waw_date value={if length(@entries) > 3, do: Enum.at(@entries, 3).date, else: DateTime.utc_now()} format={:short} />
+            </.waw_td>
+            <.waw_td>
+              <.waw_text value={if length(@entries) > 3, do: to_string(Enum.at(@entries, 3).litres) <> " L", else: ""} />
+            </.waw_td>
+            <.waw_td>
+              <.waw_text value={if length(@entries) > 3, do: to_string(Enum.at(@entries, 3).prix_litre) <> " €", else: ""} />
+            </.waw_td>
+            <.waw_td>
+              <.waw_text value={if length(@entries) > 3, do: to_string(Float.round(Enum.at(@entries, 3).litres * Enum.at(@entries, 3).prix_litre, 2)) <> " €", else: ""} />
+            </.waw_td>
+          </:tr>
+          <:tr state="normal">
+            <.waw_td>
+              <.waw_li>
+                {if length(@entries) > 4, do: Enum.at(@entries, 4).vehicule, else: ""}
+              </.waw_li>
+            </.waw_td>
+            <.waw_td>
+              <.waw_date value={if length(@entries) > 4, do: Enum.at(@entries, 4).date, else: DateTime.utc_now()} format={:short} />
+            </.waw_td>
+            <.waw_td>
+              <.waw_text value={if length(@entries) > 4, do: to_string(Enum.at(@entries, 4).litres) <> " L", else: ""} />
+            </.waw_td>
+            <.waw_td>
+              <.waw_text value={if length(@entries) > 4, do: to_string(Enum.at(@entries, 4).prix_litre) <> " €", else: ""} />
+            </.waw_td>
+            <.waw_td>
+              <.waw_text value={if length(@entries) > 4, do: to_string(Float.round(Enum.at(@entries, 4).litres * Enum.at(@entries, 4).prix_litre, 2)) <> " €", else: ""} />
+            </.waw_td>
+          </:tr>
+        </.waw_table>
+      </div>
     </div>
   </:main>
   <:footer>

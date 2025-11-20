@@ -65,13 +65,13 @@
               
               <% @form_step == 2 -> %>
                 <form phx-change="update_form" class="space-y-4">
-                  <.input label="Année" name="annee" type="number" placeholder="Année" value={@form_data.annee} text_type="number" />
+                  <.input label="Année" name="annee" type="number" placeholder="Année" value={@form_data.annee} />
                   <.input label="Plaque d'immatriculation" name="plaque" type="text" placeholder="Plaque" value={@form_data.plaque} />
                 </form>
               
               <% @form_step == 3 -> %>
                 <form phx-change="update_form" class="space-y-4">
-                  <.input label="Kilométrage" name="kilometrage" type="number" placeholder="Kilométrage" value={@form_data.kilometrage} text_type="number" />
+                  <.input label="Kilométrage" name="kilometrage" type="number" placeholder="Kilométrage" value={@form_data.kilometrage} />
                   <.input label="Niveau de carburant" name="niveau_carburant" type="text" placeholder="Niveau de carburant" value={@form_data.niveau_carburant} />
                 </form>
               
@@ -119,6 +119,7 @@
           <div class="flex justify-between items-center mb-4">
             <.input
               id="search-vehicules"
+              name="search"
               type="search"
               placeholder="Rechercher un véhicule..."
               value={@search_query}
@@ -139,7 +140,136 @@
               <.waw_th>Plaque</.waw_th>
               <.waw_th>Kilométrage</.waw_th>
             </:thead>
-            <%= render_table_rows(@paginated_vehicules) %>
+            <:tr state="normal">
+              <.waw_td>
+                <.waw_li>
+                  {if length(@paginated_vehicules) > 0, do: Enum.at(@paginated_vehicules, 0).nom, else: ""}
+                </.waw_li>
+              </.waw_td>
+              <.waw_td>
+                <.waw_text value={if length(@paginated_vehicules) > 0, do: Enum.at(@paginated_vehicules, 0).plaque, else: ""} />
+              </.waw_td>
+              <.waw_td>
+                <.waw_distance unit={:kilometer} value={if length(@paginated_vehicules) > 0, do: Enum.at(@paginated_vehicules, 0).kilometrage, else: 0} />
+              </.waw_td>
+            </:tr>
+            <:tr state="normal">
+              <.waw_td>
+                <.waw_li>
+                  {if length(@paginated_vehicules) > 1, do: Enum.at(@paginated_vehicules, 1).nom, else: ""}
+                </.waw_li>
+              </.waw_td>
+              <.waw_td>
+                <.waw_text value={if length(@paginated_vehicules) > 1, do: Enum.at(@paginated_vehicules, 1).plaque, else: ""} />
+              </.waw_td>
+              <.waw_td>
+                <.waw_distance unit={:kilometer} value={if length(@paginated_vehicules) > 1, do: Enum.at(@paginated_vehicules, 1).kilometrage, else: 0} />
+              </.waw_td>
+            </:tr>
+            <:tr state="normal">
+              <.waw_td>
+                <.waw_li>
+                  {if length(@paginated_vehicules) > 2, do: Enum.at(@paginated_vehicules, 2).nom, else: ""}
+                </.waw_li>
+              </.waw_td>
+              <.waw_td>
+                <.waw_text value={if length(@paginated_vehicules) > 2, do: Enum.at(@paginated_vehicules, 2).plaque, else: ""} />
+              </.waw_td>
+              <.waw_td>
+                <.waw_distance unit={:kilometer} value={if length(@paginated_vehicules) > 2, do: Enum.at(@paginated_vehicules, 2).kilometrage, else: 0} />
+              </.waw_td>
+            </:tr>
+            <:tr state="normal">
+              <.waw_td>
+                <.waw_li>
+                  {if length(@paginated_vehicules) > 3, do: Enum.at(@paginated_vehicules, 3).nom, else: ""}
+                </.waw_li>
+              </.waw_td>
+              <.waw_td>
+                <.waw_text value={if length(@paginated_vehicules) > 3, do: Enum.at(@paginated_vehicules, 3).plaque, else: ""} />
+              </.waw_td>
+              <.waw_td>
+                <.waw_distance unit={:kilometer} value={if length(@paginated_vehicules) > 3, do: Enum.at(@paginated_vehicules, 3).kilometrage, else: 0} />
+              </.waw_td>
+            </:tr>
+            <:tr state="normal">
+              <.waw_td>
+                <.waw_li>
+                  {if length(@paginated_vehicules) > 4, do: Enum.at(@paginated_vehicules, 4).nom, else: ""}
+                </.waw_li>
+              </.waw_td>
+              <.waw_td>
+                <.waw_text value={if length(@paginated_vehicules) > 4, do: Enum.at(@paginated_vehicules, 4).plaque, else: ""} />
+              </.waw_td>
+              <.waw_td>
+                <.waw_distance unit={:kilometer} value={if length(@paginated_vehicules) > 4, do: Enum.at(@paginated_vehicules, 4).kilometrage, else: 0} />
+              </.waw_td>
+            </:tr>
+            <:tr state="normal">
+              <.waw_td>
+                <.waw_li>
+                  {if length(@paginated_vehicules) > 5, do: Enum.at(@paginated_vehicules, 5).nom, else: ""}
+                </.waw_li>
+              </.waw_td>
+              <.waw_td>
+                <.waw_text value={if length(@paginated_vehicules) > 5, do: Enum.at(@paginated_vehicules, 5).plaque, else: ""} />
+              </.waw_td>
+              <.waw_td>
+                <.waw_distance unit={:kilometer} value={if length(@paginated_vehicules) > 5, do: Enum.at(@paginated_vehicules, 5).kilometrage, else: 0} />
+              </.waw_td>
+            </:tr>
+            <:tr state="normal">
+              <.waw_td>
+                <.waw_li>
+                  {if length(@paginated_vehicules) > 6, do: Enum.at(@paginated_vehicules, 6).nom, else: ""}
+                </.waw_li>
+              </.waw_td>
+              <.waw_td>
+                <.waw_text value={if length(@paginated_vehicules) > 6, do: Enum.at(@paginated_vehicules, 6).plaque, else: ""} />
+              </.waw_td>
+              <.waw_td>
+                <.waw_distance unit={:kilometer} value={if length(@paginated_vehicules) > 6, do: Enum.at(@paginated_vehicules, 6).kilometrage, else: 0} />
+              </.waw_td>
+            </:tr>
+            <:tr state="normal">
+              <.waw_td>
+                <.waw_li>
+                  {if length(@paginated_vehicules) > 7, do: Enum.at(@paginated_vehicules, 7).nom, else: ""}
+                </.waw_li>
+              </.waw_td>
+              <.waw_td>
+                <.waw_text value={if length(@paginated_vehicules) > 7, do: Enum.at(@paginated_vehicules, 7).plaque, else: ""} />
+              </.waw_td>
+              <.waw_td>
+                <.waw_distance unit={:kilometer} value={if length(@paginated_vehicules) > 7, do: Enum.at(@paginated_vehicules, 7).kilometrage, else: 0} />
+              </.waw_td>
+            </:tr>
+            <:tr state="normal">
+              <.waw_td>
+                <.waw_li>
+                  {if length(@paginated_vehicules) > 8, do: Enum.at(@paginated_vehicules, 8).nom, else: ""}
+                </.waw_li>
+              </.waw_td>
+              <.waw_td>
+                <.waw_text value={if length(@paginated_vehicules) > 8, do: Enum.at(@paginated_vehicules, 8).plaque, else: ""} />
+              </.waw_td>
+              <.waw_td>
+                <.waw_distance unit={:kilometer} value={if length(@paginated_vehicules) > 8, do: Enum.at(@paginated_vehicules, 8).kilometrage, else: 0} />
+              </.waw_td>
+            </:tr>
+            <:tr state="normal">
+              <.waw_td>
+                <.waw_li>
+                  {if length(@paginated_vehicules) > 9, do: Enum.at(@paginated_vehicules, 9).nom, else: ""}
+                </.waw_li>
+              </.waw_td>
+              <.waw_td>
+                <.waw_text value={if length(@paginated_vehicules) > 9, do: Enum.at(@paginated_vehicules, 9).plaque, else: ""} />
+              </.waw_td>
+              <.waw_td>
+                <.waw_distance unit={:kilometer} value={if length(@paginated_vehicules) > 9, do: Enum.at(@paginated_vehicules, 9).kilometrage, else: 0} />
+              </.waw_td>
+            </:tr>
           </.waw_table>
 
           <div class="mt-4">

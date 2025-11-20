@@ -1,7 +1,5 @@
 defmodule WawShowcaseWeb.VehiculesLive do
   use WawShowcaseWeb, :live_view
-  
-  import Phoenix.Component
 
   @vehicules_per_page 10
 
@@ -10,7 +8,7 @@ defmodule WawShowcaseWeb.VehiculesLive do
     vehicules = generate_sample_vehicules()
     paginated = paginated_vehicules(vehicules, 1)
     total = total_pages(length(vehicules))
-    
+
     {:ok,
      socket
      |> assign(:vehicules, vehicules)
@@ -49,7 +47,7 @@ defmodule WawShowcaseWeb.VehiculesLive do
     filtered = filter_vehicules(socket.assigns.vehicules, query)
     paginated = paginated_vehicules(filtered, 1)
     total = total_pages(length(filtered))
-    
+
     {:noreply,
      socket
      |> assign(:filtered_vehicules, filtered)
@@ -99,7 +97,7 @@ defmodule WawShowcaseWeb.VehiculesLive do
   def handle_event("change_page", %{"page" => page}, socket) do
     new_page = String.to_integer(page)
     paginated = paginated_vehicules(socket.assigns.filtered_vehicules, new_page)
-    
+
     {:noreply,
      socket
      |> assign(:current_page, new_page)
@@ -132,7 +130,7 @@ defmodule WawShowcaseWeb.VehiculesLive do
 
   defp filter_vehicules(vehicules, query) do
     query_lower = String.downcase(query)
-    
+
     Enum.filter(vehicules, fn v ->
       String.contains?(String.downcase(v.nom), query_lower) or
         String.contains?(String.downcase(v.plaque), query_lower)
@@ -146,27 +144,4 @@ defmodule WawShowcaseWeb.VehiculesLive do
 
   defp total_pages(count) when count <= 0, do: 1
   defp total_pages(count), do: ceil(count / @vehicules_per_page)
-
-  defp render_table_rows(vehicules) do
-    for vehicule <- vehicules do
-      assigns = %{vehicule: vehicule}
-      
-      ~H"""
-      <:tr state="normal">
-        <.waw_td>
-          <.waw_li>
-            {@vehicule.nom}
-          </.waw_li>
-        </.waw_td>
-        <.waw_td>
-          <.waw_text value={@vehicule.plaque} />
-        </.waw_td>
-        <.waw_td>
-          <.waw_distance unit={:kilometer} value={@vehicule.kilometrage} />
-        </.waw_td>
-      </:tr>
-      """
-    end
-  end
 end
-
