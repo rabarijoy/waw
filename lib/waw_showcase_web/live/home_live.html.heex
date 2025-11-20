@@ -1,23 +1,23 @@
 <.waw_fixed_header_footer>
   <:header>
-    <.waw_header title="Démo" logout_url="" current_user_profile_url="">
+    <.waw_header title="Waw Showcase" logout_url="" current_user_profile_url="">
       <:nav>
-        <.waw_navbar active={true} navigate={~p"/"} icon="speedometer">
+        <.waw_navbar active={true} navigate={~p"/"} icon="speedometer" theme="light">
           Tableau de bord
         </.waw_navbar>
-        <.waw_navbar active={false} navigate={~p"/vehicules"} icon="car">
+        <.waw_navbar active={false} navigate={~p"/vehicules"} icon="car" theme="light">
           Véhicules
         </.waw_navbar>
-        <.waw_navbar active={false} navigate={~p"/carburant"} icon="fuel-pump">
+        <.waw_navbar active={false} navigate={~p"/carburant"} icon="fuel-pump" theme="light">
           Carburant
         </.waw_navbar>
-        <.waw_navbar active={false} navigate={~p"/rapports"} icon="doc-text">
+        <.waw_navbar active={false} navigate={~p"/rapports"} icon="doc-text" theme="light">
           Rapports
         </.waw_navbar>
-        <.waw_navbar active={false} navigate={~p"/carte"} icon="map">
+        <.waw_navbar active={false} navigate={~p"/carte"} icon="map" theme="light">
           Carte
         </.waw_navbar>
-        <.waw_navbar active={false} navigate={~p"/reglages"} icon="gearshape">
+        <.waw_navbar active={false} navigate={~p"/reglages"} icon="gearshape" theme="light">
           Réglages
         </.waw_navbar>
       </:nav>
@@ -36,15 +36,78 @@
   </:header>
   <:main>
     <div class="px-4 py-8">
-      <h1>Waw Showcase</h1>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+        <.waw_stat value={251} description="Information concernant les véhicules géolocalisés" title="Véhicules" icon="car" />
+        <.waw_stat status={:success} total={251} value={100} description="Information concernant les véhicules actuellement en mouvement" title="Actifs" icon="speedometer" />
+        <.waw_stat status={:danger} value={5} description="Nombre d'alertes actives" title="Alertes" icon="exclamationmark-triangle-fill" />
+        <.waw_stat loading title="Maintenance" icon="wrench-and-screwdriver-fill" />
+      </div>
+      <div>
+        <h2 class="text-lg font-semibold mb-4">Activités récentes</h2>
+        <.waw_table>
+          <:thead>
+            <.waw_th>Date</.waw_th>
+            <.waw_th>Type</.waw_th>
+            <.waw_th>Description</.waw_th>
+          </:thead>
+          <:tr state="normal">
+            <.waw_td>
+              <.waw_date value={~U[2025-01-15 10:30:00Z]} format={:short} />
+            </.waw_td>
+            <.waw_td>
+              <.waw_badge id="badge-alerte-1" label="Alerte" description="title" color="danger" />
+            </.waw_td>
+            <.waw_td>
+              <.waw_text value="Faible niveau de carburant détecté" />
+            </.waw_td>
+          </:tr>
+          <:tr state="normal">
+            <.waw_td>
+              <.waw_date value={~U[2025-01-15 09:15:00Z]} format={:short} />
+            </.waw_td>
+            <.waw_td>
+              <.waw_badge id="badge-maintenance-1" label="Maintenance" description="title" color="info" />
+            </.waw_td>
+            <.waw_td>
+              <.waw_text value="Maintenance programmée effectuée" />
+            </.waw_td>
+          </:tr>
+          <:tr state="normal">
+            <.waw_td>
+              <.waw_date value={~U[2025-01-15 08:00:00Z]} format={:short} />
+            </.waw_td>
+            <.waw_td>
+              <.waw_badge id="badge-fuel-1" label="Fuel" description="title" color="orange" />
+            </.waw_td>
+            <.waw_td>
+              <.waw_text value="Ravitaillement 45.5L" />
+            </.waw_td>
+          </:tr>
+          <:tr state="normal">
+            <.waw_td>
+              <.waw_date value={~U[2025-01-14 16:45:00Z]} format={:short} />
+            </.waw_td>
+            <.waw_td>
+              <.waw_badge id="badge-alerte-2" label="Alerte" description="title" color="danger" />
+            </.waw_td>
+            <.waw_td>
+              <.waw_text value="Vitesse excessive détectée" />
+            </.waw_td>
+          </:tr>
+          <:tr state="normal">
+            <.waw_td>
+              <.waw_date value={~U[2025-01-14 14:20:00Z]} format={:short} />
+            </.waw_td>
+            <.waw_td>
+              <.waw_badge id="badge-fuel-2" label="Fuel" description="title" color="orange" />
+            </.waw_td>
+            <.waw_td>
+              <.waw_text value="Ravitaillement 52.3L" />
+            </.waw_td>
+          </:tr>
+        </.waw_table>
+      </div>
     </div>
-    <.waw_card title="Driver Score Card Synthesis" tooltip_description="Sous forme d'une carte, présente une présentation graphique des trajectoires des véhicules.">
-  <:section>
-    <.waw_time_section label="Dernier Maj" value="12:30:05"></.waw_time_section>
-    <.waw_date_section label="Dernier CR disponible" value="Aujourd'hui"></.waw_date_section>
-    <.waw_date_section label="1er CR disponible" value="Aujourd'hui"></.waw_date_section>
-  </:section>
-</.waw_card>
   </:main>
   <:footer>
     <.waw_footer copyright_year={DateTime.utc_now().year} />
