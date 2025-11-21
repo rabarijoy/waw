@@ -219,3 +219,57 @@ body {
   height: 100% !important;
   max-width: none !important;
 }
+
+/* Component Inspector Menu Styles */
+.component-inspector-menu {
+  background: white;
+  border: 1px solid #e2e2e2;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  min-width: 280px;
+  max-width: 400px;
+  padding: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+.component-inspector-title {
+  font-size: 0.938rem;
+  font-weight: 600;
+  color: #262626;
+  padding: 12px 16px;
+  border-bottom: 1px solid #e2e2e2;
+}
+
+.component-inspector-subtitle {
+  font-size: 0.813rem;
+  color: #9a9a9a;
+  padding: 8px 16px;
+  border-bottom: 1px solid #e2e2e2;
+}
+
+.component-inspector-buttons {
+  display: flex;
+  flex-direction: column;
+  padding: 8px;
+  gap: 4px;
+}
+
+.component-inspector-button {
+  background: transparent;
+  border: none;
+  padding: 10px 12px;
+  text-align: left;
+  font-size: 0.813rem;
+  color: #262626;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: background-color 0.15s;
+}
+
+.component-inspector-button:hover {
+  background-color: #f4f4f4;
+}
+
+.component-inspector-button:active {
+  background-color: #e2e2e2;
+}

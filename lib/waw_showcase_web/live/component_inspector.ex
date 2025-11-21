@@ -7,7 +7,7 @@ defmodule WawShowcaseWeb.Live.ComponentInspector do
   defmacro __using__(_opts) do
     quote do
       @impl true
-      def handle_event("inspect_component", %{"tag" => tag, "attributes" => attributes, "dom_path" => dom_path}, socket) do
+      def handle_event("inspect_component", %{"tag" => tag, "attributes" => attributes, "dom_path" => dom_path, "x" => x, "y" => y}, socket) do
         # Convertir le chemin DOM
         dom_path_list = 
           dom_path
@@ -25,21 +25,19 @@ defmodule WawShowcaseWeb.Live.ComponentInspector do
         # Chercher le composant
         component = WawShowcase.ComponentFinder.find_component_by_dom_path(dom_path_list)
 
-        # Log pour debug (sera visible dans la console serveur)
-        if component do
-          IO.puts("""
-          ========================================
-          Composant identifié:
-          Nom: #{component["Nom du composant"]}
-          Type: #{component["Type"]}
-          Sous catégorie: #{component["Sous catégorie"]}
-          ========================================
-          """)
+        # Retourner les informations du composant au client
+        component_data = if component do
+          %{
+            nom: component["Nom du composant"],
+            type: component["Type"],
+            sous_categorie: component["Sous catégorie"],
+            code_source: component["Code source"]
+          }
         else
-          IO.puts("Aucun composant trouvé pour: #{tag}")
+          nil
         end
 
-        {:noreply, socket}
+        {:reply, %{component: component_data, x: x, y: y}, socket}
       end
 
       def handle_event("inspect_component", _params, socket) do

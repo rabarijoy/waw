@@ -143,7 +143,7 @@ const MapHook = {
 // Component Inspector Hook - détecte le clic droit et identifie les composants
 const ComponentInspectorHook = {
   mounted() {
-    // Écouter l'événement contextmenu (clic droit) sur tout le document
+    // Écouter l'événement contextmenu (clic droit) sur l'élément
     this.handleContextMenu = (event) => {
       event.preventDefault()
       
@@ -164,7 +164,7 @@ const ComponentInspectorHook = {
         current = current.parentElement
       }
       
-      // Trouver le LiveView actif et envoyer l'événement
+      // Trouver le LiveView actif et envoyer l'événement avec les coordonnées
       const liveViewEl = document.querySelector('[data-phx-main]')
       if (liveViewEl && liveViewEl.__view) {
         const view = liveViewEl.__view
@@ -172,7 +172,14 @@ const ComponentInspectorHook = {
           view.pushEvent("inspect_component", {
             tag: target.tagName.toLowerCase(),
             attributes: extractAttributes(target),
-            dom_path: domPath
+            dom_path: domPath,
+            x: event.clientX,
+            y: event.clientY
+          }, (reply, ref) => {
+            // Afficher le menu flottant avec les informations reçues
+            if (reply && reply.component) {
+              showComponentMenu(reply.component, reply.x, reply.y, target)
+            }
           })
         }
       }
@@ -185,6 +192,121 @@ const ComponentInspectorHook = {
     if (this.handleContextMenu) {
       this.el.removeEventListener("contextmenu", this.handleContextMenu)
     }
+  }
+}
+
+// Fonction pour afficher le menu flottant
+function showComponentMenu(component, x, y, targetElement) {
+  // Fermer le menu existant s'il y en a un
+  closeComponentMenu()
+  
+  // Créer le menu
+  const menu = document.createElement("div")
+  menu.id = "component-inspector-menu"
+  menu.className = "component-inspector-menu"
+  menu.style.position = "fixed"
+  menu.style.left = `${x}px`
+  menu.style.top = `${y}px`
+  menu.style.zIndex = "10000"
+  
+  // Titre
+  const title = document.createElement("div")
+  title.className = "component-inspector-title"
+  title.textContent = component.nom || "Composant inconnu"
+  menu.appendChild(title)
+  
+  // Sous-titre
+  if (component.type && component.sous_categorie) {
+    const subtitle = document.createElement("div")
+    subtitle.className = "component-inspector-subtitle"
+    subtitle.textContent = `${component.type} > ${component.sous_categorie}`
+    menu.appendChild(subtitle)
+  }
+  
+  // Boutons
+  const buttonsContainer = document.createElement("div")
+  buttonsContainer.className = "component-inspector-buttons"
+  
+  // Bouton "Copier le code source"
+  const copyButton = document.createElement("button")
+  copyButton.className = "component-inspector-button"
+  copyButton.textContent = "Copier le code source"
+  copyButton.addEventListener("click", () => {
+    if (component.code_source) {
+      navigator.clipboard.writeText(component.code_source).then(() => {
+        closeComponentMenu()
+      })
+    }
+  })
+  buttonsContainer.appendChild(copyButton)
+  
+  // Bouton "Inspecter l'élément"
+  const inspectButton = document.createElement("button")
+  inspectButton.className = "component-inspector-button"
+  inspectButton.textContent = "Inspecter l'élément"
+  inspectButton.addEventListener("click", () => {
+    // Ouvrir les outils de développement du navigateur
+    if (targetElement) {
+      targetElement.scrollIntoView({ behavior: "smooth", block: "center" })
+      targetElement.style.outline = "2px solid #3b82f6"
+      targetElement.style.outlineOffset = "2px"
+      setTimeout(() => {
+        targetElement.style.outline = ""
+      }, 3000)
+    }
+    closeComponentMenu()
+  })
+  buttonsContainer.appendChild(inspectButton)
+  
+  // Bouton "Voir dans le Storybook"
+  const storybookButton = document.createElement("button")
+  storybookButton.className = "component-inspector-button"
+  storybookButton.textContent = "Voir dans le Storybook"
+  storybookButton.addEventListener("click", () => {
+    // Pour l'instant, juste fermer le menu
+    // TODO: Implémenter la navigation vers le Storybook
+    closeComponentMenu()
+  })
+  buttonsContainer.appendChild(storybookButton)
+  
+  menu.appendChild(buttonsContainer)
+  document.body.appendChild(menu)
+  
+  // Ajuster la position si le menu dépasse de l'écran
+  const rect = menu.getBoundingClientRect()
+  if (rect.right > window.innerWidth) {
+    menu.style.left = `${window.innerWidth - rect.width - 10}px`
+  }
+  if (rect.bottom > window.innerHeight) {
+    menu.style.top = `${window.innerHeight - rect.height - 10}px`
+  }
+  
+  // Fermer le menu si on clique en dehors
+  const closeOnClickOutside = (e) => {
+    if (!menu.contains(e.target)) {
+      closeComponentMenu()
+      document.removeEventListener("click", closeOnClickOutside)
+    }
+  }
+  setTimeout(() => {
+    document.addEventListener("click", closeOnClickOutside)
+  }, 0)
+  
+  // Fermer le menu si on appuie sur Échap
+  const closeOnEscape = (e) => {
+    if (e.key === "Escape") {
+      closeComponentMenu()
+      document.removeEventListener("keydown", closeOnEscape)
+    }
+  }
+  document.addEventListener("keydown", closeOnEscape)
+}
+
+// Fonction pour fermer le menu
+function closeComponentMenu() {
+  const menu = document.getElementById("component-inspector-menu")
+  if (menu) {
+    menu.remove()
   }
 }
 
@@ -209,11 +331,32 @@ function extractAttributes(element) {
   return attributes
 }
 
+// Initialiser le hook global sur le body une fois que le DOM est prêt
+function initComponentInspector() {
+  const body = document.getElementById("app-body")
+  if (body) {
+    // Créer une instance du hook manuellement
+    const hook = Object.create(ComponentInspectorHook)
+    hook.el = body
+    hook.mounted()
+    
+    // Stocker la référence pour le nettoyage si nécessaire
+    window.componentInspectorHook = hook
+  }
+}
+
+// Initialiser immédiatement si le DOM est déjà chargé
+if (document.readyState === "loading") {
+  document.addEventListener("DOMContentLoaded", initComponentInspector)
+} else {
+  initComponentInspector()
+}
+
 const csrfToken = document.querySelector("meta[name='csrf-token']").getAttribute("content")
 const liveSocket = new LiveSocket("/live", Socket, {
   longPollFallbackMs: 2500,
   params: {_csrf_token: csrfToken},
-  hooks: {MapHook, ComponentInspectorHook, ...colocatedHooks},
+  hooks: {MapHook, ...colocatedHooks},
 })
 
 // Show progress bar on live navigation and form submits
