@@ -14,9 +14,6 @@
         <.waw_navbar active={false} navigate={~p"/rapports"} icon="doc-text" theme="light">
           Rapports
         </.waw_navbar>
-        <.waw_navbar active={false} navigate={~p"/carte"} icon="map" theme="light">
-          Carte
-        </.waw_navbar>
         <.waw_navbar active={false} navigate={~p"/reglages"} icon="gearshape" theme="light">
           Réglages
         </.waw_navbar>
@@ -38,95 +35,86 @@
     <div class="px-4 py-8">
       <h1>Carburant</h1>
       
-      <div class="mt-6 mb-6">
+      <div class="mt-6 mb-6 flex justify-end">
         <.waw_button
           label="Ajouter une entrée"
           type="submit"
           size="md"
           phx-click="open_modal"
+          class="no-truncate-button"
         />
       </div>
 
-      <.waw_modal id="carburant-modal" show={@show_modal}>
-        <:title>
-          Ajouter une entrée carburant
-        </:title>
-        <:cancel>
-          <.waw_button_icon icon="cancel" icon_size={5} stroke="none" phx-click="close_modal" />
-        </:cancel>
-        <:content>
-          <form phx-change="update_form" class="space-y-4">
-            <.input
-              label="Véhicule"
-              name="vehicule"
-              type="select"
-              value={@form_data.vehicule}
-            >
-              <option value="">Sélectionner un véhicule</option>
-              <%= for vehicule <- @vehicules do %>
-                <option value={vehicule} selected={@form_data.vehicule == vehicule}>
-                  {vehicule}
-                </option>
-              <% end %>
-            </.input>
-            
-            <.input
-              label="Date"
-              name="date"
-              type="datetime-local"
-              value={@form_data.date}
+      <%= if @show_modal do %>
+        <.waw_modal id="carburant-modal" show={true}>
+          <:title>
+            Ajouter une entrée carburant
+          </:title>
+          <:cancel>
+            <.waw_button_icon icon="cancel" icon_size={5} stroke="none" phx-click="close_modal" />
+          </:cancel>
+          <:content>
+            <form phx-change="update_form" class="space-y-4">
+              <.input
+                label="Véhicule"
+                name="vehicule"
+                type="select"
+                value={@form_data.vehicule}
+                options={@vehicule_options}
+              />
+              
+              <.input
+                label="Date"
+                name="date"
+                type="datetime-local"
+                value={@form_data.date}
+              />
+              
+              <.input
+                label="Litres"
+                name="litres"
+                type="number"
+                placeholder="Litres"
+                value={@form_data.litres}
+              />
+              
+              <.input
+                label="Prix au litre"
+                name="prix_litre"
+                type="number"
+                placeholder="Prix au litre"
+                value={@form_data.prix_litre}
+              />
+            </form>
+          </:content>
+          <:actions>
+            <.waw_button
+              label="Annuler"
+              type="cancel"
+              size="md"
+              phx-click="close_modal"
             />
-            
-            <.input
-              label="Litres"
-              name="litres"
-              type="number"
-              placeholder="Litres"
-              value={@form_data.litres}
+            <.waw_button
+              label="Valider"
+              type="submit"
+              size="md"
+              phx-click="save_entry"
             />
-            
-            <.input
-              label="Prix au litre"
-              name="prix_litre"
-              type="number"
-              placeholder="Prix au litre"
-              value={@form_data.prix_litre}
-            />
-          </form>
-        </:content>
-        <:actions>
-          <.waw_button
-            label="Annuler"
-            type="cancel"
-            size="md"
-            phx-click="close_modal"
-          />
-          <.waw_button
-            label="Valider"
-            type="submit"
-            size="md"
-            phx-click="save_entry"
-          />
-        </:actions>
-      </.waw_modal>
+          </:actions>
+        </.waw_modal>
+      <% end %>
 
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
-        <div>
-          <.waw_block_title label="Consommation totale" icon="fuel-pump" />
-          <.waw_fuel_card
-            value="35"
-            number="1510"
-            title="Consommation totale de carburant de la flotte"
-          />
-        </div>
-        <div>
-          <.waw_block_title label="Dépense moyenne" icon="credit-card" />
-          <.waw_fuel_card
-            value="1.68"
-            number="2540"
-            title="Prix moyen au litre"
-          />
-        </div>
+      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mb-8">
+        <%= for card <- @fuel_cards do %>
+          <div>
+            <.waw_block_title label={card.vehicule} icon="fuel-pump" />
+            <.waw_fuel_card
+              value={card.value}
+              number={card.number}
+              title={card.title}
+            />
+          </div>
+        <% end %>
       </div>
 
       <div class="mt-6">

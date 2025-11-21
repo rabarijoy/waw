@@ -99,6 +99,7 @@ defmodule WawShowcaseWeb do
       import Waw.Pagination
       import Waw.BlockTitle
       import Waw.FuelCard
+      import Waw.Text.Number
 
       # Common modules used in templates
       alias Phoenix.LiveView.JS

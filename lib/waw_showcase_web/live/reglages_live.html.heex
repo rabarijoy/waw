@@ -14,9 +14,6 @@
         <.waw_navbar active={false} navigate={~p"/rapports"} icon="doc-text" theme="light">
           Rapports
         </.waw_navbar>
-        <.waw_navbar active={false} navigate={~p"/carte"} icon="map" theme="light">
-          Carte
-        </.waw_navbar>
         <.waw_navbar active={true} navigate={~p"/reglages"} icon="gearshape" theme="light">
           Réglages
         </.waw_navbar>
@@ -35,8 +32,124 @@
     </.waw_header>
   </:header>
   <:main>
-    <div class="container mx-auto px-4 py-8">
+    <div class="px-4 py-8">
       <h1>Réglages</h1>
+
+      <div class="mt-6 space-y-4">
+        <.waw_accordion id="accordion-profil" head_icon="person-fill" title="Profil" expanded={@accordions.profil} phx-click="toggle_accordion" phx-value-id="profil">
+          <div class="p-4 space-y-4">
+            <form phx-change="update_form" class="space-y-4">
+              <.input
+                label="Nom"
+                name="nom"
+                type="text"
+                placeholder="Votre nom"
+                value={@form_data.nom}
+                size="sm"
+              />
+              <.input
+                label="Adresse email"
+                name="email"
+                type="email"
+                placeholder="name@tag_ip.com"
+                value={@form_data.email}
+                size="sm"
+              />
+              <.input
+                label="Numéro de téléphone"
+                name="telephone"
+                type="tel"
+                placeholder="Number"
+                value={@form_data.telephone}
+                size="sm"
+              />
+            </form>
+          </div>
+        </.waw_accordion>
+
+        <.waw_accordion id="accordion-notifications" head_icon="bell-fill" title="Notifications" expanded={@accordions.notifications} phx-click="toggle_accordion" phx-value-id="notifications">
+          <div class="p-4 space-y-4">
+            <form phx-change="update_form" class="space-y-4">
+              <.input
+                label="Envois d'email"
+                name="email_notifications"
+                type="checkbox"
+                checked={@form_data.email_notifications}
+              />
+              <.input
+                label="Alertes carburant"
+                name="alertes_carburant"
+                type="checkbox"
+                checked={@form_data.alertes_carburant}
+              />
+              <.input
+                label="Alertes maintenance"
+                name="alertes_maintenance"
+                type="checkbox"
+                checked={@form_data.alertes_maintenance}
+              />
+              <.input
+                label="Rapports quotidiens"
+                name="rapports_quotidiens"
+                type="checkbox"
+                checked={@form_data.rapports_quotidiens}
+              />
+            </form>
+          </div>
+        </.waw_accordion>
+
+        <.waw_accordion id="accordion-affichage" head_icon="display-screen" title="Affichage" expanded={@accordions.affichage} phx-click="toggle_accordion" phx-value-id="affichage">
+          <div class="p-4 space-y-4">
+            <form phx-change="update_form" class="space-y-4">
+              <.input
+                label="Thème"
+                name="theme"
+                type="select"
+                value={@form_data.theme}
+                size="sm"
+                options={[{"auto", "Auto"}, {"dark", "Dark mode"}, {"light", "Light mode"}]}
+              />
+              <.input
+                label="Langue"
+                name="langue"
+                type="select"
+                value={@form_data.langue}
+                size="sm"
+                options={[{"fr", "Français"}, {"en", "English"}, {"es", "Español"}]}
+              />
+            </form>
+          </div>
+        </.waw_accordion>
+
+        <.waw_accordion id="accordion-confidentialite" head_icon="lock-close-fill" title="Confidentialité" expanded={@accordions.confidentialite} phx-click="toggle_accordion" phx-value-id="confidentialite">
+          <div class="p-4 space-y-4">
+            <form phx-change="update_form" class="space-y-4">
+              <.input
+                label="Authentification à deux facteurs"
+                name="deux_facteurs"
+                type="checkbox"
+                checked={@form_data.deux_facteurs}
+              />
+              <.input
+                label="Délai d'expiration de session (minutes)"
+                name="delai_expiration"
+                type="number"
+                placeholder="30"
+                value={@form_data.delai_expiration}
+                size="sm"
+              />
+              <.input
+                label="Clé API"
+                name="cle_api"
+                type="text"
+                placeholder="Votre clé API"
+                value={@form_data.cle_api}
+                size="sm"
+              />
+            </form>
+          </div>
+        </.waw_accordion>
+      </div>
     </div>
   </:main>
   <:footer>

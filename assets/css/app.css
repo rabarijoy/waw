@@ -190,3 +190,32 @@ body {
 .text-size-9 { font-size: 0.575rem; }
 .text-size-8 { font-size: 0.5rem; }
 .text-size-7 { font-size: 0.25rem; }
+
+/* Force button text to display on one line without truncation */
+.no-truncate-button p {
+  overflow: visible !important;
+  text-overflow: clip !important;
+  white-space: nowrap !important;
+}
+
+/* MapLibre GL JS marker styles */
+.marker {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 3px solid white;
+  cursor: pointer;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  transition: transform 0.2s;
+}
+
+.marker:hover {
+  transform: scale(1.1);
+}
+
+/* Override waw_card fixed dimensions for full height */
+.full-height-card > div {
+  width: 100% !important;
+  height: 100% !important;
+  max-width: none !important;
+}

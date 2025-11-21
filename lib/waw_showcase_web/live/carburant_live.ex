@@ -5,12 +5,16 @@ defmodule WawShowcaseWeb.CarburantLive do
   def mount(_params, _session, socket) do
     vehicules = generate_sample_vehicules()
     entries = generate_sample_entries()
-    
+    fuel_cards = generate_fuel_cards()
+    vehicule_options = [{"", "Sélectionner un véhicule"}] ++ Enum.map(vehicules, fn v -> {v, v} end)
+
     {:ok,
      socket
      |> assign(:show_modal, false)
      |> assign(:vehicules, vehicules)
+     |> assign(:vehicule_options, vehicule_options)
      |> assign(:entries, entries)
+     |> assign(:fuel_cards, fuel_cards)
      |> assign(:form_data, %{
        vehicule: "",
        date: nil,
@@ -69,7 +73,31 @@ defmodule WawShowcaseWeb.CarburantLive do
       "Voiture 2",
       "Camion 1",
       "Voiture 3",
-      "Camion 2"
+      "Camion 2",
+      "Voiture 4",
+      "Fourgon 1",
+      "Voiture 5",
+      "Camion 3",
+      "Voiture 6",
+      "Fourgon 2",
+      "Voiture 7"
+    ]
+  end
+
+  defp generate_fuel_cards do
+    [
+      %{vehicule: "Voiture 1", value: "35", number: "1510", title: "Consommation totale de carburant"},
+      %{vehicule: "Voiture 2", value: "28", number: "1200", title: "Consommation totale de carburant"},
+      %{vehicule: "Camion 1", value: "85", number: "3200", title: "Consommation totale de carburant"},
+      %{vehicule: "Voiture 3", value: "32", number: "1380", title: "Consommation totale de carburant"},
+      %{vehicule: "Camion 2", value: "92", number: "3450", title: "Consommation totale de carburant"},
+      %{vehicule: "Voiture 4", value: "26", number: "1100", title: "Consommation totale de carburant"},
+      %{vehicule: "Fourgon 1", value: "45", number: "1800", title: "Consommation totale de carburant"},
+      %{vehicule: "Voiture 5", value: "30", number: "1250", title: "Consommation totale de carburant"},
+      %{vehicule: "Camion 3", value: "88", number: "3300", title: "Consommation totale de carburant"},
+      %{vehicule: "Voiture 6", value: "29", number: "1220", title: "Consommation totale de carburant"},
+      %{vehicule: "Fourgon 2", value: "42", number: "1750", title: "Consommation totale de carburant"},
+      %{vehicule: "Voiture 7", value: "33", number: "1400", title: "Consommation totale de carburant"}
     ]
   end
 
@@ -84,4 +112,3 @@ defmodule WawShowcaseWeb.CarburantLive do
   end
 
 end
-

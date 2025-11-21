@@ -25,11 +25,126 @@ import {LiveSocket} from "phoenix_live_view"
 import {hooks as colocatedHooks} from "phoenix-colocated/waw_showcase"
 import topbar from "../vendor/topbar"
 
+// MapLibre GL JS for maps
+import maplibregl from "maplibre-gl"
+import "maplibre-gl/dist/maplibre-gl.css"
+
+// Map Hook for MapLibre GL JS integration avec OpenFreeMap
+const MapHook = {
+  mounted() {
+    const vehicules = JSON.parse(this.el.dataset.vehicules || "[]")
+    const selectedId = this.el.dataset.selected || null
+
+    // Initialize map avec style OpenFreeMap (gratuit et sans limite)
+    // Style Positron: simple, minimaliste, rapide
+    const map = new maplibregl.Map({
+      container: this.el,
+      style: 'https://tiles.openfreemap.org/styles/positron',
+      center: [47.5079, -18.8792], // [longitude, latitude] Antananarivo, Madagascar
+      zoom: 11 // Niveau de zoom pour voir la ville
+    })
+
+    // Ajouter les contrôles de navigation (zoom +/-)
+    map.addControl(new maplibregl.NavigationControl(), 'top-right')
+
+    // Attendre que la carte soit chargée avant d'ajouter les marqueurs
+    map.on('load', () => {
+      // Add markers for each vehicle
+      const markers = {}
+      vehicules.forEach(vehicule => {
+        // Déterminer la couleur selon le statut
+        let color = '#3b82f6' // Bleu par défaut (Maintenance)
+        if (vehicule.statut === 'Actif') {
+          color = '#10b981' // Vert
+        } else if (vehicule.statut === 'Alerte') {
+          color = '#f59e0b' // Orange
+        } else if (vehicule.statut === 'Maintenance') {
+          color = '#3b82f6' // Bleu
+        }
+
+        // Créer un élément visuel personnalisé pour le marqueur
+        const el = document.createElement('div')
+        el.className = 'marker'
+        el.style.width = '32px'
+        el.style.height = '32px'
+        el.style.borderRadius = '50%'
+        el.style.backgroundColor = color
+        el.style.border = '3px solid white'
+        el.style.cursor = 'pointer'
+        el.style.boxShadow = '0 2px 4px rgba(0, 0, 0, 0.3)'
+        el.title = `${vehicule.marque} ${vehicule.modele}`
+
+        // Créer le marqueur MapLibre avec l'élément personnalisé
+        const marker = new maplibregl.Marker({ element: el })
+          .setLngLat([vehicule.lng, vehicule.lat]) // [longitude, latitude]
+          .addTo(map)
+
+        // Ajouter un écouteur de clic sur le marqueur
+        el.addEventListener('click', () => {
+          this.pushEvent("select_vehicule", {id: vehicule.id})
+        })
+
+        markers[vehicule.id] = marker
+      })
+
+      this.markers = markers
+      this.lastSelectedId = selectedId
+    })
+
+    this.map = map
+  },
+
+  updated() {
+    const vehicules = JSON.parse(this.el.dataset.vehicules || "[]")
+    const selectedId = this.el.dataset.selected || null
+
+    // Only update if the selected vehicle changed
+    if (this.lastSelectedId !== selectedId && this.markers && this.map) {
+      vehicules.forEach(vehicule => {
+        if (this.markers[vehicule.id]) {
+          // Déterminer la couleur selon le statut
+          let color = '#3b82f6' // Bleu par défaut
+          if (vehicule.statut === 'Actif') {
+            color = '#10b981' // Vert
+          } else if (vehicule.statut === 'Alerte') {
+            color = '#f59e0b' // Orange
+          } else if (vehicule.statut === 'Maintenance') {
+            color = '#3b82f6' // Bleu
+          }
+
+          const markerElement = this.markers[vehicule.id]._element
+          if (markerElement) {
+            markerElement.style.backgroundColor = color
+          }
+          
+          // Centrer la carte sur le véhicule sélectionné avec animation
+          if (vehicule.id === selectedId) {
+            this.map.flyTo({
+              center: [vehicule.lng, vehicule.lat],
+              zoom: 13,
+              duration: 1000 // Animation de 1 seconde
+            })
+          }
+        }
+      })
+      
+      this.lastSelectedId = selectedId
+    }
+  },
+
+  destroyed() {
+    // Nettoyage: détruire la carte pour libérer la mémoire
+    if (this.map) {
+      this.map.remove()
+    }
+  }
+}
+
 const csrfToken = document.querySelector("meta[name='csrf-token']").getAttribute("content")
 const liveSocket = new LiveSocket("/live", Socket, {
   longPollFallbackMs: 2500,
   params: {_csrf_token: csrfToken},
-  hooks: {...colocatedHooks},
+  hooks: {MapHook, ...colocatedHooks},
 })
 
 // Show progress bar on live navigation and form submits
