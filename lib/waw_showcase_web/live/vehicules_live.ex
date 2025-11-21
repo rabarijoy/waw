@@ -1,5 +1,6 @@
 defmodule WawShowcaseWeb.VehiculesLive do
   use WawShowcaseWeb, :live_view
+  use WawShowcaseWeb.Live.ComponentInspector
 
   @vehicules_per_page 10
 

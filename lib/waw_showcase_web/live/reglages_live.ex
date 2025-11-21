@@ -1,5 +1,6 @@
 defmodule WawShowcaseWeb.ReglagesLive do
   use WawShowcaseWeb, :live_view
+  use WawShowcaseWeb.Live.ComponentInspector
 
   @impl true
   def mount(_params, _session, socket) do
@@ -52,6 +53,15 @@ defmodule WawShowcaseWeb.ReglagesLive do
   def handle_event("toggle_accordion", %{"id" => id}, socket) do
     accordions = Map.update!(socket.assigns.accordions, String.to_atom(id), &(!&1))
     {:noreply, assign(socket, :accordions, accordions)}
+  end
+
+  @impl true
+  def handle_event("save_settings", _params, socket) do
+    # Ici on pourrait sauvegarder les données dans la base de données
+    # Pour l'instant, on simule juste la sauvegarde
+    {:noreply,
+     socket
+     |> put_flash(:info, "Paramètres sauvegardés avec succès")}
   end
 
   defp normalize_checkbox(params, key) do

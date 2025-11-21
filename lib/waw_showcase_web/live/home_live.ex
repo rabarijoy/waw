@@ -1,5 +1,6 @@
 defmodule WawShowcaseWeb.HomeLive do
   use WawShowcaseWeb, :live_view
+  use WawShowcaseWeb.Live.ComponentInspector
 
   @impl true
   def mount(_params, _session, socket) do

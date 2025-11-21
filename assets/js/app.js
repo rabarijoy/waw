@@ -140,11 +140,80 @@ const MapHook = {
   }
 }
 
+// Component Inspector Hook - détecte le clic droit et identifie les composants
+const ComponentInspectorHook = {
+  mounted() {
+    // Écouter l'événement contextmenu (clic droit) sur tout le document
+    this.handleContextMenu = (event) => {
+      event.preventDefault()
+      
+      const target = event.target
+      const domPath = []
+      let current = target
+      
+      // Construire le chemin DOM en remontant jusqu'à l'élément avec le hook
+      while (current && current !== this.el && current !== document.documentElement) {
+        const tag = current.tagName.toLowerCase()
+        const attributes = extractAttributes(current)
+        
+        domPath.push({
+          tag: tag,
+          attributes: attributes
+        })
+        
+        current = current.parentElement
+      }
+      
+      // Trouver le LiveView actif et envoyer l'événement
+      const liveViewEl = document.querySelector('[data-phx-main]')
+      if (liveViewEl && liveViewEl.__view) {
+        const view = liveViewEl.__view
+        if (view.pushEvent) {
+          view.pushEvent("inspect_component", {
+            tag: target.tagName.toLowerCase(),
+            attributes: extractAttributes(target),
+            dom_path: domPath
+          })
+        }
+      }
+    }
+    
+    this.el.addEventListener("contextmenu", this.handleContextMenu)
+  },
+  
+  destroyed() {
+    if (this.handleContextMenu) {
+      this.el.removeEventListener("contextmenu", this.handleContextMenu)
+    }
+  }
+}
+
+// Fonction helper pour extraire les attributs d'un élément DOM
+function extractAttributes(element) {
+  const attributes = {}
+  
+  if (element.attributes) {
+    for (let i = 0; i < element.attributes.length; i++) {
+      const attr = element.attributes[i]
+      // Ignorer les attributs spéciaux de Phoenix LiveView et les attributs génériques
+      if (!attr.name.startsWith("phx-") && 
+          !attr.name.startsWith("data-phx-") &&
+          attr.name !== "id" && 
+          attr.name !== "class" &&
+          attr.name !== "style") {
+        attributes[attr.name] = attr.value
+      }
+    }
+  }
+  
+  return attributes
+}
+
 const csrfToken = document.querySelector("meta[name='csrf-token']").getAttribute("content")
 const liveSocket = new LiveSocket("/live", Socket, {
   longPollFallbackMs: 2500,
   params: {_csrf_token: csrfToken},
-  hooks: {MapHook, ...colocatedHooks},
+  hooks: {MapHook, ComponentInspectorHook, ...colocatedHooks},
 })
 
 // Show progress bar on live navigation and form submits
