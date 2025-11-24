@@ -91,7 +91,7 @@ var pluginOptionsHandler = (() => {
       prefix = ""
     } = options || {};
     if (logs !== false && firstRun) {
-      console.log(`${atob("Lyoh")} ${decodeURIComponent("%F0%9F%8C%BC")} ${atob("ZGFpc3lVSQ==")} ${packageVersion} ${atob("Ki8=")}`);
+      // console log removed to avoid polluting the browser console
       firstRun = false;
     }
     const applyTheme = (themeName, flags) => {

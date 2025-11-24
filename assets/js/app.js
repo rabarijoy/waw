@@ -143,7 +143,6 @@ const MapHook = {
 // Component Inspector Hook - détecte le clic droit et identifie les composants
 // Fonction pour afficher le menu flottant
 function showComponentMenu(component, x, y, targetElement) {
-  console.log("Showing component menu:", component, x, y, "at", x, y)
   // Fermer le menu existant s'il y en a un
   closeComponentMenu()
   
@@ -156,8 +155,6 @@ function showComponentMenu(component, x, y, targetElement) {
   menu.style.top = `${y}px`
   menu.style.zIndex = "10000"
   menu.style.pointerEvents = "auto"
-  
-  console.log("Menu created, adding to DOM")
   
   // Titre
   const title = document.createElement("div")
@@ -210,14 +207,13 @@ function showComponentMenu(component, x, y, targetElement) {
         try {
           window.inspect(targetElement)
         } catch (e) {
-          console.log("inspect() not available, DevTools may not be open")
+          // ignore inspect() errors silently
         }
       }
       
       // Pour Firefox: utiliser $0 dans la console (nécessite DevTools ouverts)
       if (window.console && console.log) {
-        console.log("Element to inspect:", targetElement)
-        console.log("To inspect this element, open DevTools and run: $0 = arguments[0]", targetElement)
+        // Intentionally left blank to avoid noisy console logs
       }
       
       // Afficher un message à l'utilisateur
@@ -251,11 +247,8 @@ function showComponentMenu(component, x, y, targetElement) {
   menu.appendChild(buttonsContainer)
   document.body.appendChild(menu)
   
-  console.log("Menu added to DOM, menu element:", menu)
-  
   // Ajuster la position si le menu dépasse de l'écran
   const rect = menu.getBoundingClientRect()
-  console.log("Menu rect:", rect)
   if (rect.right > window.innerWidth) {
     menu.style.left = `${window.innerWidth - rect.width - 10}px`
   }
@@ -324,12 +317,9 @@ const inspectTargets = new Map()
 function initComponentInspector() {
   // Éviter d'ajouter plusieurs listeners
   if (window.componentInspectorListenerAdded) {
-    console.log("Component inspector already initialized")
     return
   }
-  
-  console.log("Initializing component inspector")
-  
+    
   // Écouter l'événement contextmenu sur document avec capture pour intercepter avant le navigateur
   const contextMenuHandler = (event) => {
     // Empêcher le menu contextuel du navigateur IMMÉDIATEMENT
@@ -346,14 +336,6 @@ function initComponentInspector() {
       ? document.elementsFromPoint(clientX, clientY)
       : [elementFromPoint].filter(Boolean)
     
-    console.log("Context menu event captured and prevented", {
-      eventTarget: event.target,
-      elementFromPoint,
-      clientX,
-      clientY,
-      elementsStack
-    })
-    
     // Si elementFromPoint est différent de event.target, on privilégie elementFromPoint
     // (cas d'overlays, de wrappers ou de captures d'événements).
     let targetElement = event.target
@@ -363,7 +345,6 @@ function initComponentInspector() {
       elementFromPoint.tagName &&
       !["html", "body"].includes(elementFromPoint.tagName.toLowerCase())
     ) {
-      console.log("🔁 Remplacement de event.target par elementFromPoint pour l'inspection")
       targetElement = elementFromPoint
     }
     
@@ -399,10 +380,7 @@ function initComponentInspector() {
       componentElement = componentElement.parentElement
     }
     
-    console.log("Nearest data-component ancestor:", {
-      element: componentElement,
-      componentName
-    })
+    // componentName is used server-side via data-component, no console log needed
     
     // Chercher l'élément porteur de la métadonnée LiveView (data-phx-loc) – plus utilisé pour la résolution,
     // mais gardé pour debug si nécessaire.
@@ -424,12 +402,8 @@ function initComponentInspector() {
       sourceElement = sourceElement.parentElement
     }
 
-    console.log("Source element for HEEx lookup (debug only):", { sourceElement, sourceLoc })
-
     // Trouver le LiveView actif et envoyer l'événement avec les coordonnées
     const liveViewEl = document.querySelector('[data-phx-main]')
-    console.log("LiveView element:", liveViewEl)
-    
     if (liveViewEl) {
       // Préparer les données de l'événement
       const eventData = {
@@ -463,12 +437,7 @@ function initComponentInspector() {
       tempElement.setAttribute("phx-value-dom_path", JSON.stringify(eventData.dom_path))
       tempElement.setAttribute("phx-value-attributes", JSON.stringify(eventData.attributes))
       
-      console.log("📤 [DEBUG] Envoi événement inspect_component avec:", {
-        tag: eventData.tag,
-        x: eventData.x,
-        y: eventData.y,
-        dom_path_length: eventData.dom_path.length
-      })
+      // eventData is sent via phx-value-* attributes, no console log needed
       liveViewEl.appendChild(tempElement)
       
       // Déclencher le clic programmatiquement
@@ -489,7 +458,6 @@ function initComponentInspector() {
           }
         }, 1000)
       } catch (error) {
-        console.error("Error triggering phx-click:", error)
         // Afficher un menu de base en cas d'erreur
         showComponentMenu({
           nom: "Composant non identifié",
@@ -504,7 +472,6 @@ function initComponentInspector() {
         inspectTargets.delete(key)
       }
     } else {
-      console.error("No LiveView element found")
       // Afficher un menu de base même sans LiveView
       showComponentMenu({
         nom: "Composant non identifié",
@@ -520,7 +487,6 @@ function initComponentInspector() {
   window.componentInspectorListenerAdded = true
   window.componentInspectorHandler = contextMenuHandler // Garder une référence
   
-  console.log("Component inspector initialized and listener attached with capture: true")
 }
 
 // Initialiser immédiatement si le DOM est déjà chargé, sinon attendre DOMContentLoaded
@@ -533,24 +499,18 @@ if (document.readyState === "loading") {
 // Handler pour les événements component_inspected envoyés par le serveur
 // Utiliser la délégation d'événement sur document pour capturer tous les événements
 function handleComponentInspected(event) {
-  console.log("🎉 component_inspected event received:", event.detail)
   const detail = event.detail
   if (detail) {
     // Récupérer la cible stockée avec les coordonnées comme clé
     const key = `${detail.x}_${detail.y}`
     const targetElement = inspectTargets.get(key)
     
-    console.log("📦 Target element:", targetElement)
-    console.log("📦 Component data:", detail.component)
-    
     // Fermer le menu "Chargement..." s'il existe
     closeComponentMenu()
     
     if (detail.component && detail.component.nom) {
-      console.log("✅ Affichage du menu pour:", detail.component.nom)
       showComponentMenu(detail.component, detail.x, detail.y, targetElement)
     } else {
-      console.log("⚠️  Aucun composant trouvé, affichage du menu par défaut")
       // Afficher un menu même si aucun composant n'est trouvé
       showComponentMenu({
         nom: "Composant non identifié",
@@ -563,7 +523,7 @@ function handleComponentInspected(event) {
     // Nettoyer après utilisation
     inspectTargets.delete(key)
   } else {
-    console.error("❌ Event detail is empty or undefined")
+    // No detail – nothing to display
   }
 }
 
@@ -576,10 +536,7 @@ window.addEventListener("phx:component_inspected", handleComponentInspected, tru
 
 // Utiliser phx:mount pour s'assurer que le listener est prêt après le montage du LiveView
 document.addEventListener("phx:mount", () => {
-  console.log("✅ LiveView mounted, component_inspected listener is ready")
 }, true)
-
-console.log("✅ Component inspected listener attached on document and window")
 
 const csrfToken = document.querySelector("meta[name='csrf-token']").getAttribute("content")
 const liveSocket = new LiveSocket("/live", Socket, {
