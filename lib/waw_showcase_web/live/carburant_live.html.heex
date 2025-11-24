@@ -42,6 +42,7 @@
           size="md"
           phx-click="open_modal"
           class="no-truncate-button"
+          data-component="Bouton de validation d’un formulaire"
         />
       </div>
 
@@ -61,6 +62,7 @@
                 type="select"
                 value={@form_data.vehicule}
                 options={@vehicule_options}
+                data-component="Champs de saisie texte"
               />
               
               <.input
@@ -68,6 +70,7 @@
                 name="date"
                 type="datetime-local"
                 value={@form_data.date}
+                data-component="Champs de saisie calendrier"
               />
               
               <.input
@@ -76,6 +79,7 @@
                 type="number"
                 placeholder="Litres"
                 value={@form_data.litres}
+                data-component="Champs de saisie nombre"
               />
               
               <.input
@@ -84,6 +88,7 @@
                 type="number"
                 placeholder="Prix au litre"
                 value={@form_data.prix_litre}
+                data-component="Champs de saisie nombre"
               />
             </form>
           </:content>
@@ -93,12 +98,14 @@
               type="cancel"
               size="md"
               phx-click="close_modal"
+              data-component="Bouton d’annulation d’un formulaire"
             />
             <.waw_button
               label="Valider"
               type="submit"
               size="md"
               phx-click="save_entry"
+              data-component="Bouton de validation d’un formulaire"
             />
           </:actions>
         </.waw_modal>
@@ -107,11 +114,16 @@
       <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mb-8">
         <%= for card <- @fuel_cards do %>
           <div>
-            <.waw_block_title label={card.vehicule} icon="fuel-pump" />
+            <.waw_block_title
+              label={card.vehicule}
+              icon="fuel-pump"
+              data-component="Titre avec icône"
+            />
             <.waw_fuel_card
               value={card.value}
               number={card.number}
               title={card.title}
+              data-component="Volume de carburant"
             />
           </div>
         <% end %>
@@ -119,7 +131,7 @@
 
       <div class="mt-6">
         <h2 class="text-lg font-semibold mb-4">Historique des entrées</h2>
-        <.waw_table>
+        <.waw_table data-component="Tableau - par défaut">
           <:thead>
             <.waw_th>Véhicule</.waw_th>
             <.waw_th>Date</.waw_th>
@@ -134,16 +146,29 @@
               </.waw_li>
             </.waw_td>
             <.waw_td>
-              <.waw_date value={if length(@entries) > 0, do: Enum.at(@entries, 0).date, else: DateTime.utc_now()} format={:short} />
+              <.waw_date
+                value={if length(@entries) > 0, do: Enum.at(@entries, 0).date, else: DateTime.utc_now()}
+                format={:short}
+                data-component="Date - Medium"
+              />
             </.waw_td>
             <.waw_td>
-              <.waw_text value={if length(@entries) > 0, do: to_string(Enum.at(@entries, 0).litres) <> " L", else: ""} />
+              <.waw_text
+                value={if length(@entries) > 0, do: to_string(Enum.at(@entries, 0).litres) <> " L", else: ""}
+                data-component="Texte"
+              />
             </.waw_td>
             <.waw_td>
-              <.waw_text value={if length(@entries) > 0, do: to_string(Enum.at(@entries, 0).prix_litre) <> " €", else: ""} />
+              <.waw_text
+                value={if length(@entries) > 0, do: to_string(Enum.at(@entries, 0).prix_litre) <> " €", else: ""}
+                data-component="Texte"
+              />
             </.waw_td>
             <.waw_td>
-              <.waw_text value={if length(@entries) > 0, do: to_string(Float.round(Enum.at(@entries, 0).litres * Enum.at(@entries, 0).prix_litre, 2)) <> " €", else: ""} />
+              <.waw_text
+                value={if length(@entries) > 0, do: to_string(Float.round(Enum.at(@entries, 0).litres * Enum.at(@entries, 0).prix_litre, 2)) <> " €", else: ""}
+                data-component="Texte"
+              />
             </.waw_td>
           </:tr>
           <:tr state="normal">
@@ -153,16 +178,29 @@
               </.waw_li>
             </.waw_td>
             <.waw_td>
-              <.waw_date value={if length(@entries) > 1, do: Enum.at(@entries, 1).date, else: DateTime.utc_now()} format={:short} />
+              <.waw_date
+                value={if length(@entries) > 1, do: Enum.at(@entries, 1).date, else: DateTime.utc_now()}
+                format={:short}
+                data-component="Date - Medium"
+              />
             </.waw_td>
             <.waw_td>
-              <.waw_text value={if length(@entries) > 1, do: to_string(Enum.at(@entries, 1).litres) <> " L", else: ""} />
+              <.waw_text
+                value={if length(@entries) > 1, do: to_string(Enum.at(@entries, 1).litres) <> " L", else: ""}
+                data-component="Texte"
+              />
             </.waw_td>
             <.waw_td>
-              <.waw_text value={if length(@entries) > 1, do: to_string(Enum.at(@entries, 1).prix_litre) <> " €", else: ""} />
+              <.waw_text
+                value={if length(@entries) > 1, do: to_string(Enum.at(@entries, 1).prix_litre) <> " €", else: ""}
+                data-component="Texte"
+              />
             </.waw_td>
             <.waw_td>
-              <.waw_text value={if length(@entries) > 1, do: to_string(Float.round(Enum.at(@entries, 1).litres * Enum.at(@entries, 1).prix_litre, 2)) <> " €", else: ""} />
+              <.waw_text
+                value={if length(@entries) > 1, do: to_string(Float.round(Enum.at(@entries, 1).litres * Enum.at(@entries, 1).prix_litre, 2)) <> " €", else: ""}
+                data-component="Texte"
+              />
             </.waw_td>
           </:tr>
           <:tr state="normal">
@@ -172,16 +210,29 @@
               </.waw_li>
             </.waw_td>
             <.waw_td>
-              <.waw_date value={if length(@entries) > 2, do: Enum.at(@entries, 2).date, else: DateTime.utc_now()} format={:short} />
+              <.waw_date
+                value={if length(@entries) > 2, do: Enum.at(@entries, 2).date, else: DateTime.utc_now()}
+                format={:short}
+                data-component="Date - Medium"
+              />
             </.waw_td>
             <.waw_td>
-              <.waw_text value={if length(@entries) > 2, do: to_string(Enum.at(@entries, 2).litres) <> " L", else: ""} />
+              <.waw_text
+                value={if length(@entries) > 2, do: to_string(Enum.at(@entries, 2).litres) <> " L", else: ""}
+                data-component="Texte"
+              />
             </.waw_td>
             <.waw_td>
-              <.waw_text value={if length(@entries) > 2, do: to_string(Enum.at(@entries, 2).prix_litre) <> " €", else: ""} />
+              <.waw_text
+                value={if length(@entries) > 2, do: to_string(Enum.at(@entries, 2).prix_litre) <> " €", else: ""}
+                data-component="Texte"
+              />
             </.waw_td>
             <.waw_td>
-              <.waw_text value={if length(@entries) > 2, do: to_string(Float.round(Enum.at(@entries, 2).litres * Enum.at(@entries, 2).prix_litre, 2)) <> " €", else: ""} />
+              <.waw_text
+                value={if length(@entries) > 2, do: to_string(Float.round(Enum.at(@entries, 2).litres * Enum.at(@entries, 2).prix_litre, 2)) <> " €", else: ""}
+                data-component="Texte"
+              />
             </.waw_td>
           </:tr>
           <:tr state="normal">
@@ -191,16 +242,29 @@
               </.waw_li>
             </.waw_td>
             <.waw_td>
-              <.waw_date value={if length(@entries) > 3, do: Enum.at(@entries, 3).date, else: DateTime.utc_now()} format={:short} />
+              <.waw_date
+                value={if length(@entries) > 3, do: Enum.at(@entries, 3).date, else: DateTime.utc_now()}
+                format={:short}
+                data-component="Date - Medium"
+              />
             </.waw_td>
             <.waw_td>
-              <.waw_text value={if length(@entries) > 3, do: to_string(Enum.at(@entries, 3).litres) <> " L", else: ""} />
+              <.waw_text
+                value={if length(@entries) > 3, do: to_string(Enum.at(@entries, 3).litres) <> " L", else: ""}
+                data-component="Texte"
+              />
             </.waw_td>
             <.waw_td>
-              <.waw_text value={if length(@entries) > 3, do: to_string(Enum.at(@entries, 3).prix_litre) <> " €", else: ""} />
+              <.waw_text
+                value={if length(@entries) > 3, do: to_string(Enum.at(@entries, 3).prix_litre) <> " €", else: ""}
+                data-component="Texte"
+              />
             </.waw_td>
             <.waw_td>
-              <.waw_text value={if length(@entries) > 3, do: to_string(Float.round(Enum.at(@entries, 3).litres * Enum.at(@entries, 3).prix_litre, 2)) <> " €", else: ""} />
+              <.waw_text
+                value={if length(@entries) > 3, do: to_string(Float.round(Enum.at(@entries, 3).litres * Enum.at(@entries, 3).prix_litre, 2)) <> " €", else: ""}
+                data-component="Texte"
+              />
             </.waw_td>
           </:tr>
           <:tr state="normal">
@@ -210,16 +274,29 @@
               </.waw_li>
             </.waw_td>
             <.waw_td>
-              <.waw_date value={if length(@entries) > 4, do: Enum.at(@entries, 4).date, else: DateTime.utc_now()} format={:short} />
+              <.waw_date
+                value={if length(@entries) > 4, do: Enum.at(@entries, 4).date, else: DateTime.utc_now()}
+                format={:short}
+                data-component="Date - Medium"
+              />
             </.waw_td>
             <.waw_td>
-              <.waw_text value={if length(@entries) > 4, do: to_string(Enum.at(@entries, 4).litres) <> " L", else: ""} />
+              <.waw_text
+                value={if length(@entries) > 4, do: to_string(Enum.at(@entries, 4).litres) <> " L", else: ""}
+                data-component="Texte"
+              />
             </.waw_td>
             <.waw_td>
-              <.waw_text value={if length(@entries) > 4, do: to_string(Enum.at(@entries, 4).prix_litre) <> " €", else: ""} />
+              <.waw_text
+                value={if length(@entries) > 4, do: to_string(Enum.at(@entries, 4).prix_litre) <> " €", else: ""}
+                data-component="Texte"
+              />
             </.waw_td>
             <.waw_td>
-              <.waw_text value={if length(@entries) > 4, do: to_string(Float.round(Enum.at(@entries, 4).litres * Enum.at(@entries, 4).prix_litre, 2)) <> " €", else: ""} />
+              <.waw_text
+                value={if length(@entries) > 4, do: to_string(Float.round(Enum.at(@entries, 4).litres * Enum.at(@entries, 4).prix_litre, 2)) <> " €", else: ""}
+                data-component="Texte"
+              />
             </.waw_td>
           </:tr>
         </.waw_table>
