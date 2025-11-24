@@ -29,7 +29,9 @@ defmodule WawShowcase.ComponentFinder do
   end
 
   # Recherche directe par identifiant explicite (data-component)
-  # Exemple : data-component="waw_stat" → on cherche les entrées dont le tag est ".waw_stat" ou "waw_stat"
+  # On supporte deux modes :
+  #   1) data-component == "Nom du composant" (prioritaire)
+  #   2) data-component == base du tag (ex: "waw_stat" pour ".waw_stat")
   def find_component_by_key(component_key, components \\ nil) do
     components = components || load_components()
 
@@ -38,26 +40,46 @@ defmodule WawShowcase.ComponentFinder do
     if base == "" do
       nil
     else
-      variants = [base, ".#{base}"]
-
-      candidates =
+      # 1) Essayer d'abord une correspondance exacte sur "Nom du composant"
+      by_name =
         Enum.filter(components, fn comp ->
-          tag = comp["tag"] || ""
-          tag in variants
+          (comp["Nom du composant"] || "") == base
         end)
 
-      case candidates do
-        [] ->
-          IO.puts("⚠️  Aucun composant trouvé pour data-component='#{base}'")
-          nil
+      chosen =
+        case by_name do
+          [] ->
+            # 2) Fallback: interpréter la clé comme base de tag (waw_stat -> .waw_stat)
+            variants = [base, ".#{base}"]
 
-        [single] ->
-          single
+            by_tag =
+              Enum.filter(components, fn comp ->
+                tag = comp["tag"] || ""
+                tag in variants
+              end)
 
-        multiple ->
-          IO.puts("📝 Plusieurs composants pour data-component='#{base}', tri par nom")
-          Enum.min_by(multiple, & &1["Nom du composant"])
-      end
+            case by_tag do
+              [] ->
+                IO.puts("⚠️  Aucun composant trouvé pour data-component='#{base}' (ni par nom ni par tag)")
+                nil
+
+              [single] ->
+                single
+
+              multiple ->
+                IO.puts("📝 Plusieurs composants pour data-component='#{base}', tri par nom (mode tag)")
+                Enum.min_by(multiple, & &1["Nom du composant"])
+            end
+
+          [single] ->
+            single
+
+          multiple ->
+            IO.puts("📝 Plusieurs composants pour data-component='#{base}', tri par nom (mode nom)")
+            Enum.min_by(multiple, & &1["Nom du composant"])
+        end
+
+      chosen
     end
   end
 
