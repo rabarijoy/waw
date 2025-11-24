@@ -74,5 +74,3 @@ defmodule WawShowcase.ComponentFinder do
     end
   end
 end
-
-

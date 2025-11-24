@@ -491,6 +491,67 @@ window.addEventListener("phx:component_inspected", handleComponentInspected, tru
 document.addEventListener("phx:mount", () => {
 }, true)
 
+// ---
+// Sécurisation de l'affichage des éléments de navigation "persistants"
+// (header/footer fixes, barre d'onglets) même après changements d'onglets
+// ou interactions complexes (modals, écrans internes).
+// ---
+
+function ensurePersistentShellVisibility() {
+  // Header + footer fixes
+  const shellContainers = document.querySelectorAll(
+    '[data-component="Header et Footer fixes"]'
+  )
+
+  shellContainers.forEach((el) => {
+    el.classList.remove("hidden", "invisible")
+    el.style.display = ""
+    el.style.visibility = ""
+    el.style.opacity = ""
+  })
+
+  // Onglets (Rapports) – s'assurer que le conteneur et ses boutons restent visibles
+  const tabsContainers = document.querySelectorAll(
+    '[data-component="Onglets - taille moyenne"]'
+  )
+
+  tabsContainers.forEach((container) => {
+    container.classList.remove("hidden", "invisible")
+    container.style.display = ""
+    container.style.visibility = ""
+    container.style.opacity = ""
+
+    const buttons = container.querySelectorAll("button")
+    buttons.forEach((btn) => {
+      btn.classList.remove("hidden", "invisible")
+      btn.style.display = ""
+      btn.style.visibility = ""
+      btn.style.opacity = ""
+    })
+  })
+}
+
+// Observer générique sur le body pour ré-appliquer les règles ci-dessus
+// après chaque patch LiveView (changement d'onglet, ouverture/fermeture de modal, etc.).
+const shellObserver = new MutationObserver(() => {
+  // On debounce légèrement pour ne pas exécuter trop souvent pendant un gros patch
+  if (shellObserver._pending) return
+  shellObserver._pending = true
+  setTimeout(() => {
+    shellObserver._pending = false
+    ensurePersistentShellVisibility()
+  }, 30)
+})
+
+if (document.body) {
+  shellObserver.observe(document.body, {
+    childList: true,
+    subtree: true
+  })
+  // Appliquer une première fois au chargement
+  ensurePersistentShellVisibility()
+}
+
 const csrfToken = document.querySelector("meta[name='csrf-token']").getAttribute("content")
 const liveSocket = new LiveSocket("/live", Socket, {
   longPollFallbackMs: 2500,
