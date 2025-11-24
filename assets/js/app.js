@@ -348,22 +348,6 @@ function initComponentInspector() {
       targetElement = elementFromPoint
     }
     
-    const domPath = []
-    let current = targetElement
-    
-    // Remonter la hiérarchie pour construire un chemin DOM (debug uniquement)
-    while (current && current !== document.body && current !== document.documentElement) {
-      const tag = current.tagName.toLowerCase()
-      const attributes = extractAttributes(current)
-      
-      domPath.push({
-        tag: tag,
-        attributes: attributes
-      })
-      
-      current = current.parentElement
-    }
-    
     // Chercher le parent porteur de l'attribut data-component (mapping explicite)
     let componentElement = targetElement
     let componentName = null
@@ -380,39 +364,15 @@ function initComponentInspector() {
       componentElement = componentElement.parentElement
     }
     
-    // componentName is used server-side via data-component, no console log needed
-    
-    // Chercher l'élément porteur de la métadonnée LiveView (data-phx-loc) – plus utilisé pour la résolution,
-    // mais gardé pour debug si nécessaire.
-    let sourceElement = targetElement
-    let sourceLoc = null
-    while (
-      sourceElement &&
-      sourceElement !== document.body &&
-      sourceElement !== document.documentElement
-    ) {
-      const locAttr = sourceElement.getAttribute("data-phx-loc")
-      if (locAttr) {
-        const parsed = parseInt(locAttr, 10)
-        if (!Number.isNaN(parsed)) {
-          sourceLoc = parsed
-          break
-        }
-      }
-      sourceElement = sourceElement.parentElement
-    }
-
+    // componentName est utilisée côté serveur via data-component
     // Trouver le LiveView actif et envoyer l'événement avec les coordonnées
     const liveViewEl = document.querySelector('[data-phx-main]')
     if (liveViewEl) {
-      // Préparer les données de l'événement
+      // Préparer les données de l'événement (seulement ce qui est réellement utilisé côté serveur)
       const eventData = {
         tag: targetElement.tagName.toLowerCase(),
-        attributes: extractAttributes(targetElement),
-        dom_path: domPath,
         x: clientX,
         y: clientY,
-        loc: sourceLoc,
         component: componentName
       }
       
@@ -427,17 +387,10 @@ function initComponentInspector() {
       tempElement.setAttribute("phx-value-tag", eventData.tag)
       tempElement.setAttribute("phx-value-x", String(eventData.x))
       tempElement.setAttribute("phx-value-y", String(eventData.y))
-      if (eventData.loc != null) {
-        tempElement.setAttribute("phx-value-loc", String(eventData.loc))
-      }
       if (eventData.component) {
         tempElement.setAttribute("phx-value-component", eventData.component)
       }
-      // Utiliser "dom_path" (underscore) car Phoenix convertit les tirets en underscores
-      tempElement.setAttribute("phx-value-dom_path", JSON.stringify(eventData.dom_path))
-      tempElement.setAttribute("phx-value-attributes", JSON.stringify(eventData.attributes))
-      
-      // eventData is sent via phx-value-* attributes, no console log needed
+      // eventData est envoyé via phx-value-* attributes
       liveViewEl.appendChild(tempElement)
       
       // Déclencher le clic programmatiquement
