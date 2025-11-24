@@ -37,7 +37,7 @@
       
       <%= if @show_form do %>
         <div class="mt-6">
-          <.waw_steps>
+          <.waw_steps data-component="Steps">
             <:step status={if(@form_step >= 1, do: :valid, else: :disabled)} active={@form_step == 1}>
               Informations générales
             </:step>
@@ -56,20 +56,62 @@
             <%= cond do %>
               <% @form_step == 1 -> %>
                 <form phx-change="update_form" class="space-y-4">
-                  <.input label="Marque" name="marque" type="text" placeholder="Marque du véhicule" value={@form_data.marque} />
-                  <.input label="Modèle" name="modele" type="text" placeholder="Modèle du véhicule" value={@form_data.modele} />
+                  <.input
+                    label="Marque"
+                    name="marque"
+                    type="text"
+                    placeholder="Marque du véhicule"
+                    value={@form_data.marque}
+                    data-component="Champs de saisie texte"
+                  />
+                  <.input
+                    label="Modèle"
+                    name="modele"
+                    type="text"
+                    placeholder="Modèle du véhicule"
+                    value={@form_data.modele}
+                    data-component="Champs de saisie texte"
+                  />
                 </form>
               
               <% @form_step == 2 -> %>
                 <form phx-change="update_form" class="space-y-4">
-                  <.input label="Année" name="annee" type="number" placeholder="Année" value={@form_data.annee} />
-                  <.input label="Plaque d'immatriculation" name="plaque" type="text" placeholder="Plaque" value={@form_data.plaque} />
+                  <.input
+                    label="Année"
+                    name="annee"
+                    type="number"
+                    placeholder="Année"
+                    value={@form_data.annee}
+                    data-component="Champs de saisie nombre"
+                  />
+                  <.input
+                    label="Plaque d'immatriculation"
+                    name="plaque"
+                    type="text"
+                    placeholder="Plaque"
+                    value={@form_data.plaque}
+                    data-component="Champs de saisie texte"
+                  />
                 </form>
               
               <% @form_step == 3 -> %>
                 <form phx-change="update_form" class="space-y-4">
-                  <.input label="Kilométrage" name="kilometrage" type="number" placeholder="Kilométrage" value={@form_data.kilometrage} />
-                  <.input label="Niveau de carburant" name="niveau_carburant" type="text" placeholder="Niveau de carburant" value={@form_data.niveau_carburant} />
+                  <.input
+                    label="Kilométrage"
+                    name="kilometrage"
+                    type="number"
+                    placeholder="Kilométrage"
+                    value={@form_data.kilometrage}
+                    data-component="Champs de saisie nombre"
+                  />
+                  <.input
+                    label="Niveau de carburant"
+                    name="niveau_carburant"
+                    type="text"
+                    placeholder="Niveau de carburant"
+                    value={@form_data.niveau_carburant}
+                    data-component="Champs de saisie texte"
+                  />
                 </form>
               
               <% @form_step == 4 -> %>
@@ -90,6 +132,7 @@
                 size="md"
                 phx-click="previous_step"
                 disabled={@form_step == 1}
+                data-component="Bouton d’annulation d’un formulaire"
               />
               
               <%= if @form_step == 4 do %>
@@ -99,6 +142,7 @@
                   size="md"
                   color="success"
                   phx-click="save_vehicule"
+                  data-component="Bouton de validation d’un formulaire"
                 />
               <% else %>
                 <.waw_button
@@ -106,6 +150,7 @@
                   type="submit"
                   size="md"
                   phx-click="next_step"
+                  data-component="Bouton de validation d’un formulaire"
                 />
               <% end %>
             </div>
@@ -122,16 +167,18 @@
               value={@search_query}
               phx-debounce="300"
               phx-change="search"
+              data-component="Champs de saisie recherche"
             />
             <.waw_button
               label="Ajouter un véhicule"
               type="submit"
               size="md"
               phx-click="toggle_form"
+              data-component="Bouton de validation d’un formulaire"
             />
           </div>
 
-          <.waw_table>
+          <.waw_table data-component="Tableau - par défaut">
             <:thead>
               <.waw_th>Nom</.waw_th>
               <.waw_th>Plaque</.waw_th>
