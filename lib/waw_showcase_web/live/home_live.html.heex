@@ -1,105 +1,94 @@
-<.waw_fixed_header_footer>
+<.waw_fixed_header_footer data-component="fixed_header_footer">
   <:header>
-    <.waw_header title="Waw Showcase" logout_url="" current_user_profile_url="">
+    <.waw_header title="Waw Showcase" logout_url="" current_user_profile_url="" data-component="waw_header">
       <:nav>
-        <.waw_navbar active={true} navigate={~p"/"} theme="light">
+        <.waw_navbar active={true} navigate={~p"/"} theme="light" data-component="waw_navbar">
           Tableau de bord
         </.waw_navbar>
-        <.waw_navbar active={false} navigate={~p"/vehicules"} theme="light">
+        <.waw_navbar active={false} navigate={~p"/vehicules"} theme="light" data-component="waw_navbar">
           Véhicules
         </.waw_navbar>
-        <.waw_navbar active={false} navigate={~p"/carburant"} theme="light">
+        <.waw_navbar active={false} navigate={~p"/carburant"} theme="light" data-component="waw_navbar">
           Carburant
         </.waw_navbar>
-        <.waw_navbar active={false} navigate={~p"/rapports"} theme="light">
+        <.waw_navbar active={false} navigate={~p"/rapports"} theme="light" data-component="waw_navbar">
           Rapports
         </.waw_navbar>
-        <.waw_navbar active={false} navigate={~p"/reglages"} theme="light">
+        <.waw_navbar active={false} navigate={~p"/reglages"} theme="light" data-component="waw_navbar">
           Réglages
         </.waw_navbar>
       </:nav>
-      <:actions>
-        <.link>
-          <.waw_icon name="bell-fill" size="4" />
-        </.link>
-        <.link>
-          <.waw_icon name="circle-grid-3x3" size="4" />
-        </.link>
-        <.link>
-          <.waw_icon name="person-fill" size="4" />
-        </.link>
-      </:actions>
     </.waw_header>
   </:header>
   <:main>
     <div class="px-4 py-8">
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-        <.waw_stat value={251} description="Information concernant les véhicules géolocalisés" title="Véhicules" icon="car" />
-        <.waw_stat status={:success} total={251} value={100} description="Information concernant les véhicules actuellement en mouvement" title="Actifs" icon="speedometer" />
-        <.waw_stat status={:danger} value={5} description="Nombre d'alertes actives" title="Alertes" icon="exclamationmark-triangle-fill" />
-        <.waw_stat loading title="Maintenance" icon="wrench-and-screwdriver-fill" />
+        <.waw_stat value={251} description="Information concernant les véhicules géolocalisés" title="Véhicules" icon="car" data-component="waw_stat" />
+        <.waw_stat status={:success} total={251} value={100} description="Information concernant les véhicules actuellement en mouvement" title="Actifs" icon="speedometer" data-component="waw_stat" />
+        <.waw_stat status={:danger} value={5} description="Nombre d'alertes actives" title="Alertes" icon="exclamationmark-triangle-fill" data-component="waw_stat" />
+        <.waw_stat loading title="Maintenance" icon="wrench-and-screwdriver-fill" data-component="waw_stat" />
       </div>
       <div>
         <h2 class="text-lg font-semibold mb-4">Activités récentes</h2>
-        <.waw_table>
+        <.waw_table data-component="waw_table">
           <:thead>
-            <.waw_th>Date</.waw_th>
-            <.waw_th>Type</.waw_th>
-            <.waw_th>Description</.waw_th>
+            <.waw_th data-component="waw_th">Date</.waw_th>
+            <.waw_th data-component="waw_th">Type</.waw_th>
+            <.waw_th data-component="waw_th">Description</.waw_th>
           </:thead>
           <:tr state="normal">
-            <.waw_td>
-              <.waw_date value={~U[2025-01-15 10:30:00Z]} format={:short} />
+            <.waw_td data-component="waw_td">
+              <.waw_date value={~U[2025-01-15 10:30:00Z]} format={:short} data-component="waw_date" />
             </.waw_td>
-            <.waw_td>
-              <.waw_badge id="badge-alerte-1" label="Alerte" description="title" color="danger" />
+            <.waw_td data-component="waw_td">
+              <.waw_badge id="badge-alerte-1" label="Alerte" description="title" color="danger" data-component="waw_badge" />
             </.waw_td>
-            <.waw_td>
-              <.waw_text value="Faible niveau de carburant détecté" />
-            </.waw_td>
-          </:tr>
-          <:tr state="normal">
-            <.waw_td>
-              <.waw_date value={~U[2025-01-15 09:15:00Z]} format={:short} />
-            </.waw_td>
-            <.waw_td>
-              <.waw_badge id="badge-maintenance-1" label="Maintenance" description="title" color="info" />
-            </.waw_td>
-            <.waw_td>
-              <.waw_text value="Maintenance programmée effectuée" />
+            <.waw_td data-component="waw_td">
+              <.waw_text value="Faible niveau de carburant détecté" data-component="waw_text" />
             </.waw_td>
           </:tr>
           <:tr state="normal">
-            <.waw_td>
-              <.waw_date value={~U[2025-01-15 08:00:00Z]} format={:short} />
+            <.waw_td data-component="waw_td">
+              <.waw_date value={~U[2025-01-15 09:15:00Z]} format={:short} data-component="waw_date" />
             </.waw_td>
-            <.waw_td>
-              <.waw_badge id="badge-fuel-1" label="Fuel" description="title" color="orange" />
+            <.waw_td data-component="waw_td">
+              <.waw_badge id="badge-maintenance-1" label="Maintenance" description="title" color="info" data-component="waw_badge" />
             </.waw_td>
-            <.waw_td>
-              <.waw_text value="Ravitaillement 45.5L" />
-            </.waw_td>
-          </:tr>
-          <:tr state="normal">
-            <.waw_td>
-              <.waw_date value={~U[2025-01-14 16:45:00Z]} format={:short} />
-            </.waw_td>
-            <.waw_td>
-              <.waw_badge id="badge-alerte-2" label="Alerte" description="title" color="danger" />
-            </.waw_td>
-            <.waw_td>
-              <.waw_text value="Vitesse excessive détectée" />
+            <.waw_td data-component="waw_td">
+              <.waw_text value="Maintenance programmée effectuée" data-component="waw_text" />
             </.waw_td>
           </:tr>
           <:tr state="normal">
-            <.waw_td>
-              <.waw_date value={~U[2025-01-14 14:20:00Z]} format={:short} />
+            <.waw_td data-component="waw_td">
+              <.waw_date value={~U[2025-01-15 08:00:00Z]} format={:short} data-component="waw_date" />
             </.waw_td>
-            <.waw_td>
-              <.waw_badge id="badge-fuel-2" label="Fuel" description="title" color="orange" />
+            <.waw_td data-component="waw_td">
+              <.waw_badge id="badge-fuel-1" label="Fuel" description="title" color="orange" data-component="waw_badge" />
             </.waw_td>
-            <.waw_td>
-              <.waw_text value="Ravitaillement 52.3L" />
+            <.waw_td data-component="waw_td">
+              <.waw_text value="Ravitaillement 45.5L" data-component="waw_text" />
+            </.waw_td>
+          </:tr>
+          <:tr state="normal">
+            <.waw_td data-component="waw_td">
+              <.waw_date value={~U[2025-01-14 16:45:00Z]} format={:short} data-component="waw_date" />
+            </.waw_td>
+            <.waw_td data-component="waw_td">
+              <.waw_badge id="badge-alerte-2" label="Alerte" description="title" color="danger" data-component="waw_badge" />
+            </.waw_td>
+            <.waw_td data-component="waw_td">
+              <.waw_text value="Vitesse excessive détectée" data-component="waw_text" />
+            </.waw_td>
+          </:tr>
+          <:tr state="normal">
+            <.waw_td data-component="waw_td">
+              <.waw_date value={~U[2025-01-14 14:20:00Z]} format={:short} data-component="waw_date" />
+            </.waw_td>
+            <.waw_td data-component="waw_td">
+              <.waw_badge id="badge-fuel-2" label="Fuel" description="title" color="orange" data-component="waw_badge" />
+            </.waw_td>
+            <.waw_td data-component="waw_td">
+              <.waw_text value="Ravitaillement 52.3L" data-component="waw_text" />
             </.waw_td>
           </:tr>
         </.waw_table>
@@ -107,6 +96,6 @@
 </div>
   </:main>
   <:footer>
-    <.waw_footer copyright_year={DateTime.utc_now().year} />
+    <.waw_footer copyright_year={DateTime.utc_now().year} data-component="waw_footer" />
   </:footer>
 </.waw_fixed_header_footer>
