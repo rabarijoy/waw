@@ -36,7 +36,15 @@
       <h1>Réglages</h1>
 
       <div class="mt-6 space-y-4">
-        <.waw_accordion id="accordion-profil" head_icon="person-fill" title="Profil" expanded={@accordions.profil} phx-click="toggle_accordion" phx-value-id="profil">
+        <.waw_accordion
+          id="accordion-profil"
+          head_icon="person-fill"
+          title="Profil"
+          expanded={@accordions.profil}
+          phx-click="toggle_accordion"
+          phx-value-id="profil"
+          data-component="Accordion avec un status séléctionné"
+        >
           <div class="p-4 space-y-4">
             <form phx-change="update_form" class="space-y-4">
               <.input
@@ -46,6 +54,7 @@
                 placeholder="Votre nom"
                 value={@form_data.nom}
                 size="sm"
+                data-component="Champs de saisie texte"
               />
               <.input
                 label="Adresse email"
@@ -54,6 +63,7 @@
                 placeholder="name@tag_ip.com"
                 value={@form_data.email}
                 size="sm"
+                data-component="Champs de saisie e-mail"
               />
               <.input
                 label="Numéro de téléphone"
@@ -62,12 +72,21 @@
                 placeholder="Number"
                 value={@form_data.telephone}
                 size="sm"
+                data-component="Champs de saisie téléphone"
               />
             </form>
           </div>
         </.waw_accordion>
 
-        <.waw_accordion id="accordion-notifications" head_icon="bell-fill" title="Notifications" expanded={@accordions.notifications} phx-click="toggle_accordion" phx-value-id="notifications">
+        <.waw_accordion
+          id="accordion-notifications"
+          head_icon="bell-fill"
+          title="Notifications"
+          expanded={@accordions.notifications}
+          phx-click="toggle_accordion"
+          phx-value-id="notifications"
+          data-component="Accordion avec un status séléctionné"
+        >
           <div class="p-4 space-y-4">
             <form phx-change="update_form" class="space-y-4">
               <.input
@@ -75,30 +94,42 @@
                 name="email_notifications"
                 type="checkbox"
                 checked={@form_data.email_notifications}
+                data-component="Sélection checkbox"
               />
               <.input
                 label="Alertes carburant"
                 name="alertes_carburant"
                 type="checkbox"
                 checked={@form_data.alertes_carburant}
+                data-component="Sélection checkbox"
               />
               <.input
                 label="Alertes maintenance"
                 name="alertes_maintenance"
                 type="checkbox"
                 checked={@form_data.alertes_maintenance}
+                data-component="Sélection checkbox"
               />
               <.input
                 label="Rapports quotidiens"
                 name="rapports_quotidiens"
                 type="checkbox"
                 checked={@form_data.rapports_quotidiens}
+                data-component="Sélection checkbox"
               />
             </form>
           </div>
         </.waw_accordion>
 
-        <.waw_accordion id="accordion-affichage" head_icon="display-screen" title="Affichage" expanded={@accordions.affichage} phx-click="toggle_accordion" phx-value-id="affichage">
+        <.waw_accordion
+          id="accordion-affichage"
+          head_icon="display-screen"
+          title="Affichage"
+          expanded={@accordions.affichage}
+          phx-click="toggle_accordion"
+          phx-value-id="affichage"
+          data-component="Accordion avec un status séléctionné"
+        >
           <div class="p-4 space-y-4">
             <form phx-change="update_form" class="space-y-4">
               <.input
@@ -108,6 +139,7 @@
                 value={@form_data.theme}
                 size="sm"
                 options={[{"auto", "Auto"}, {"dark", "Dark mode"}, {"light", "Light mode"}]}
+                data-component="Champs de saisie pour la sélection"
               />
               <.input
                 label="Langue"
@@ -116,12 +148,21 @@
                 value={@form_data.langue}
                 size="sm"
                 options={[{"fr", "Français"}, {"en", "English"}, {"es", "Español"}]}
+                data-component="Champs de saisie pour la sélection"
               />
             </form>
           </div>
         </.waw_accordion>
 
-        <.waw_accordion id="accordion-confidentialite" head_icon="lock-close-fill" title="Confidentialité" expanded={@accordions.confidentialite} phx-click="toggle_accordion" phx-value-id="confidentialite">
+        <.waw_accordion
+          id="accordion-confidentialite"
+          head_icon="lock-close-fill"
+          title="Confidentialité"
+          expanded={@accordions.confidentialite}
+          phx-click="toggle_accordion"
+          phx-value-id="confidentialite"
+          data-component="Accordion avec un status séléctionné"
+        >
           <div class="p-4 space-y-4">
             <form phx-change="update_form" class="space-y-4">
               <.input
@@ -129,6 +170,7 @@
                 name="deux_facteurs"
                 type="checkbox"
                 checked={@form_data.deux_facteurs}
+                data-component="Sélection checkbox"
               />
               <.input
                 label="Délai d'expiration de session (minutes)"
@@ -137,6 +179,7 @@
                 placeholder="30"
                 value={@form_data.delai_expiration}
                 size="sm"
+                data-component="Champs de saisie texte"
               />
               <.input
                 label="Clé API"
@@ -145,6 +188,7 @@
                 placeholder="Votre clé API"
                 value={@form_data.cle_api}
                 size="sm"
+                data-component="Champs de saisie texte"
               />
             </form>
           </div>
@@ -152,7 +196,13 @@
       </div>
 
       <div class="mt-8 flex justify-end">
-        <.waw_button label="Sauvegarder" type="submit" color="success" phx-click="save_settings" />
+        <.waw_button
+          label="Sauvegarder"
+          type="submit"
+          color="success"
+          phx-click="save_settings"
+          data-component="Bouton de validation d’un formulaire"
+        />
       </div>
     </div>
   </:main>
