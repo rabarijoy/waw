@@ -567,9 +567,8 @@ window.liveSocket = liveSocket
 //
 if (process.env.NODE_ENV === "development") {
   window.addEventListener("phx:live_reload:attached", ({detail: reloader}) => {
-    // Enable server log streaming to client.
-    // Disable with reloader.disableServerLogs()
-    reloader.enableServerLogs()
+    // NOTE: server log streaming to the browser console is disabled to avoid noise
+    // If you need it for debugging, call reloader.enableServerLogs() manually from the console.
 
     // Open configured PLUG_EDITOR at file:line of the clicked element's HEEx component
     //

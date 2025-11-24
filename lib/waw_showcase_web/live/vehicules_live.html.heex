@@ -1,35 +1,37 @@
-<.waw_fixed_header_footer data-component="Header et Footer fixes">
+<.waw_fixed_header_footer>
   <:header>
-    <.waw_header title="Waw Showcase" logout_url="" current_user_profile_url="">
-      <:nav>
-        <.waw_navbar active={false} navigate={~p"/"} icon="speedometer" theme="light">
-          Tableau de bord
-        </.waw_navbar>
-        <.waw_navbar active={true} navigate={~p"/vehicules"} icon="car" theme="light">
-          Véhicules
-        </.waw_navbar>
-        <.waw_navbar active={false} navigate={~p"/carburant"} icon="fuel-pump" theme="light">
-          Carburant
-        </.waw_navbar>
-        <.waw_navbar active={false} navigate={~p"/rapports"} icon="doc-text" theme="light">
-          Rapports
-        </.waw_navbar>
-        <.waw_navbar active={false} navigate={~p"/reglages"} icon="gearshape" theme="light">
-          Réglages
-        </.waw_navbar>
-      </:nav>
-      <:actions>
-        <.link>
-          <.waw_icon name="bell-fill" size="4" />
-        </.link>
-        <.link>
-          <.waw_icon name="circle-grid-3x3" size="4" />
-        </.link>
-        <.link>
-          <.waw_icon name="person-fill" size="4" />
-        </.link>
-      </:actions>
-    </.waw_header>
+    <div data-component="Header et Footer fixes" class="contents">
+      <.waw_header title="Waw Showcase" logout_url="" current_user_profile_url="">
+        <:nav>
+          <.waw_navbar active={false} navigate={~p"/"} icon="speedometer" theme="light">
+            Tableau de bord
+          </.waw_navbar>
+          <.waw_navbar active={true} navigate={~p"/vehicules"} icon="car" theme="light">
+            Véhicules
+          </.waw_navbar>
+          <.waw_navbar active={false} navigate={~p"/carburant"} icon="fuel-pump" theme="light">
+            Carburant
+          </.waw_navbar>
+          <.waw_navbar active={false} navigate={~p"/rapports"} icon="doc-text" theme="light">
+            Rapports
+          </.waw_navbar>
+          <.waw_navbar active={false} navigate={~p"/reglages"} icon="gearshape" theme="light">
+            Réglages
+          </.waw_navbar>
+        </:nav>
+        <:actions>
+          <.link>
+            <.waw_icon name="bell-fill" size="4" />
+          </.link>
+          <.link>
+            <.waw_icon name="circle-grid-3x3" size="4" />
+          </.link>
+          <.link>
+            <.waw_icon name="person-fill" size="4" />
+          </.link>
+        </:actions>
+      </.waw_header>
+    </div>
   </:header>
   <:main>
     <div class="px-4 py-8">
@@ -178,7 +180,8 @@
             />
           </div>
 
-          <.waw_table data-component="Tableau - par défaut">
+          <div data-component="Tableau - par défaut" class="contents">
+          <.waw_table>
             <:thead>
               <.waw_th>Nom</.waw_th>
               <.waw_th>Plaque</.waw_th>
@@ -385,13 +388,13 @@
               </.waw_td>
             </:tr>
           </.waw_table>
+          </div>
 
-          <div class="mt-4">
+          <div class="mt-4 contents" data-component="Pagination">
             <.waw_pagination
               label="Page"
               total={@total_pages}
               current_page={@current_page}
-              data-component="Pagination"
             >
               <:left>
                 <.waw_button_icon
@@ -418,6 +421,8 @@
     </div>
   </:main>
   <:footer>
-    <.waw_footer copyright_year={DateTime.utc_now().year} />
+    <div data-component="Header et Footer fixes">
+      <.waw_footer copyright_year={DateTime.utc_now().year} />
+    </div>
   </:footer>
 </.waw_fixed_header_footer>

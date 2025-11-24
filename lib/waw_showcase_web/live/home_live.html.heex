@@ -1,24 +1,26 @@
-<.waw_fixed_header_footer data-component="Header et Footer fixes">
+<.waw_fixed_header_footer>
   <:header>
-    <.waw_header title="Waw Showcase" logout_url="" current_user_profile_url="">
-      <:nav>
-        <.waw_navbar active={true} navigate={~p"/"} theme="light">
-          Tableau de bord
-        </.waw_navbar>
-        <.waw_navbar active={false} navigate={~p"/vehicules"} theme="light">
-          Véhicules
-        </.waw_navbar>
-        <.waw_navbar active={false} navigate={~p"/carburant"} theme="light">
-          Carburant
-        </.waw_navbar>
-        <.waw_navbar active={false} navigate={~p"/rapports"} theme="light">
-          Rapports
-        </.waw_navbar>
-        <.waw_navbar active={false} navigate={~p"/reglages"} theme="light">
-          Réglages
-        </.waw_navbar>
-      </:nav>
-    </.waw_header>
+    <div data-component="Header et Footer fixes" class="contents">
+      <.waw_header title="Waw Showcase" logout_url="" current_user_profile_url="">
+        <:nav>
+          <.waw_navbar active={true} navigate={~p"/"} theme="light">
+            Tableau de bord
+          </.waw_navbar>
+          <.waw_navbar active={false} navigate={~p"/vehicules"} theme="light">
+            Véhicules
+          </.waw_navbar>
+          <.waw_navbar active={false} navigate={~p"/carburant"} theme="light">
+            Carburant
+          </.waw_navbar>
+          <.waw_navbar active={false} navigate={~p"/rapports"} theme="light">
+            Rapports
+          </.waw_navbar>
+          <.waw_navbar active={false} navigate={~p"/reglages"} theme="light">
+            Réglages
+          </.waw_navbar>
+        </:nav>
+      </.waw_header>
+    </div>
   </:header>
   <:main>
     <div class="px-4 py-8">
@@ -59,7 +61,8 @@
       </div>
       <div>
         <h2 class="text-lg font-semibold mb-4">Activités récentes</h2>
-        <.waw_table data-component="Tableau - par défaut">
+        <div data-component="Tableau - par défaut" class="contents">
+        <.waw_table>
           <:thead>
             <.waw_th>Date</.waw_th>
             <.waw_th>Type</.waw_th>
@@ -186,10 +189,13 @@
             </.waw_td>
           </:tr>
         </.waw_table>
+        </div>
       </div>
 </div>
   </:main>
   <:footer>
-    <.waw_footer copyright_year={DateTime.utc_now().year} />
+    <div data-component="Header et Footer fixes" class="contents">
+      <.waw_footer copyright_year={DateTime.utc_now().year} />
+    </div>
   </:footer>
 </.waw_fixed_header_footer>
