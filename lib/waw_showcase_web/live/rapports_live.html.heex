@@ -1,4 +1,4 @@
-<.waw_fixed_header_footer>
+<.waw_fixed_header_footer data-component="Header et Footer fixes">
   <:header>
     <.waw_header title="Waw Showcase" logout_url="" current_user_profile_url="">
       <:nav>
@@ -118,25 +118,25 @@
                   <.waw_th>Coût de maintenance</.waw_th>
                 </:thead>
                 <:tr state="normal">
-                  <.waw_td>
+                  <.waw_td data-component="Element d'une liste">
                     <.waw_li>
                       {if length(@vehicules) > 0, do: Enum.at(@vehicules, 0).nom, else: ""}
                     </.waw_li>
                   </.waw_td>
-                  <.waw_td>
+                  <.waw_td data-component="Element d'une liste">
                     <.waw_text
                       value={if length(@vehicules) > 0, do: to_string(Enum.at(@vehicules, 0).entrees_carburant), else: ""}
                       data-component="Texte"
                     />
                   </.waw_td>
-                  <.waw_td>
+                  <.waw_td data-component="Element d'une liste">
                     <.currency
                       value={if length(@vehicules) > 0, do: Enum.at(@vehicules, 0).cout_carburant, else: 0}
                       currency="EUR"
                       data-component="Devise"
                     />
                   </.waw_td>
-                  <.waw_td>
+                  <.waw_td data-component="Element d'une liste">
                     <.currency
                       value={if length(@vehicules) > 0, do: Enum.at(@vehicules, 0).cout_maintenance, else: 0}
                       currency="EUR"
@@ -145,25 +145,25 @@
                   </.waw_td>
                 </:tr>
                 <:tr state="normal">
-                  <.waw_td>
+                  <.waw_td data-component="Element d'une liste">
                     <.waw_li>
                       {if length(@vehicules) > 1, do: Enum.at(@vehicules, 1).nom, else: ""}
                     </.waw_li>
                   </.waw_td>
-                  <.waw_td>
+                  <.waw_td data-component="Element d'une liste">
                     <.waw_text
                       value={if length(@vehicules) > 1, do: to_string(Enum.at(@vehicules, 1).entrees_carburant), else: ""}
                       data-component="Texte"
                     />
                   </.waw_td>
-                  <.waw_td>
+                  <.waw_td data-component="Element d'une liste">
                     <.currency
                       value={if length(@vehicules) > 1, do: Enum.at(@vehicules, 1).cout_carburant, else: 0}
                       currency="EUR"
                       data-component="Devise"
                     />
                   </.waw_td>
-                  <.waw_td>
+                  <.waw_td data-component="Element d'une liste">
                     <.currency
                       value={if length(@vehicules) > 1, do: Enum.at(@vehicules, 1).cout_maintenance, else: 0}
                       currency="EUR"
@@ -172,25 +172,25 @@
                   </.waw_td>
                 </:tr>
                 <:tr state="normal">
-                  <.waw_td>
+                  <.waw_td data-component="Element d'une liste">
                     <.waw_li>
                       {if length(@vehicules) > 2, do: Enum.at(@vehicules, 2).nom, else: ""}
                     </.waw_li>
                   </.waw_td>
-                  <.waw_td>
+                  <.waw_td data-component="Element d'une liste">
                     <.waw_text
                       value={if length(@vehicules) > 2, do: to_string(Enum.at(@vehicules, 2).entrees_carburant), else: ""}
                       data-component="Texte"
                     />
                   </.waw_td>
-                  <.waw_td>
+                  <.waw_td data-component="Element d'une liste">
                     <.currency
                       value={if length(@vehicules) > 2, do: Enum.at(@vehicules, 2).cout_carburant, else: 0}
                       currency="EUR"
                       data-component="Devise"
                     />
                   </.waw_td>
-                  <.waw_td>
+                  <.waw_td data-component="Element d'une liste">
                     <.currency
                       value={if length(@vehicules) > 2, do: Enum.at(@vehicules, 2).cout_maintenance, else: 0}
                       currency="EUR"
@@ -199,25 +199,25 @@
                   </.waw_td>
                 </:tr>
                 <:tr state="normal">
-                  <.waw_td>
+                  <.waw_td data-component="Element d'une liste">
                     <.waw_li>
                       {if length(@vehicules) > 3, do: Enum.at(@vehicules, 3).nom, else: ""}
                     </.waw_li>
                   </.waw_td>
-                  <.waw_td>
+                  <.waw_td data-component="Element d'une liste">
                     <.waw_text
                       value={if length(@vehicules) > 3, do: to_string(Enum.at(@vehicules, 3).entrees_carburant), else: ""}
                       data-component="Texte"
                     />
                   </.waw_td>
-                  <.waw_td>
+                  <.waw_td data-component="Element d'une liste">
                     <.currency
                       value={if length(@vehicules) > 3, do: Enum.at(@vehicules, 3).cout_carburant, else: 0}
                       currency="EUR"
                       data-component="Devise"
                     />
                   </.waw_td>
-                  <.waw_td>
+                  <.waw_td data-component="Element d'une liste">
                     <.currency
                       value={if length(@vehicules) > 3, do: Enum.at(@vehicules, 3).cout_maintenance, else: 0}
                       currency="EUR"
@@ -226,25 +226,25 @@
                   </.waw_td>
                 </:tr>
                 <:tr state="normal">
-                  <.waw_td>
+                  <.waw_td data-component="Element d'une liste">
                     <.waw_li>
                       {if length(@vehicules) > 4, do: Enum.at(@vehicules, 4).nom, else: ""}
                     </.waw_li>
                   </.waw_td>
-                  <.waw_td>
+                  <.waw_td data-component="Element d'une liste">
                     <.waw_text
                       value={if length(@vehicules) > 4, do: to_string(Enum.at(@vehicules, 4).entrees_carburant), else: ""}
                       data-component="Texte"
                     />
                   </.waw_td>
-                  <.waw_td>
+                  <.waw_td data-component="Element d'une liste">
                     <.currency
                       value={if length(@vehicules) > 4, do: Enum.at(@vehicules, 4).cout_carburant, else: 0}
                       currency="EUR"
                       data-component="Devise"
                     />
                   </.waw_td>
-                  <.waw_td>
+                  <.waw_td data-component="Element d'une liste">
                     <.currency
                       value={if length(@vehicules) > 4, do: Enum.at(@vehicules, 4).cout_maintenance, else: 0}
                       currency="EUR"
@@ -260,7 +260,10 @@
             <div class="mt-6">
               <div class="space-y-4">
                 <%= for {mois, index} <- Enum.with_index(["Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"]) do %>
-                  <div class="bg-white rounded-lg border border-gray-300 p-4">
+                  <div
+                    class="bg-white rounded-lg border border-gray-300 p-4"
+                    data-component="Dashboard - par défaut"
+                  >
                     <h3 class="text-lg font-semibold mb-4">{mois}</h3>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div>

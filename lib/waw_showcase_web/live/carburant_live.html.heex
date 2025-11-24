@@ -1,4 +1,4 @@
-<.waw_fixed_header_footer>
+<.waw_fixed_header_footer data-component="Header et Footer fixes">
   <:header>
     <.waw_header title="Waw Showcase" logout_url="" current_user_profile_url="">
       <:nav>
@@ -140,31 +140,31 @@
             <.waw_th>Total</.waw_th>
           </:thead>
           <:tr state="normal">
-            <.waw_td>
+            <.waw_td data-component="Element d'une liste">
               <.waw_li>
                 {if length(@entries) > 0, do: Enum.at(@entries, 0).vehicule, else: ""}
               </.waw_li>
             </.waw_td>
-            <.waw_td>
+            <.waw_td data-component="Element d'une liste">
               <.waw_date
                 value={if length(@entries) > 0, do: Enum.at(@entries, 0).date, else: DateTime.utc_now()}
                 format={:short}
                 data-component="Date - Medium"
               />
             </.waw_td>
-            <.waw_td>
+            <.waw_td data-component="Element d'une liste">
               <.waw_text
                 value={if length(@entries) > 0, do: to_string(Enum.at(@entries, 0).litres) <> " L", else: ""}
                 data-component="Texte"
               />
             </.waw_td>
-            <.waw_td>
+            <.waw_td data-component="Element d'une liste">
               <.waw_text
                 value={if length(@entries) > 0, do: to_string(Enum.at(@entries, 0).prix_litre) <> " €", else: ""}
                 data-component="Texte"
               />
             </.waw_td>
-            <.waw_td>
+            <.waw_td data-component="Element d'une liste">
               <.waw_text
                 value={if length(@entries) > 0, do: to_string(Float.round(Enum.at(@entries, 0).litres * Enum.at(@entries, 0).prix_litre, 2)) <> " €", else: ""}
                 data-component="Texte"
@@ -172,31 +172,31 @@
             </.waw_td>
           </:tr>
           <:tr state="normal">
-            <.waw_td>
+            <.waw_td data-component="Element d'une liste">
               <.waw_li>
                 {if length(@entries) > 1, do: Enum.at(@entries, 1).vehicule, else: ""}
               </.waw_li>
             </.waw_td>
-            <.waw_td>
+            <.waw_td data-component="Element d'une liste">
               <.waw_date
                 value={if length(@entries) > 1, do: Enum.at(@entries, 1).date, else: DateTime.utc_now()}
                 format={:short}
                 data-component="Date - Medium"
               />
             </.waw_td>
-            <.waw_td>
+            <.waw_td data-component="Element d'une liste">
               <.waw_text
                 value={if length(@entries) > 1, do: to_string(Enum.at(@entries, 1).litres) <> " L", else: ""}
                 data-component="Texte"
               />
             </.waw_td>
-            <.waw_td>
+            <.waw_td data-component="Element d'une liste">
               <.waw_text
                 value={if length(@entries) > 1, do: to_string(Enum.at(@entries, 1).prix_litre) <> " €", else: ""}
                 data-component="Texte"
               />
             </.waw_td>
-            <.waw_td>
+            <.waw_td data-component="Element d'une liste">
               <.waw_text
                 value={if length(@entries) > 1, do: to_string(Float.round(Enum.at(@entries, 1).litres * Enum.at(@entries, 1).prix_litre, 2)) <> " €", else: ""}
                 data-component="Texte"
@@ -204,31 +204,31 @@
             </.waw_td>
           </:tr>
           <:tr state="normal">
-            <.waw_td>
+            <.waw_td data-component="Element d'une liste">
               <.waw_li>
                 {if length(@entries) > 2, do: Enum.at(@entries, 2).vehicule, else: ""}
               </.waw_li>
             </.waw_td>
-            <.waw_td>
+            <.waw_td data-component="Element d'une liste">
               <.waw_date
                 value={if length(@entries) > 2, do: Enum.at(@entries, 2).date, else: DateTime.utc_now()}
                 format={:short}
                 data-component="Date - Medium"
               />
             </.waw_td>
-            <.waw_td>
+            <.waw_td data-component="Element d'une liste">
               <.waw_text
                 value={if length(@entries) > 2, do: to_string(Enum.at(@entries, 2).litres) <> " L", else: ""}
                 data-component="Texte"
               />
             </.waw_td>
-            <.waw_td>
+            <.waw_td data-component="Element d'une liste">
               <.waw_text
                 value={if length(@entries) > 2, do: to_string(Enum.at(@entries, 2).prix_litre) <> " €", else: ""}
                 data-component="Texte"
               />
             </.waw_td>
-            <.waw_td>
+            <.waw_td data-component="Element d'une liste">
               <.waw_text
                 value={if length(@entries) > 2, do: to_string(Float.round(Enum.at(@entries, 2).litres * Enum.at(@entries, 2).prix_litre, 2)) <> " €", else: ""}
                 data-component="Texte"
@@ -236,31 +236,31 @@
             </.waw_td>
           </:tr>
           <:tr state="normal">
-            <.waw_td>
+            <.waw_td data-component="Element d'une liste">
               <.waw_li>
                 {if length(@entries) > 3, do: Enum.at(@entries, 3).vehicule, else: ""}
               </.waw_li>
             </.waw_td>
-            <.waw_td>
+            <.waw_td data-component="Element d'une liste">
               <.waw_date
                 value={if length(@entries) > 3, do: Enum.at(@entries, 3).date, else: DateTime.utc_now()}
                 format={:short}
                 data-component="Date - Medium"
               />
             </.waw_td>
-            <.waw_td>
+            <.waw_td data-component="Element d'une liste">
               <.waw_text
                 value={if length(@entries) > 3, do: to_string(Enum.at(@entries, 3).litres) <> " L", else: ""}
                 data-component="Texte"
               />
             </.waw_td>
-            <.waw_td>
+            <.waw_td data-component="Element d'une liste">
               <.waw_text
                 value={if length(@entries) > 3, do: to_string(Enum.at(@entries, 3).prix_litre) <> " €", else: ""}
                 data-component="Texte"
               />
             </.waw_td>
-            <.waw_td>
+            <.waw_td data-component="Element d'une liste">
               <.waw_text
                 value={if length(@entries) > 3, do: to_string(Float.round(Enum.at(@entries, 3).litres * Enum.at(@entries, 3).prix_litre, 2)) <> " €", else: ""}
                 data-component="Texte"
