@@ -47,7 +47,7 @@
       </div>
 
       <%= if @show_modal do %>
-        <.waw_modal id="carburant-modal" show={true}>
+        <.waw_modal id="carburant-modal" show={true} data-component="Modal pour un filtre">
           <:title>
             Ajouter une entrée carburant
           </:title>
@@ -62,7 +62,7 @@
                 type="select"
                 value={@form_data.vehicule}
                 options={@vehicule_options}
-                data-component="Champs de saisie texte"
+                data-component="Champs de saisie pour la sélection"
               />
               
               <.input
@@ -79,7 +79,7 @@
                 type="number"
                 placeholder="Litres"
                 value={@form_data.litres}
-                data-component="Champs de saisie nombre"
+                data-component="Champs de saisie téléphone"
               />
               
               <.input
@@ -88,7 +88,7 @@
                 type="number"
                 placeholder="Prix au litre"
                 value={@form_data.prix_litre}
-                data-component="Champs de saisie nombre"
+                data-component="Champs de saisie téléphone"
               />
             </form>
           </:content>
