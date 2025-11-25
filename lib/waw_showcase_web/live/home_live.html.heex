@@ -24,6 +24,7 @@
   </:header>
   <:main>
     <div class="px-4 py-8">
+      <div data-component="Titre de bloc avec icône"><.waw_block_title label="Chiffres clés" icon="chart-bar-fill"/></div>
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
         <.waw_stat
           value={251}
@@ -59,8 +60,26 @@
           data-component="Statistique - Loading"
         />
       </div>
+      <!-- Section Statistiques avancées -->
+      <section class="mb-10">
+        <div data-component="Titre de bloc avec icône"><.waw_block_title label="Statistiques avancées" icon="chart-line-uptrend-xyaxis"/></div>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <!-- Carte avec ratio -->
+          <div data-component="Carte statistique avec ratio">
+            <.waw_stat total={251} value={100} title="Taux d'utilisation" ratio={:percentage} icon="chart-pie"/>
+          </div>
+          <!-- Carte avec intervalle de temps -->
+          <div data-component="Carte statistique avec un intervalle de temps">
+            <.waw_stat title="Heure de pointe d'utilisation des véhicules" icon="calendar" start_value={~U[2020-05-30 13:52:56Z]} end_value={~U[2020-05-30 14:52:56Z]}/>
+          </div>
+          <!-- Carte avec durée -->
+          <div data-component="Carte statistique avec une durée">
+            <.waw_stat unit={:second} value={4210} title="Durée de roulage total des véhicules sur le mois" icon="clock"/>
+          </div>
+        </div>
+      </section>
       <div>
-        <h2 class="text-lg font-semibold mb-4">Activités récentes</h2>
+        <div data-component="Titre de bloc avec icône"><.waw_block_title label="Activités recentes" icon="text-bubble"/></div>
         <div data-component="Tableau - par défaut" class="contents">
         <.waw_table>
           <:thead>
