@@ -36,7 +36,7 @@
   <:main>
     <div class="px-4 py-8">
       <h1>Carburant</h1>
-      
+
       <div class="mt-6 mb-6 flex justify-end">
         <.waw_button
           label="Ajouter une entrée"
@@ -67,15 +67,15 @@
                 options={@vehicule_options}
                 data-component="Champs de saisie pour la sélection"
               />
-              
+
               <.input
                 label="Date"
                 name="date"
                 type="datetime-local"
                 value={@form_data.date}
-                data-component="Champs de saisie calendrier"
+                data-component="Champs de saisie calendrier avec time local"
               />
-              
+
               <.input
                 label="Litres"
                 name="litres"
@@ -84,7 +84,7 @@
                 value={@form_data.litres}
                 data-component="Champs de saisie téléphone"
               />
-              
+
               <.input
                 label="Prix au litre"
                 name="prix_litre"
