@@ -1,4 +1,5 @@
 <.waw_fixed_header_footer>
+  <!-- En-tête global avec navigation principale -->
   <:header>
     <div data-component="Header et Footer fixes" class="contents">
       <.waw_header title="Waw Showcase" logout_url="" current_user_profile_url="">
@@ -22,196 +23,302 @@
       </.waw_header>
     </div>
   </:header>
+
   <:main>
-    <div class="px-4 py-8">
-      <div data-component="Titre de bloc avec icône"><.waw_block_title label="Chiffres clés" icon="chart-bar-fill"/></div>
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-        <.waw_stat
-          value={251}
-          description="Information concernant les véhicules géolocalisés"
-          title="Véhicules"
-          icon="car"
-          data-component="Statistique - Par défaut"
-        />
+    <div class="px-4 py-8 space-y-12">
+      <%!-- Bloc chiffres clés --%>
+      <section class="space-y-6">
+        <div data-component="Titre de bloc avec icône">
+          <.waw_block_title label="Chiffres clés" icon="chart-bar-fill" />
+        </div>
+        <div class="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
+          <.waw_stat
+            value={251}
+            description="Information concernant les véhicules géolocalisés"
+            title="Véhicules"
+            icon="car"
+            data-component="Statistique - Par défaut"
+          />
 
-        <.waw_stat
-          status={:success}
-          total={251}
-          value={100}
-          description="Information concernant les véhicules actuellement en mouvement"
-          title="Actifs"
-          icon="speedometer"
-          data-component="Carte statistique avec nombre total de valeurs avec un état"
-        />
+          <.waw_stat
+            status={:success}
+            total={251}
+            value={100}
+            description="Information concernant les véhicules actuellement en mouvement"
+            title="Actifs"
+            icon="speedometer"
+            data-component="Carte statistique avec nombre total de valeurs avec un état"
+          />
 
-        <.waw_stat
-          status={:danger}
-          value={5}
-          description="Nombre d'alertes actives"
-          title="Alertes"
-          icon="exclamationmark-triangle-fill"
-          data-component="Carte statistique complète non-cliquable"
-        />
+          <.waw_stat
+            status={:danger}
+            value={5}
+            description="Nombre d'alertes actives"
+            title="Alertes"
+            icon="exclamationmark-triangle-fill"
+            data-component="Carte statistique complète non-cliquable"
+          />
 
-        <.waw_stat
-          loading
-          title="Maintenance"
-          icon="wrench-and-screwdriver-fill"
-          data-component="Statistique - Loading"
-        />
-      </div>
-      <!-- Section Statistiques avancées -->
-      <section class="mb-10">
-        <div data-component="Titre de bloc avec icône"><.waw_block_title label="Statistiques avancées" icon="chart-line-uptrend-xyaxis"/></div>
+          <.waw_stat
+            loading
+            title="Maintenance"
+            icon="wrench-and-screwdriver-fill"
+            data-component="Statistique - Loading"
+          />
+        </div>
+      </section>
+
+      <%!-- Bloc statistiques avancées --%>
+      <section class="space-y-6">
+        <div data-component="Titre de bloc avec icône">
+          <.waw_block_title label="Statistiques avancées" icon="chart-line-uptrend-xyaxis" />
+        </div>
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <!-- Carte avec ratio -->
           <div data-component="Carte statistique avec ratio">
-            <.waw_stat total={251} value={100} title="Taux d'utilisation" ratio={:percentage} icon="chart-pie"/>
+            <.waw_stat total={251} value={100} title="Taux d'utilisation" ratio={:percentage} icon="chart-pie" />
           </div>
-          <!-- Carte avec intervalle de temps -->
+
           <div data-component="Carte statistique avec un intervalle de temps">
-            <.waw_stat title="Heure de pointe d'utilisation des véhicules" icon="calendar" start_value={~U[2020-05-30 13:52:56Z]} end_value={~U[2020-05-30 14:52:56Z]}/>
+            <.waw_stat
+              title="Heure de pointe d'utilisation des véhicules"
+              icon="calendar"
+              start_value={~U[2020-05-30 13:52:56Z]}
+              end_value={~U[2020-05-30 14:52:56Z]}
+            />
           </div>
-          <!-- Carte avec durée -->
+
           <div data-component="Carte statistique avec une durée">
-            <.waw_stat unit={:second} value={4210} title="Durée de roulage total des véhicules sur le mois" icon="clock"/>
+            <.waw_stat
+              unit={:second}
+              value={4210}
+              title="Durée de roulage total des véhicules sur le mois"
+              icon="clock"
+            />
           </div>
         </div>
       </section>
-      <div>
-        <div data-component="Titre de bloc avec icône"><.waw_block_title label="Activités recentes" icon="text-bubble"/></div>
-        <div data-component="Tableau - par défaut" class="contents">
-        <.waw_table>
-          <:thead>
-            <.waw_th>Date</.waw_th>
-            <.waw_th>Type</.waw_th>
-            <.waw_th>Description</.waw_th>
-          </:thead>
-          <:tr state="normal">
-            <.waw_td data-component="Element d'une liste">
-              <.waw_date
-                value={~U[2025-01-15 10:30:00Z]}
-                format={:short}
-                data-component="Date - Medium"
-              />
-            </.waw_td>
-            <.waw_td data-component="Element d'une liste">
+
+      <%!-- Bloc activités récentes --%>
+      <section class="space-y-6">
+        <div class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+          <div data-component="Titre de bloc avec icône">
+            <.waw_block_title label="Activités recentes" icon="text-bubble" />
+          </div>
+          <div class="flex flex-wrap gap-2">
+            <div data-component="Badge avec button fermer">
+              <.waw_badge id="badge-single-standard" label="Prioritaire" description="Priorité haute" color="danger">
+                <:action>
+                  <.waw_button_icon icon="cancel" />
+                </:action>
+              </.waw_badge>
+            </div>
+            <div data-component="Badge avec étiquette">
               <.waw_badge
-                id="badge-alerte-1"
-                label="Alerte"
-                description="title"
-                color="danger"
-                data-component="Badge par défaut"
-              />
-            </.waw_td>
-            <.waw_td data-component="Element d'une liste">
-              <.waw_text
-                value="Faible niveau de carburant détecté"
-                data-component="Texte"
-              />
-            </.waw_td>
-          </:tr>
-          <:tr state="normal">
-            <.waw_td data-component="Element d'une liste">
-              <.waw_date
-                value={~U[2025-01-15 09:15:00Z]}
-                format={:short}
-                data-component="Date - Medium"
-              />
-            </.waw_td>
-            <.waw_td data-component="Element d'une liste">
-              <.waw_badge
-                id="badge-maintenance-1"
-                label="Maintenance"
-                description="title"
+                id="badge-single-scope"
+                label="aujourd'hui"
+                scope="Date"
+                description="Nouveau"
                 color="info"
-                data-component="Badge par défaut"
               />
-            </.waw_td>
-            <.waw_td data-component="Element d'une liste">
-              <.waw_text
-                value="Maintenance programmée effectuée"
-                data-component="Texte"
-              />
-            </.waw_td>
-          </:tr>
-          <:tr state="normal">
-            <.waw_td data-component="Element d'une liste">
-              <.waw_date
-                value={~U[2025-01-15 08:00:00Z]}
-                format={:short}
-                data-component="Date - Medium"
-              />
-            </.waw_td>
-            <.waw_td data-component="Element d'une liste">
-              <.waw_badge
-                id="badge-fuel-1"
-                label="Fuel"
-                description="title"
-                color="orange"
-                data-component="Badge par défaut"
-              />
-            </.waw_td>
-            <.waw_td data-component="Element d'une liste">
-              <.waw_text
-                value="Ravitaillement 45.5L"
-                data-component="Texte"
-              />
-            </.waw_td>
-          </:tr>
-          <:tr state="normal">
-            <.waw_td data-component="Element d'une liste">
-              <.waw_date
-                value={~U[2025-01-14 16:45:00Z]}
-                format={:short}
-                data-component="Date - Medium"
-              />
-            </.waw_td>
-            <.waw_td data-component="Element d'une liste">
-              <.waw_badge
-                id="badge-alerte-2"
-                label="Alerte"
-                description="title"
-                color="danger"
-                data-component="Badge par défaut"
-              />
-            </.waw_td>
-            <.waw_td data-component="Element d'une liste">
-              <.waw_text
-                value="Vitesse excessive détectée"
-                data-component="Texte"
-              />
-            </.waw_td>
-          </:tr>
-          <:tr state="normal">
-            <.waw_td>
-              <.waw_date
-                value={~U[2025-01-14 14:20:00Z]}
-                format={:short}
-                data-component="Date - Medium"
-              />
-            </.waw_td>
-            <.waw_td>
-              <.waw_badge
-                id="badge-fuel-2"
-                label="Fuel"
-                description="title"
-                color="orange"
-                data-component="Badge par défaut"
-              />
-            </.waw_td>
-            <.waw_td>
-              <.waw_text
-                value="Ravitaillement 52.3L"
-                data-component="Texte"
-              />
-            </.waw_td>
-          </:tr>
-        </.waw_table>
+            </div>
+          </div>
         </div>
-      </div>
-</div>
+
+        <div data-component="Tableau - par défaut" class="contents">
+          <.waw_table>
+            <:thead>
+              <.waw_th>Date</.waw_th>
+              <.waw_th>Type</.waw_th>
+              <.waw_th>Description</.waw_th>
+            </:thead>
+
+            <:tr state="normal">
+              <.waw_td data-component="Element d'une liste">
+                <.waw_date
+                  value={~U[2025-01-15 10:30:00Z]}
+                  format={:short}
+                  data-component="Date - Medium"
+                />
+              </.waw_td>
+              <.waw_td data-component="Element d'une liste">
+                <.waw_badge
+                  id="badge-alerte-1"
+                  label="Alerte"
+                  description="title"
+                  color="danger"
+                  data-component="Badge par défaut"
+                />
+              </.waw_td>
+              <.waw_td data-component="Element d'une liste">
+                <.waw_text
+                  value="Faible niveau de carburant détecté"
+                  data-component="Texte"
+                />
+              </.waw_td>
+            </:tr>
+
+            <:tr state="normal">
+              <.waw_td data-component="Element d'une liste">
+                <.waw_date
+                  value={~U[2025-01-15 09:15:00Z]}
+                  format={:short}
+                  data-component="Date - Medium"
+                />
+              </.waw_td>
+              <.waw_td data-component="Element d'une liste">
+                <.waw_badge
+                  id="badge-maintenance-1"
+                  label="Maintenance"
+                  description="title"
+                  color="info"
+                  data-component="Badge par défaut"
+                />
+              </.waw_td>
+              <.waw_td data-component="Element d'une liste">
+                <.waw_text
+                  value="Maintenance programmée effectuée"
+                  data-component="Texte"
+                />
+              </.waw_td>
+            </:tr>
+
+            <:tr state="normal">
+              <.waw_td data-component="Element d'une liste">
+                <.waw_date
+                  value={~U[2025-01-15 08:00:00Z]}
+                  format={:short}
+                  data-component="Date - Medium"
+                />
+              </.waw_td>
+              <.waw_td data-component="Element d'une liste">
+                <.waw_badge
+                  id="badge-fuel-1"
+                  label="Fuel"
+                  description="title"
+                  color="orange"
+                  data-component="Badge par défaut"
+                />
+              </.waw_td>
+              <.waw_td data-component="Element d'une liste">
+                <.waw_text
+                  value="Ravitaillement 45.5L"
+                  data-component="Texte"
+                />
+              </.waw_td>
+            </:tr>
+
+            <:tr state="normal">
+              <.waw_td data-component="Element d'une liste">
+                <.waw_date
+                  value={~U[2025-01-14 16:45:00Z]}
+                  format={:short}
+                  data-component="Date - Medium"
+                />
+              </.waw_td>
+              <.waw_td data-component="Element d'une liste">
+                <.waw_badge
+                  id="badge-alerte-2"
+                  label="Alerte"
+                  description="title"
+                  color="danger"
+                  data-component="Badge par défaut"
+                />
+              </.waw_td>
+              <.waw_td data-component="Element d'une liste">
+                <.waw_text
+                  value="Vitesse excessive détectée"
+                  data-component="Texte"
+                />
+              </.waw_td>
+            </:tr>
+
+            <:tr state="normal">
+              <.waw_td>
+                <.waw_date
+                  value={~U[2025-01-14 14:20:00Z]}
+                  format={:short}
+                  data-component="Date - Medium"
+                />
+              </.waw_td>
+              <.waw_td>
+                <.waw_badge
+                  id="badge-fuel-2"
+                  label="Fuel"
+                  description="title"
+                  color="orange"
+                  data-component="Badge par défaut"
+                />
+              </.waw_td>
+              <.waw_td>
+                <.waw_text
+                  value="Ravitaillement 52.3L"
+                  data-component="Texte"
+                />
+              </.waw_td>
+            </:tr>
+          </.waw_table>
+        </div>
+      </section>
+
+      <%!-- Bloc États et valeurs spéciales --%>
+      <section class="space-y-6">
+        <div data-component="Titre de bloc avec icône">
+          <.waw_block_title label="États et valeurs spéciales" icon="staroflife" />
+        </div>
+        <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
+          <div data-component="Afficher un trackable - avec symbole">
+            <.waw_dashboard_card
+              description="Information concernant les véhicules géolocalisés"
+              title="Véhicules géolocalisés"
+            >
+              <div class="grid h-full place-content-center p-4">
+                <div data-component="Titre de bloc">
+                  <.waw_block_title label="Suivi d'élément trackable" />
+                </div>
+                <.waw_name
+                  size="sm"
+                  value={%{
+                    label: "TGP0012",
+                    name: "4212TBA",
+                    tracker_label: "MD0014",
+                    custom_name: "ix35",
+                    trackable_symbol: "moto"
+                  }}
+                  with_symbol
+                />
+              </div>
+            </.waw_dashboard_card>
+          </div>
+
+          <div data-component="Valeur nil">
+            <.waw_dashboard_card description="Gestion des valeurs nulles" title="Gestion des valeurs nulles">
+              <div class="flex flex-col gap-3 rounded p-4">
+                <div class="flex items-center justify-between rounded bg-white p-3 shadow-sm">
+                  <span class="text-sm text-gray-700">Description du véhicule:</span>
+                  <span class="text-sm text-gray-400 italic">
+                    <.number unit={nil} value={nil} />
+                  </span>
+                </div>
+                <div class="flex items-center justify-between rounded bg-white p-3 shadow-sm">
+                  <span class="text-sm text-gray-700">Commentaire:</span>
+                  <span class="text-sm text-gray-400 italic">
+                    <.number unit={nil} value={nil} />
+                  </span>
+                </div>
+                <div class="flex items-center justify-between rounded bg-white p-3 shadow-sm">
+                  <span class="text-sm text-gray-700">Date de fin:</span>
+                  <span class="text-sm text-gray-400 italic">
+                    <.number unit={nil} value={nil} />
+                  </span>
+                </div>
+              </div>
+            </.waw_dashboard_card>
+          </div>
+        </div>
+      </section>
+    </div>
   </:main>
+
   <:footer>
     <div data-component="Header et Footer fixes" class="contents">
       <.waw_footer copyright_year={DateTime.utc_now().year} />
