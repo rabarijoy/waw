@@ -36,16 +36,16 @@
   </:header>
 
   <:main>
-    <div class="px-4 py-8 space-y-10">
+    <div class="px-4 py-8 space-y-12">
       <%!-- Entête de page --%>
-      <div data-component="Titre de bloc avec icône">
+      <div data-component="Titre de bloc avec icône" class="mb-8">
         <.waw_block_title label="Vehicules" icon="car-2-fill" />
       </div>
 
       <%!-- Contenu conditionnel : formulaire multi-étapes ou tableau liste --%>
       <%= if @show_form do %>
         <%!-- Formulaire multi-étapes --%>
-        <section class="space-y-6">
+        <section class="space-y-8">
           <.waw_steps data-component="Steps">
             <:step status={if(@form_step >= 1, do: :valid, else: :disabled)} active={@form_step == 1}>
               Informations générales
@@ -67,10 +67,10 @@
             </:step>
           </.waw_steps>
 
-          <div class="space-y-6">
+          <div class="mt-8 space-y-6">
             <%= cond do %>
               <% @form_step == 1 -> %>
-                <form phx-change="update_form" class="space-y-4">
+                <form phx-change="update_form" class="space-y-6">
                   <.input
                     label="Marque"
                     name="marque"
@@ -98,7 +98,7 @@
                 </form>
 
               <% @form_step == 2 -> %>
-                <form phx-change="update_form" class="space-y-4">
+                <form phx-change="update_form" class="space-y-6">
                   <.input
                     label="Année"
                     name="annee"
@@ -118,7 +118,7 @@
                 </form>
 
               <% @form_step == 3 -> %>
-                <form phx-change="update_form" class="space-y-4">
+                <form phx-change="update_form" class="space-y-6">
                   <.input
                     label="Kilométrage"
                     name="kilometrage"
@@ -139,7 +139,7 @@
                 </form>
 
               <% @form_step == 4 -> %>
-                <div class="space-y-2 rounded-lg border border-gray-200 p-4">
+                <div class="space-y-3 rounded-lg border border-gray-200 p-6">
                   <p><strong>Marque:</strong> {@form_data.marque}</p>
                   <p><strong>Modèle:</strong> {@form_data.modele}</p>
                   <p><strong>Année:</strong> {if @form_data.annee, do: @form_data.annee, else: "Non renseigné"}</p>
@@ -151,7 +151,7 @@
                 </div>
             <% end %>
 
-            <div class="mt-6 flex items-center justify-between">
+            <div class="mt-8 flex items-center justify-between">
               <.waw_button
                 label="Précédent"
                 type="cancel"
@@ -184,8 +184,8 @@
         </section>
       <% else %>
         <%!-- Tableau liste des véhicules avec recherche et pagination --%>
-        <section class="space-y-6">
-          <div class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+        <section class="space-y-8">
+          <div class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between mb-6">
             <.input
               id="search-vehicules"
               name="search"
@@ -205,7 +205,7 @@
             />
           </div>
 
-          <div data-component="Tableau - par défaut" class="contents">
+          <div data-component="Tableau - par défaut" class="contents mt-6">
             <.waw_table>
               <:thead>
                 <.waw_th>Nom</.waw_th>
@@ -425,7 +425,7 @@
             </.waw_table>
           </div>
 
-          <div class="contents" data-component="Pagination">
+          <div class="contents mt-8" data-component="Pagination">
             <.waw_pagination
               label="Page"
               total={@total_pages}
@@ -450,6 +450,11 @@
                 />
               </:right>
             </.waw_pagination>
+          </div>
+
+          <%!-- Séparateur de bloc discret --%>
+          <div data-component="Séparateur de blocs avec label" class="mt-12">
+            <.waw_block_separator label="Véhicules" />
           </div>
         </section>
       <% end %>
