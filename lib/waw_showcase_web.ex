@@ -95,6 +95,7 @@ defmodule WawShowcaseWeb do
       import Waw.Flash, except: [flash: 1, flash_group: 1]
       import Waw.Header, except: [waw_navbar: 1]
       import Waw.Delegates
+      import Waw.LiveFilter
       import Waw.Steps
       import Waw.Pagination
       import Waw.BlockTitle

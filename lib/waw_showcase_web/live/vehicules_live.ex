@@ -23,6 +23,7 @@ defmodule WawShowcaseWeb.VehiculesLive do
      |> assign(:form_data, %{
        marque: "",
        modele: "",
+       description: "",
        annee: nil,
        plaque: "",
        kilometrage: nil,
@@ -72,7 +73,22 @@ defmodule WawShowcaseWeb.VehiculesLive do
 
   @impl true
   def handle_event("update_form", params, socket) do
-    form_data = Map.merge(socket.assigns.form_data, params)
+    # Convertir les clés string en atomes pour correspondre à form_data
+    atomized_params =
+      params
+      |> Enum.map(fn
+        {k, v} when is_binary(k) ->
+          try do
+            {String.to_existing_atom(k), v}
+          rescue
+            ArgumentError -> {String.to_atom(k), v}
+          end
+        {k, v} ->
+          {k, v}
+      end)
+      |> Map.new()
+
+    form_data = Map.merge(socket.assigns.form_data, atomized_params)
     {:noreply, assign(socket, :form_data, form_data)}
   end
 
@@ -87,6 +103,7 @@ defmodule WawShowcaseWeb.VehiculesLive do
      |> assign(:form_data, %{
        marque: "",
        modele: "",
+       description: "",
        annee: nil,
        plaque: "",
        kilometrage: nil,
