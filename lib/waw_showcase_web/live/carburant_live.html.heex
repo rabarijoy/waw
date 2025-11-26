@@ -132,177 +132,51 @@
       </div>
 
       <div class="mt-6">
-        <h2 class="text-lg font-semibold mb-4">Historique des entrées</h2>
-        <div data-component="Tableau - par défaut" class="contents">
-        <.waw_table>
-          <:thead>
-            <.waw_th>Véhicule</.waw_th>
-            <.waw_th>Date</.waw_th>
-            <.waw_th>Litres</.waw_th>
-            <.waw_th>Prix au litre</.waw_th>
-            <.waw_th>Total</.waw_th>
-          </:thead>
-          <:tr state="normal">
-            <.waw_td data-component="Element d'une liste">
-              <.waw_li>
-                {if length(@entries) > 0, do: Enum.at(@entries, 0).vehicule, else: ""}
-              </.waw_li>
-            </.waw_td>
-            <.waw_td data-component="Element d'une liste">
-              <.waw_date
-                value={if length(@entries) > 0, do: Enum.at(@entries, 0).date, else: DateTime.utc_now()}
-                format={:short}
-                data-component="Date - Medium"
-              />
-            </.waw_td>
-            <.waw_td data-component="Element d'une liste">
-              <.waw_text
-                value={if length(@entries) > 0, do: to_string(Enum.at(@entries, 0).litres) <> " L", else: ""}
-                data-component="Texte"
-              />
-            </.waw_td>
-            <.waw_td data-component="Element d'une liste">
-              <.waw_text
-                value={if length(@entries) > 0, do: to_string(Enum.at(@entries, 0).prix_litre) <> " €", else: ""}
-                data-component="Texte"
-              />
-            </.waw_td>
-            <.waw_td data-component="Element d'une liste">
-              <.waw_text
-                value={if length(@entries) > 0, do: to_string(Float.round(Enum.at(@entries, 0).litres * Enum.at(@entries, 0).prix_litre, 2)) <> " €", else: ""}
-                data-component="Texte"
-              />
-            </.waw_td>
-          </:tr>
-          <:tr state="normal">
-            <.waw_td data-component="Element d'une liste">
-              <.waw_li>
-                {if length(@entries) > 1, do: Enum.at(@entries, 1).vehicule, else: ""}
-              </.waw_li>
-            </.waw_td>
-            <.waw_td data-component="Element d'une liste">
-              <.waw_date
-                value={if length(@entries) > 1, do: Enum.at(@entries, 1).date, else: DateTime.utc_now()}
-                format={:short}
-                data-component="Date - Medium"
-              />
-            </.waw_td>
-            <.waw_td data-component="Element d'une liste">
-              <.waw_text
-                value={if length(@entries) > 1, do: to_string(Enum.at(@entries, 1).litres) <> " L", else: ""}
-                data-component="Texte"
-              />
-            </.waw_td>
-            <.waw_td data-component="Element d'une liste">
-              <.waw_text
-                value={if length(@entries) > 1, do: to_string(Enum.at(@entries, 1).prix_litre) <> " €", else: ""}
-                data-component="Texte"
-              />
-            </.waw_td>
-            <.waw_td data-component="Element d'une liste">
-              <.waw_text
-                value={if length(@entries) > 1, do: to_string(Float.round(Enum.at(@entries, 1).litres * Enum.at(@entries, 1).prix_litre, 2)) <> " €", else: ""}
-                data-component="Texte"
-              />
-            </.waw_td>
-          </:tr>
-          <:tr state="normal">
-            <.waw_td data-component="Element d'une liste">
-              <.waw_li>
-                {if length(@entries) > 2, do: Enum.at(@entries, 2).vehicule, else: ""}
-              </.waw_li>
-            </.waw_td>
-            <.waw_td data-component="Element d'une liste">
-              <.waw_date
-                value={if length(@entries) > 2, do: Enum.at(@entries, 2).date, else: DateTime.utc_now()}
-                format={:short}
-                data-component="Date - Medium"
-              />
-            </.waw_td>
-            <.waw_td data-component="Element d'une liste">
-              <.waw_text
-                value={if length(@entries) > 2, do: to_string(Enum.at(@entries, 2).litres) <> " L", else: ""}
-                data-component="Texte"
-              />
-            </.waw_td>
-            <.waw_td data-component="Element d'une liste">
-              <.waw_text
-                value={if length(@entries) > 2, do: to_string(Enum.at(@entries, 2).prix_litre) <> " €", else: ""}
-                data-component="Texte"
-              />
-            </.waw_td>
-            <.waw_td data-component="Element d'une liste">
-              <.waw_text
-                value={if length(@entries) > 2, do: to_string(Float.round(Enum.at(@entries, 2).litres * Enum.at(@entries, 2).prix_litre, 2)) <> " €", else: ""}
-                data-component="Texte"
-              />
-            </.waw_td>
-          </:tr>
-          <:tr state="normal">
-            <.waw_td data-component="Element d'une liste">
-              <.waw_li>
-                {if length(@entries) > 3, do: Enum.at(@entries, 3).vehicule, else: ""}
-              </.waw_li>
-            </.waw_td>
-            <.waw_td data-component="Element d'une liste">
-              <.waw_date
-                value={if length(@entries) > 3, do: Enum.at(@entries, 3).date, else: DateTime.utc_now()}
-                format={:short}
-                data-component="Date - Medium"
-              />
-            </.waw_td>
-            <.waw_td data-component="Element d'une liste">
-              <.waw_text
-                value={if length(@entries) > 3, do: to_string(Enum.at(@entries, 3).litres) <> " L", else: ""}
-                data-component="Texte"
-              />
-            </.waw_td>
-            <.waw_td data-component="Element d'une liste">
-              <.waw_text
-                value={if length(@entries) > 3, do: to_string(Enum.at(@entries, 3).prix_litre) <> " €", else: ""}
-                data-component="Texte"
-              />
-            </.waw_td>
-            <.waw_td data-component="Element d'une liste">
-              <.waw_text
-                value={if length(@entries) > 3, do: to_string(Float.round(Enum.at(@entries, 3).litres * Enum.at(@entries, 3).prix_litre, 2)) <> " €", else: ""}
-                data-component="Texte"
-              />
-            </.waw_td>
-          </:tr>
-          <:tr state="normal">
-            <.waw_td>
-              <.waw_li>
-                {if length(@entries) > 4, do: Enum.at(@entries, 4).vehicule, else: ""}
-              </.waw_li>
-            </.waw_td>
-            <.waw_td>
-              <.waw_date
-                value={if length(@entries) > 4, do: Enum.at(@entries, 4).date, else: DateTime.utc_now()}
-                format={:short}
-                data-component="Date - Medium"
-              />
-            </.waw_td>
-            <.waw_td>
-              <.waw_text
-                value={if length(@entries) > 4, do: to_string(Enum.at(@entries, 4).litres) <> " L", else: ""}
-                data-component="Texte"
-              />
-            </.waw_td>
-            <.waw_td>
-              <.waw_text
-                value={if length(@entries) > 4, do: to_string(Enum.at(@entries, 4).prix_litre) <> " €", else: ""}
-                data-component="Texte"
-              />
-            </.waw_td>
-            <.waw_td>
-              <.waw_text
-                value={if length(@entries) > 4, do: to_string(Float.round(Enum.at(@entries, 4).litres * Enum.at(@entries, 4).prix_litre, 2)) <> " €", else: ""}
-                data-component="Texte"
-              />
-            </.waw_td>
-          </:tr>
-        </.waw_table>
+        <div data-component="Titre de bloc avec icône"><.waw_block_title label="Historique des entrées" icon="archivebox-fill"/></div>
+        <div data-component="Liste complète des statuts (asset-body-padlick-trackable)" class="contents">
+          <.waw_ul>
+            <.waw_li
+              icon="car"
+              battery_number="60"
+              connexion_status="normal"
+              title="Renault Clio, 12.01.2024, 45 L, 1.70 €/L, Total 76.50 €">
+              Renault Clio, 45 L, 76.50 €
+            </.waw_li>
+
+            <.waw_li
+              icon="car"
+              state="selected"
+              battery_number="80"
+              connexion_status="moving"
+              title="Peugeot 208, 20.01.2024, 38 L, 1.72 €/L, Total 65.36 €">
+              Peugeot 208, 38 L, 65.36 €
+            </.waw_li>
+
+            <.waw_li
+              icon="truck"
+              battery_number="50"
+              connexion_status="low_activity"
+              title="Camion Iveco, 03.02.2024, 70 L, 1.68 €/L, Total 117.60 €">
+              Camion Iveco, 70 L, 117.60 €
+            </.waw_li>
+
+            <.waw_li
+              icon="moto"
+              connexion_status="offline"
+              battery_number="40"
+              title="Yamaha MT07, 15.02.2024, 14 L, 1.75 €/L, Total 24.50 €">
+              Yamaha MT07, 14 L, 24.50 €
+            </.waw_li>
+
+            <.waw_li
+              icon="car"
+              state="alert"
+              connexion_status="defective"
+              battery_number="20"
+              title="Audi A3, 22.02.2024, 50 L, 1.80 €/L, Total 90.00 €">
+              Audi A3, 50 L, 90.00 €
+            </.waw_li>
+          </.waw_ul>
         </div>
       </div>
     </div>
