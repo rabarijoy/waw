@@ -17,12 +17,14 @@ defmodule WawShowcaseWeb.Router do
   scope "/", WawShowcaseWeb do
     pipe_through :browser
 
-    live "/", HomeLive, :index
-    live "/vehicules", VehiculesLive, :index
-    live "/carburant", CarburantLive, :index
-    live "/rapports", RapportsLive, :index
-    live "/reglages", ReglagesLive, :index
-    live "/components/:component", ComponentDetailLive, :show
+    live_session :app, layout: {WawShowcaseWeb.Layouts, :app_live} do
+      live "/", HomeLive, :index
+      live "/vehicules", VehiculesLive, :index
+      live "/carburant", CarburantLive, :index
+      live "/rapports", RapportsLive, :index
+      live "/reglages", ReglagesLive, :index
+      live "/components/:component", ComponentDetailLive, :show
+    end
   end
 
   # Other scopes may use custom stacks.

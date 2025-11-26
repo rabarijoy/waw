@@ -151,4 +151,64 @@ defmodule WawShowcaseWeb.Layouts do
     </div>
     """
   end
+
+
+  @doc """
+  Layout avec navigation fixe pour les LiveViews (composant).
+  Le header et le footer utilisent phx-update="ignore" pour ne pas être remplacés
+  lors des mises à jour LiveView.
+  """
+  attr :current_page, :string, default: "", doc: "Page actuelle pour mettre en évidence le lien de navigation"
+  slot :inner_block, required: true
+
+  def app_with_nav(assigns) do
+    ~H"""
+    <.waw_fixed_header_footer>
+      <:header>
+        <div id="app-header" phx-update="ignore" data-component="Header et Footer fixes" class="contents">
+          <.waw_header title="Waw Showcase" logout_url="" current_user_profile_url="">
+            <:nav>
+              <.waw_navbar active={@current_page == "/"} navigate={~p"/"} icon="speedometer" theme="light">
+                Tableau de bord
+              </.waw_navbar>
+              <.waw_navbar active={@current_page == "/vehicules"} navigate={~p"/vehicules"} icon="car" theme="light">
+                Véhicules
+              </.waw_navbar>
+              <.waw_navbar active={@current_page == "/carburant"} navigate={~p"/carburant"} icon="fuel-pump" theme="light">
+                Carburant
+              </.waw_navbar>
+              <.waw_navbar active={@current_page == "/rapports"} navigate={~p"/rapports"} icon="doc-text" theme="light">
+                Rapports
+              </.waw_navbar>
+              <.waw_navbar active={@current_page == "/reglages"} navigate={~p"/reglages"} icon="gearshape" theme="light">
+                Réglages
+              </.waw_navbar>
+            </:nav>
+            <:actions>
+              <.link>
+                <.waw_icon name="bell-fill" size="4" />
+              </.link>
+              <.link>
+                <.waw_icon name="circle-grid-3x3" size="4" />
+              </.link>
+              <.link>
+                <.waw_icon name="person-fill" size="4" />
+              </.link>
+            </:actions>
+          </.waw_header>
+        </div>
+      </:header>
+      <:main>
+        <div id="app-main" phx-update="replace">
+          {render_slot(@inner_block)}
+        </div>
+      </:main>
+      <:footer>
+        <div id="app-footer" phx-update="ignore" data-component="Header et Footer fixes" class="contents">
+          <.waw_footer copyright_year={DateTime.utc_now().year} />
+        </div>
+      </:footer>
+    </.waw_fixed_header_footer>
+    """
+  end
 end

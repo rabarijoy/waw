@@ -2,6 +2,8 @@ defmodule WawShowcaseWeb.CarburantLive do
   use WawShowcaseWeb, :live_view
   use WawShowcaseWeb.Live.ComponentInspector
 
+  import Waw.Loading
+
   @impl true
   def mount(_params, _session, socket) do
     socket =

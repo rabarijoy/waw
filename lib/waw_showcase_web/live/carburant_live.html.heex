@@ -1,196 +1,152 @@
-<.waw_fixed_header_footer>
-  <:header>
-    <div data-component="Header et Footer fixes" class="contents">
-      <.waw_header title="Waw Showcase" logout_url="" current_user_profile_url="">
-        <:nav>
-          <.waw_navbar active={false} navigate={~p"/"} icon="speedometer" theme="light">
-            Tableau de bord
-          </.waw_navbar>
-          <.waw_navbar active={false} navigate={~p"/vehicules"} icon="car" theme="light">
-            Véhicules
-          </.waw_navbar>
-          <.waw_navbar active={true} navigate={~p"/carburant"} icon="fuel-pump" theme="light">
-            Carburant
-          </.waw_navbar>
-          <.waw_navbar active={false} navigate={~p"/rapports"} icon="doc-text" theme="light">
-            Rapports
-          </.waw_navbar>
-          <.waw_navbar active={false} navigate={~p"/reglages"} icon="gearshape" theme="light">
-            Réglages
-          </.waw_navbar>
-        </:nav>
+<div class="px-4 py-8">
+    <div data-component="Titre de bloc avec icône"><.waw_block_title label="Carburant" icon="gas-station-fill"/></div>
+
+    <div class="mt-6 mb-6 flex justify-end">
+      <.waw_button
+        label="Ajouter une entrée"
+        type="submit"
+        size="md"
+        phx-click="open_modal"
+        class="no-truncate-button"
+        data-component="Bouton de validation d'un formulaire"
+      />
+    </div>
+
+    <%= if @show_modal do %>
+      <div data-component="Modal pour un filtre" class="contents">
+      <.waw_modal id="carburant-modal" show={true}>
+        <:title>
+          Ajouter une entrée carburant
+        </:title>
+        <:cancel>
+          <.waw_button_icon icon="cancel" icon_size={5} stroke="none" phx-click="close_modal" />
+        </:cancel>
+        <:content>
+          <form phx-change="update_form" class="space-y-4">
+            <.input
+              label="Véhicule"
+              name="vehicule"
+              type="select"
+              value={@form_data.vehicule}
+              options={@vehicule_options}
+              data-component="Champs de saisie pour la sélection"
+            />
+
+            <.input
+              label="Date"
+              name="date"
+              type="datetime-local"
+              value={@form_data.date}
+              data-component="Champs de saisie calendrier avec time local"
+            />
+
+            <.input
+              label="Litres"
+              name="litres"
+              type="number"
+              placeholder="Litres"
+              value={@form_data.litres}
+              data-component="Champs de saisie téléphone"
+            />
+
+            <.input
+              label="Prix au litre"
+              name="prix_litre"
+              type="number"
+              placeholder="Prix au litre"
+              value={@form_data.prix_litre}
+              data-component="Champs de saisie téléphone"
+            />
+          </form>
+        </:content>
         <:actions>
-          <.link>
-            <.waw_icon name="bell-fill" size="4" />
-          </.link>
-          <.link>
-            <.waw_icon name="circle-grid-3x3" size="4" />
-          </.link>
-          <.link>
-            <.waw_icon name="person-fill" size="4" />
-          </.link>
+          <.waw_button
+            label="Annuler"
+            type="cancel"
+            size="md"
+            phx-click="close_modal"
+            data-component="Bouton d'annulation d'un formulaire"
+          />
+          <.waw_button
+            label="Valider"
+            type="submit"
+            size="md"
+            phx-click="save_entry"
+            data-component="Bouton de validation d'un formulaire"
+          />
         </:actions>
-      </.waw_header>
-    </div>
-  </:header>
-  <:main>
-    <div class="px-4 py-8">
-      <div data-component="Titre de bloc avec icône"><.waw_block_title label="Carburant" icon="gas-station-fill"/></div>
-
-      <div class="mt-6 mb-6 flex justify-end">
-        <.waw_button
-          label="Ajouter une entrée"
-          type="submit"
-          size="md"
-          phx-click="open_modal"
-          class="no-truncate-button"
-          data-component="Bouton de validation d’un formulaire"
-        />
+      </.waw_modal>
       </div>
+    <% end %>
 
-      <%= if @show_modal do %>
-        <div data-component="Modal pour un filtre" class="contents">
-        <.waw_modal id="carburant-modal" show={true}>
-          <:title>
-            Ajouter une entrée carburant
-          </:title>
-          <:cancel>
-            <.waw_button_icon icon="cancel" icon_size={5} stroke="none" phx-click="close_modal" />
-          </:cancel>
-          <:content>
-            <form phx-change="update_form" class="space-y-4">
-              <.input
-                label="Véhicule"
-                name="vehicule"
-                type="select"
-                value={@form_data.vehicule}
-                options={@vehicule_options}
-                data-component="Champs de saisie pour la sélection"
-              />
-
-              <.input
-                label="Date"
-                name="date"
-                type="datetime-local"
-                value={@form_data.date}
-                data-component="Champs de saisie calendrier avec time local"
-              />
-
-              <.input
-                label="Litres"
-                name="litres"
-                type="number"
-                placeholder="Litres"
-                value={@form_data.litres}
-                data-component="Champs de saisie téléphone"
-              />
-
-              <.input
-                label="Prix au litre"
-                name="prix_litre"
-                type="number"
-                placeholder="Prix au litre"
-                value={@form_data.prix_litre}
-                data-component="Champs de saisie téléphone"
-              />
-            </form>
-          </:content>
-          <:actions>
-            <.waw_button
-              label="Annuler"
-              type="cancel"
-              size="md"
-              phx-click="close_modal"
-              data-component="Bouton d’annulation d’un formulaire"
-            />
-            <.waw_button
-              label="Valider"
-              type="submit"
-              size="md"
-              phx-click="save_entry"
-              data-component="Bouton de validation d’un formulaire"
-            />
-          </:actions>
-        </.waw_modal>
-        </div>
-      <% end %>
-
-      <%= if @loading do %>
-        <div class="py-16 flex flex-col items-center gap-4 text-gray-600">
-          <div class="h-12 w-12 rounded-full border-4 border-gray-200 border-t-blue-500 animate-spin" aria-hidden="true"></div>
-          <p class="text-sm font-medium text-gray-500">Chargement des données carburant...</p>
-        </div>
-      <% else %>
-        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mb-8">
-          <%= for card <- @fuel_cards do %>
-            <div data-component="Volume de carburant">
-              <.waw_block_title
-                label={card.vehicule}
-                icon="fuel-pump"
-              />
-              <.waw_fuel_card
-                value={card.value}
-                number={card.number}
-                title={card.title}
-              />
-            </div>
-          <% end %>
-        </div>
-
-        <div class="mt-6">
-          <div data-component="Titre de bloc avec icône"><.waw_block_title label="Historique des entrées" icon="archivebox-fill"/></div>
-          <div data-component="Liste complète des statuts (asset-body-padlick-trackable)" class="contents">
-            <.waw_ul>
-              <.waw_li
-                icon="car"
-                battery_number="60"
-                connexion_status="normal"
-                title="Renault Clio, 12.01.2024, 45 L, 1.70 €/L, Total 76.50 €">
-                Renault Clio, 45 L, 76.50 €
-              </.waw_li>
-
-              <.waw_li
-                icon="car"
-                state="selected"
-                battery_number="80"
-                connexion_status="moving"
-                title="Peugeot 208, 20.01.2024, 38 L, 1.72 €/L, Total 65.36 €">
-                Peugeot 208, 38 L, 65.36 €
-              </.waw_li>
-
-              <.waw_li
-                icon="truck"
-                battery_number="50"
-                connexion_status="low_activity"
-                title="Camion Iveco, 03.02.2024, 70 L, 1.68 €/L, Total 117.60 €">
-                Camion Iveco, 70 L, 117.60 €
-              </.waw_li>
-
-              <.waw_li
-                icon="moto"
-                connexion_status="offline"
-                battery_number="40"
-                title="Yamaha MT07, 15.02.2024, 14 L, 1.75 €/L, Total 24.50 €">
-                Yamaha MT07, 14 L, 24.50 €
-              </.waw_li>
-
-              <.waw_li
-                icon="car"
-                state="alert"
-                connexion_status="defective"
-                battery_number="20"
-                title="Audi A3, 22.02.2024, 50 L, 1.80 €/L, Total 90.00 €">
-                Audi A3, 50 L, 90.00 €
-              </.waw_li>
-            </.waw_ul>
-          </div>
+    <%= if @loading do %>
+      <div class="py-16 flex flex-col items-center gap-4 text-gray-600">
+        <.loading/>
+      </div>
+    <% else %>
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mb-8">
+      <%= for card <- @fuel_cards do %>
+        <div data-component="Volume de carburant">
+          <.waw_block_title
+            label={card.vehicule}
+            icon="fuel-pump"
+          />
+          <.waw_fuel_card
+            value={card.value}
+            number={card.number}
+            title={card.title}
+          />
         </div>
       <% end %>
     </div>
-  </:main>
-  <:footer>
-    <div data-component="Header et Footer fixes" class="contents">
-      <.waw_footer copyright_year={DateTime.utc_now().year} />
+
+    <div class="mt-6">
+      <div data-component="Titre de bloc avec icône"><.waw_block_title label="Historique des entrées" icon="archivebox-fill"/></div>
+      <div data-component="Liste complète des statuts (asset-body-padlick-trackable)" class="contents">
+        <.waw_ul>
+          <.waw_li
+            icon="car"
+            battery_number="60"
+            connexion_status="normal"
+            title="Renault Clio, 12.01.2024, 45 L, 1.70 €/L, Total 76.50 €">
+            Renault Clio, 45 L, 76.50 €
+          </.waw_li>
+
+          <.waw_li
+            icon="car"
+            state="selected"
+            battery_number="80"
+            connexion_status="moving"
+            title="Peugeot 208, 20.01.2024, 38 L, 1.72 €/L, Total 65.36 €">
+            Peugeot 208, 38 L, 65.36 €
+          </.waw_li>
+
+          <.waw_li
+            icon="truck"
+            battery_number="50"
+            connexion_status="low_activity"
+            title="Camion Iveco, 03.02.2024, 70 L, 1.68 €/L, Total 117.60 €">
+            Camion Iveco, 70 L, 117.60 €
+          </.waw_li>
+
+          <.waw_li
+            icon="moto"
+            connexion_status="offline"
+            battery_number="40"
+            title="Yamaha MT07, 15.02.2024, 14 L, 1.75 €/L, Total 24.50 €">
+            Yamaha MT07, 14 L, 24.50 €
+          </.waw_li>
+
+          <.waw_li
+            icon="car"
+            state="alert"
+            connexion_status="defective"
+            battery_number="20"
+            title="Audi A3, 22.02.2024, 50 L, 1.80 €/L, Total 90.00 €">
+            Audi A3, 50 L, 90.00 €
+          </.waw_li>
+        </.waw_ul>
+      </div>
     </div>
-  </:footer>
-</.waw_fixed_header_footer>
+    <% end %>
+  </div>

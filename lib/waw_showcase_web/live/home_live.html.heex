@@ -1,31 +1,4 @@
-<.waw_fixed_header_footer>
-  <!-- En-tête global avec navigation principale -->
-  <:header>
-    <div data-component="Header et Footer fixes" class="contents">
-      <.waw_header title="Waw Showcase" logout_url="" current_user_profile_url="">
-        <:nav>
-          <.waw_navbar active={true} navigate={~p"/"} theme="light">
-            Tableau de bord
-          </.waw_navbar>
-          <.waw_navbar active={false} navigate={~p"/vehicules"} theme="light">
-            Véhicules
-          </.waw_navbar>
-          <.waw_navbar active={false} navigate={~p"/carburant"} theme="light">
-            Carburant
-          </.waw_navbar>
-          <.waw_navbar active={false} navigate={~p"/rapports"} theme="light">
-            Rapports
-          </.waw_navbar>
-          <.waw_navbar active={false} navigate={~p"/reglages"} theme="light">
-            Réglages
-          </.waw_navbar>
-        </:nav>
-      </.waw_header>
-    </div>
-  </:header>
-
-  <:main>
-    <div class="px-4 py-8 space-y-12">
+<div class="px-4 py-8 space-y-12">
       <%!-- Bloc chiffres clés --%>
       <section class="space-y-6">
         <div data-component="Titre de bloc avec icône">
@@ -319,11 +292,3 @@
         </div>
       </section>
     </div>
-  </:main>
-
-  <:footer>
-    <div data-component="Header et Footer fixes" class="contents">
-      <.waw_footer copyright_year={DateTime.utc_now().year} />
-    </div>
-  </:footer>
-</.waw_fixed_header_footer>

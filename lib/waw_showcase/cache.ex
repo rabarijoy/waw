@@ -9,13 +9,32 @@ defmodule WawShowcase.Cache do
   Initialise la table ETS pour le cache.
   """
   def init do
-    :ets.new(@table_name, [:named_table, :public, :set])
+    case :ets.whereis(@table_name) do
+      :undefined ->
+        :ets.new(@table_name, [:named_table, :public, :set])
+
+      _pid ->
+        @table_name
+    end
+  end
+
+  # S'assure que la table ETS existe, la crée si nécessaire.
+  defp ensure_table do
+    case :ets.whereis(@table_name) do
+      :undefined ->
+        init()
+
+      _pid ->
+        @table_name
+    end
   end
 
   @doc """
   Récupère les données depuis le cache ou les génère et les met en cache.
   """
   def get(key, generator) when is_function(generator, 0) do
+    ensure_table()
+
     case :ets.lookup(@table_name, key) do
       [{^key, data}] ->
         data
@@ -31,6 +50,7 @@ defmodule WawShowcase.Cache do
   Met à jour le cache avec de nouvelles données.
   """
   def put(key, data) do
+    ensure_table()
     :ets.insert(@table_name, {key, data})
     data
   end
@@ -39,6 +59,7 @@ defmodule WawShowcase.Cache do
   Vide le cache pour une clé spécifique.
   """
   def delete(key) do
+    ensure_table()
     :ets.delete(@table_name, key)
   end
 
@@ -46,7 +67,7 @@ defmodule WawShowcase.Cache do
   Vide tout le cache.
   """
   def clear do
+    ensure_table()
     :ets.delete_all_objects(@table_name)
   end
 end
-

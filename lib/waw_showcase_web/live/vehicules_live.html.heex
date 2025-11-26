@@ -1,42 +1,4 @@
-<.waw_fixed_header_footer>
-  <%!-- En-tête principal avec navigation véhicule --%>
-  <:header>
-    <div data-component="Header et Footer fixes" class="contents">
-      <.waw_header title="Waw Showcase" logout_url="" current_user_profile_url="">
-        <:nav>
-          <.waw_navbar active={false} navigate={~p"/"} icon="speedometer" theme="light">
-            Tableau de bord
-          </.waw_navbar>
-          <.waw_navbar active={true} navigate={~p"/vehicules"} icon="car" theme="light">
-            Véhicules
-          </.waw_navbar>
-          <.waw_navbar active={false} navigate={~p"/carburant"} icon="fuel-pump" theme="light">
-            Carburant
-          </.waw_navbar>
-          <.waw_navbar active={false} navigate={~p"/rapports"} icon="doc-text" theme="light">
-            Rapports
-          </.waw_navbar>
-          <.waw_navbar active={false} navigate={~p"/reglages"} icon="gearshape" theme="light">
-            Réglages
-          </.waw_navbar>
-        </:nav>
-        <:actions>
-          <.link>
-            <.waw_icon name="bell-fill" size="4" />
-          </.link>
-          <.link>
-            <.waw_icon name="circle-grid-3x3" size="4" />
-          </.link>
-          <.link>
-            <.waw_icon name="person-fill" size="4" />
-          </.link>
-        </:actions>
-      </.waw_header>
-    </div>
-  </:header>
-
-  <:main>
-    <div class="px-4 py-8 space-y-12">
+<div class="px-4 py-8 space-y-12">
       <%!-- Entête de page --%>
       <div data-component="Titre de bloc avec icône" class="mb-8">
         <.waw_block_title label="Vehicules" icon="car-2-fill" />
@@ -105,7 +67,7 @@
                     type="number"
                     placeholder="Année"
                     value={@form_data.annee}
-                    data-component="Champs de saisie nombre"
+                    data-component="Champs de saisie téléphone"
                   />
                   <.input
                     label="Plaque d'immatriculation"
@@ -125,7 +87,7 @@
                     type="number"
                     placeholder="Kilométrage"
                     value={@form_data.kilometrage}
-                    data-component="Champs de saisie nombre"
+                    data-component="Champs de saisie téléphone"
                   />
                   <.input
                     label="Niveau de carburant"
@@ -206,8 +168,8 @@
           </div>
 
           <div data-component="Tableau - par défaut" class="contents mt-6">
-            <div class="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
-              <table class="min-w-full text-left text-sm">
+            <div class="overflow-hidden bg-white border border-gray-100 rounded-sm">
+              <.waw_table class="min-w-full text-left text-sm">
                 <thead class="bg-gray-50 text-xs font-semibold uppercase tracking-wide text-gray-500">
                   <tr>
                     <th class="px-4 py-3">Nom</th>
@@ -226,9 +188,9 @@
                     class="transition hover:bg-gray-50"
                   >
                     <td class="px-4 py-3">
-                      <.waw_li>
+                      <span class="text-sm font-medium text-gray-900">
                         {vehicule.nom}
-                      </.waw_li>
+                      </span>
                     </td>
                     <td class="px-4 py-3">
                       <.waw_text value={vehicule.plaque} data-component="Texte" />
@@ -242,7 +204,7 @@
                     </td>
                   </tr>
                 </tbody>
-              </table>
+              </.waw_table>
             </div>
           </div>
 
@@ -280,12 +242,3 @@
         </section>
       <% end %>
     </div>
-  </:main>
-
-  <%!-- Pied de page global --%>
-  <:footer>
-    <div data-component="Header et Footer fixes" class="contents">
-      <.waw_footer copyright_year={DateTime.utc_now().year} />
-    </div>
-  </:footer>
-</.waw_fixed_header_footer>
