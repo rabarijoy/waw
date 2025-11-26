@@ -213,211 +213,22 @@
                 <.waw_th>Kilométrage</.waw_th>
               </:thead>
 
-              <:tr state="normal">
+              <:tr :for={vehicule <- (fn -> taken = Enum.take(@paginated_vehicules, 10); taken ++ List.duplicate(nil, max(10 - length(taken), 0)) end).()} state="normal">
                 <.waw_td data-component="Element d'une liste">
                   <.waw_li>
-                    {if length(@paginated_vehicules) > 0, do: Enum.at(@paginated_vehicules, 0).nom, else: ""}
+                    {if vehicule, do: vehicule.nom, else: ""}
                   </.waw_li>
                 </.waw_td>
                 <.waw_td data-component="Element d'une liste">
                   <.waw_text
-                    value={if length(@paginated_vehicules) > 0, do: Enum.at(@paginated_vehicules, 0).plaque, else: ""}
+                    value={if vehicule, do: vehicule.plaque, else: ""}
                     data-component="Texte"
                   />
                 </.waw_td>
                 <.waw_td data-component="Element d'une liste">
                   <.waw_distance
                     unit={:kilometer}
-                    value={if length(@paginated_vehicules) > 0, do: Enum.at(@paginated_vehicules, 0).kilometrage, else: 0}
-                    data-component="Distance en km"
-                  />
-                </.waw_td>
-              </:tr>
-
-              <:tr state="normal">
-                <.waw_td data-component="Element d'une liste">
-                  <.waw_li>
-                    {if length(@paginated_vehicules) > 1, do: Enum.at(@paginated_vehicules, 1).nom, else: ""}
-                  </.waw_li>
-                </.waw_td>
-                <.waw_td data-component="Element d'une liste">
-                  <.waw_text
-                    value={if length(@paginated_vehicules) > 1, do: Enum.at(@paginated_vehicules, 1).plaque, else: ""}
-                    data-component="Texte"
-                  />
-                </.waw_td>
-                <.waw_td data-component="Element d'une liste">
-                  <.waw_distance
-                    unit={:kilometer}
-                    value={if length(@paginated_vehicules) > 1, do: Enum.at(@paginated_vehicules, 1).kilometrage, else: 0}
-                    data-component="Distance en km"
-                  />
-                </.waw_td>
-              </:tr>
-
-              <:tr state="normal">
-                <.waw_td data-component="Element d'une liste">
-                  <.waw_li>
-                    {if length(@paginated_vehicules) > 2, do: Enum.at(@paginated_vehicules, 2).nom, else: ""}
-                  </.waw_li>
-                </.waw_td>
-                <.waw_td data-component="Element d'une liste">
-                  <.waw_text
-                    value={if length(@paginated_vehicules) > 2, do: Enum.at(@paginated_vehicules, 2).plaque, else: ""}
-                    data-component="Texte"
-                  />
-                </.waw_td>
-                <.waw_td data-component="Element d'une liste">
-                  <.waw_distance
-                    unit={:kilometer}
-                    value={if length(@paginated_vehicules) > 2, do: Enum.at(@paginated_vehicules, 2).kilometrage, else: 0}
-                    data-component="Distance en km"
-                  />
-                </.waw_td>
-              </:tr>
-
-              <:tr state="normal">
-                <.waw_td data-component="Element d'une liste">
-                  <.waw_li>
-                    {if length(@paginated_vehicules) > 3, do: Enum.at(@paginated_vehicules, 3).nom, else: ""}
-                  </.waw_li>
-                </.waw_td>
-                <.waw_td data-component="Element d'une liste">
-                  <.waw_text
-                    value={if length(@paginated_vehicules) > 3, do: Enum.at(@paginated_vehicules, 3).plaque, else: ""}
-                    data-component="Texte"
-                  />
-                </.waw_td>
-                <.waw_td data-component="Element d'une liste">
-                  <.waw_distance
-                    unit={:kilometer}
-                    value={if length(@paginated_vehicules) > 3, do: Enum.at(@paginated_vehicules, 3).kilometrage, else: 0}
-                    data-component="Distance en km"
-                  />
-                </.waw_td>
-              </:tr>
-
-              <:tr state="normal">
-                <.waw_td data-component="Element d'une liste">
-                  <.waw_li>
-                    {if length(@paginated_vehicules) > 4, do: Enum.at(@paginated_vehicules, 4).nom, else: ""}
-                  </.waw_li>
-                </.waw_td>
-                <.waw_td data-component="Element d'une liste">
-                  <.waw_text
-                    value={if length(@paginated_vehicules) > 4, do: Enum.at(@paginated_vehicules, 4).plaque, else: ""}
-                    data-component="Texte"
-                  />
-                </.waw_td>
-                <.waw_td data-component="Element d'une liste">
-                  <.waw_distance
-                    unit={:kilometer}
-                    value={if length(@paginated_vehicules) > 4, do: Enum.at(@paginated_vehicules, 4).kilometrage, else: 0}
-                    data-component="Distance en km"
-                  />
-                </.waw_td>
-              </:tr>
-
-              <:tr state="normal">
-                <.waw_td data-component="Element d'une liste">
-                  <.waw_li>
-                    {if length(@paginated_vehicules) > 5, do: Enum.at(@paginated_vehicules, 5).nom, else: ""}
-                  </.waw_li>
-                </.waw_td>
-                <.waw_td data-component="Element d'une liste">
-                  <.waw_text
-                    value={if length(@paginated_vehicules) > 5, do: Enum.at(@paginated_vehicules, 5).plaque, else: ""}
-                    data-component="Texte"
-                  />
-                </.waw_td>
-                <.waw_td data-component="Element d'une liste">
-                  <.waw_distance
-                    unit={:kilometer}
-                    value={if length(@paginated_vehicules) > 5, do: Enum.at(@paginated_vehicules, 5).kilometrage, else: 0}
-                    data-component="Distance en km"
-                  />
-                </.waw_td>
-              </:tr>
-
-              <:tr state="normal">
-                <.waw_td data-component="Element d'une liste">
-                  <.waw_li>
-                    {if length(@paginated_vehicules) > 6, do: Enum.at(@paginated_vehicules, 6).nom, else: ""}
-                  </.waw_li>
-                </.waw_td>
-                <.waw_td data-component="Element d'une liste">
-                  <.waw_text
-                    value={if length(@paginated_vehicules) > 6, do: Enum.at(@paginated_vehicules, 6).plaque, else: ""}
-                    data-component="Texte"
-                  />
-                </.waw_td>
-                <.waw_td data-component="Element d'une liste">
-                  <.waw_distance
-                    unit={:kilometer}
-                    value={if length(@paginated_vehicules) > 6, do: Enum.at(@paginated_vehicules, 6).kilometrage, else: 0}
-                    data-component="Distance en km"
-                  />
-                </.waw_td>
-              </:tr>
-
-              <:tr state="normal">
-                <.waw_td data-component="Element d'une liste">
-                  <.waw_li>
-                    {if length(@paginated_vehicules) > 7, do: Enum.at(@paginated_vehicules, 7).nom, else: ""}
-                  </.waw_li>
-                </.waw_td>
-                <.waw_td data-component="Element d'une liste">
-                  <.waw_text
-                    value={if length(@paginated_vehicules) > 7, do: Enum.at(@paginated_vehicules, 7).plaque, else: ""}
-                    data-component="Texte"
-                  />
-                </.waw_td>
-                <.waw_td data-component="Element d'une liste">
-                  <.waw_distance
-                    unit={:kilometer}
-                    value={if length(@paginated_vehicules) > 7, do: Enum.at(@paginated_vehicules, 7).kilometrage, else: 0}
-                    data-component="Distance en km"
-                  />
-                </.waw_td>
-              </:tr>
-
-              <:tr state="normal">
-                <.waw_td data-component="Element d'une liste">
-                  <.waw_li>
-                    {if length(@paginated_vehicules) > 8, do: Enum.at(@paginated_vehicules, 8).nom, else: ""}
-                  </.waw_li>
-                </.waw_td>
-                <.waw_td data-component="Element d'une liste">
-                  <.waw_text
-                    value={if length(@paginated_vehicules) > 8, do: Enum.at(@paginated_vehicules, 8).plaque, else: ""}
-                    data-component="Texte"
-                  />
-                </.waw_td>
-                <.waw_td data-component="Element d'une liste">
-                  <.waw_distance
-                    unit={:kilometer}
-                    value={if length(@paginated_vehicules) > 8, do: Enum.at(@paginated_vehicules, 8).kilometrage, else: 0}
-                    data-component="Distance en km"
-                  />
-                </.waw_td>
-              </:tr>
-
-              <:tr state="normal">
-                <.waw_td data-component="Element d'une liste">
-                  <.waw_li>
-                    {if length(@paginated_vehicules) > 9, do: Enum.at(@paginated_vehicules, 9).nom, else: ""}
-                  </.waw_li>
-                </.waw_td>
-                <.waw_td data-component="Element d'une liste">
-                  <.waw_text
-                    value={if length(@paginated_vehicules) > 9, do: Enum.at(@paginated_vehicules, 9).plaque, else: ""}
-                    data-component="Texte"
-                  />
-                </.waw_td>
-                <.waw_td data-component="Element d'une liste">
-                  <.waw_distance
-                    unit={:kilometer}
-                    value={if length(@paginated_vehicules) > 9, do: Enum.at(@paginated_vehicules, 9).kilometrage, else: 0}
+                    value={if vehicule, do: vehicule.kilometrage, else: 0}
                     data-component="Distance en km"
                   />
                 </.waw_td>
