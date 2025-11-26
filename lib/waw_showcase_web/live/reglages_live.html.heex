@@ -76,6 +76,16 @@
                 size="sm"
                 data-component="Champs de saisie téléphone"
               />
+              <div data-component="Champs de saisie pour description ou note">
+                <.input
+                  label="Description du profil"
+                  name="description"
+                  size="sm"
+                  type="textarea"
+                  placeholder="Saisissez une description de votre profil"
+                  value={@form_data.description}
+                />
+              </div>
             </form>
           </div>
         </.waw_accordion>
@@ -119,7 +129,40 @@
                 checked={@form_data.rapports_quotidiens}
                 data-component="Sélection checkbox"
               />
+              <div data-component="Champs de saisie pour l'heure">
+                <.input
+                  label="Heures Ne pas déranger"
+                  name="ne_pas_deranger"
+                  size="sm"
+                  type="time"
+                  value={@form_data.ne_pas_deranger}
+                />
+              </div>
             </form>
+            <div data-component="Bloc de status avec clé valeur et status" class="mt-6">
+              <.waw_status_block title="Notifications" icon="bell">
+                <:table>
+                  <.waw_table without_border>
+                    <:tr state="normal">
+                      <.waw_td>Notifications par email</.waw_td>
+                      <.waw_td>Activées</.waw_td>
+                    </:tr>
+                    <:tr state="normal">
+                      <.waw_td>Notifications push</.waw_td>
+                      <.waw_td>Activées</.waw_td>
+                    </:tr>
+                    <:tr state="normal">
+                      <.waw_td>Notifications SMS</.waw_td>
+                      <.waw_td>Désactivées</.waw_td>
+                    </:tr>
+                    <:tr state="normal">
+                      <.waw_td>Fréquence</.waw_td>
+                      <.waw_td>Temps réel</.waw_td>
+                    </:tr>
+                  </.waw_table>
+                </:table>
+              </.waw_status_block>
+            </div>
           </div>
         </.waw_accordion>
 
