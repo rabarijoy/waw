@@ -5,18 +5,18 @@ defmodule WawShowcaseWeb.CarburantLive do
   @impl true
   def mount(_params, _session, socket) do
     socket =
-      socket
-      |> assign(:show_modal, false)
+     socket
+     |> assign(:show_modal, false)
       |> assign(:loading, true)
       |> assign(:vehicules, [])
       |> assign(:vehicule_options, [{"", "Sélectionner un véhicule"}])
       |> assign(:entries, [])
       |> assign(:fuel_cards, [])
-      |> assign(:form_data, %{
-        vehicule: "",
-        date: nil,
-        litres: nil,
-        prix_litre: nil
+     |> assign(:form_data, %{
+       vehicule: "",
+       date: nil,
+       litres: nil,
+       prix_litre: nil
       })
 
     if connected?(socket) do
@@ -33,8 +33,8 @@ defmodule WawShowcaseWeb.CarburantLive do
 
   @impl true
   def handle_info(:load_data, socket) do
-    vehicules = get_cached_vehicules()
-    entries = get_cached_entries()
+    vehicules = get_cached_carburant_vehicules()
+    entries = get_cached_carburant_entries()
     fuel_cards = get_cached_fuel_cards()
     vehicule_options = [{"", "Sélectionner un véhicule"}] ++ Enum.map(vehicules, fn v -> {v, v} end)
 
@@ -86,66 +86,54 @@ defmodule WawShowcaseWeb.CarburantLive do
     {:noreply, assign(socket, :form_data, form_data)}
   end
 
-  defp get_cached_vehicules do
+  defp get_cached_carburant_vehicules do
     WawShowcase.Cache.get(:carburant_vehicules, fn ->
-      generate_sample_vehicules()
+      [
+        "Voiture 1",
+        "Voiture 2",
+        "Camion 1",
+        "Voiture 3",
+        "Camion 2",
+        "Voiture 4",
+        "Fourgon 1",
+        "Voiture 5",
+        "Camion 3",
+        "Voiture 6",
+        "Fourgon 2",
+        "Voiture 7"
+      ]
     end)
   end
 
   defp get_cached_fuel_cards do
-    WawShowcase.Cache.get(:carburant_fuel_cards, fn ->
-      generate_fuel_cards()
+    WawShowcase.Cache.get(:fuel_cards, fn ->
+      [
+        %{vehicule: "Voiture 1", value: "35", number: "1510", title: "Consommation totale de carburant"},
+        %{vehicule: "Voiture 2", value: "28", number: "1200", title: "Consommation totale de carburant"},
+        %{vehicule: "Camion 1", value: "85", number: "3200", title: "Consommation totale de carburant"},
+        %{vehicule: "Voiture 3", value: "32", number: "1380", title: "Consommation totale de carburant"},
+        %{vehicule: "Camion 2", value: "92", number: "3450", title: "Consommation totale de carburant"},
+        %{vehicule: "Voiture 4", value: "26", number: "1100", title: "Consommation totale de carburant"},
+        %{vehicule: "Fourgon 1", value: "45", number: "1800", title: "Consommation totale de carburant"},
+        %{vehicule: "Voiture 5", value: "30", number: "1250", title: "Consommation totale de carburant"},
+        %{vehicule: "Camion 3", value: "88", number: "3300", title: "Consommation totale de carburant"},
+        %{vehicule: "Voiture 6", value: "29", number: "1220", title: "Consommation totale de carburant"},
+        %{vehicule: "Fourgon 2", value: "42", number: "1750", title: "Consommation totale de carburant"},
+        %{vehicule: "Voiture 7", value: "33", number: "1400", title: "Consommation totale de carburant"}
+      ]
     end)
   end
 
-  defp get_cached_entries do
+  defp get_cached_carburant_entries do
     WawShowcase.Cache.get(:carburant_entries, fn ->
-      generate_sample_entries()
+      [
+        %{vehicule: "Voiture 1", date: ~U[2025-01-15 10:30:00Z], litres: 45.5, prix_litre: 1.65},
+        %{vehicule: "Camion 1", date: ~U[2025-01-14 14:20:00Z], litres: 80.0, prix_litre: 1.70},
+        %{vehicule: "Voiture 2", date: ~U[2025-01-13 09:15:00Z], litres: 52.3, prix_litre: 1.68},
+        %{vehicule: "Voiture 3", date: ~U[2025-01-12 16:45:00Z], litres: 38.2, prix_litre: 1.65},
+        %{vehicule: "Camion 2", date: ~U[2025-01-11 11:00:00Z], litres: 95.5, prix_litre: 1.72}
+      ]
     end)
-  end
-
-  defp generate_sample_vehicules do
-    [
-      "Voiture 1",
-      "Voiture 2",
-      "Camion 1",
-      "Voiture 3",
-      "Camion 2",
-      "Voiture 4",
-      "Fourgon 1",
-      "Voiture 5",
-      "Camion 3",
-      "Voiture 6",
-      "Fourgon 2",
-      "Voiture 7"
-    ]
-  end
-
-  defp generate_fuel_cards do
-    [
-      %{vehicule: "Voiture 1", value: "35", number: "1510", title: "Consommation totale de carburant"},
-      %{vehicule: "Voiture 2", value: "28", number: "1200", title: "Consommation totale de carburant"},
-      %{vehicule: "Camion 1", value: "85", number: "3200", title: "Consommation totale de carburant"},
-      %{vehicule: "Voiture 3", value: "32", number: "1380", title: "Consommation totale de carburant"},
-      %{vehicule: "Camion 2", value: "92", number: "3450", title: "Consommation totale de carburant"},
-      %{vehicule: "Voiture 4", value: "26", number: "1100", title: "Consommation totale de carburant"},
-      %{vehicule: "Fourgon 1", value: "45", number: "1800", title: "Consommation totale de carburant"},
-      %{vehicule: "Voiture 5", value: "30", number: "1250", title: "Consommation totale de carburant"},
-      %{vehicule: "Camion 3", value: "88", number: "3300", title: "Consommation totale de carburant"},
-      %{vehicule: "Voiture 6", value: "29", number: "1220", title: "Consommation totale de carburant"},
-      %{vehicule: "Fourgon 2", value: "42", number: "1750", title: "Consommation totale de carburant"},
-      %{vehicule: "Voiture 7", value: "33", number: "1400", title: "Consommation totale de carburant"}
-    ]
-  end
-
-  defp generate_sample_entries do
-    [
-      %{vehicule: "Voiture 1", date: ~U[2025-01-15 10:30:00Z], litres: 45.5, prix_litre: 1.65},
-      %{vehicule: "Camion 1", date: ~U[2025-01-14 14:20:00Z], litres: 80.0, prix_litre: 1.70},
-      %{vehicule: "Voiture 2", date: ~U[2025-01-13 09:15:00Z], litres: 52.3, prix_litre: 1.68},
-      %{vehicule: "Voiture 3", date: ~U[2025-01-12 16:45:00Z], litres: 38.2, prix_litre: 1.65},
-      %{vehicule: "Camion 2", date: ~U[2025-01-11 11:00:00Z], litres: 95.5, prix_litre: 1.72}
-    ]
   end
 
 end
