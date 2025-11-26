@@ -1,0 +1,18 @@
+{
+    "sourceFile": "lib/waw_showcase_web/live/rapports_live.ex",
+    "activeCommit": 0,
+    "commits": [
+        {
+            "activePatchIndex": 0,
+            "patches": [
+                {
+                    "date": 1764138468587,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n"
+                }
+            ],
+            "date": 1764138468587,
+            "name": "Commit-0",
+            "content": "defmodule WawShowcaseWeb.RapportsLive do\n  use WawShowcaseWeb, :live_view\n  use WawShowcaseWeb.Live.ComponentInspector\n\n  @impl true\n  def mount(_params, _session, socket) do\n    vehicules = generate_sample_vehicules()\n\n    {:ok,\n     socket\n     |> assign(:active_tab, \"general\")\n     |> assign(:vehicules, vehicules)}\n  end\n\n  @impl true\n  def handle_params(_params, _uri, socket) do\n    {:noreply, socket}\n  end\n\n  @impl true\n  def handle_event(\"switch_tab\", %{\"tab\" => tab}, socket) do\n    {:noreply, assign(socket, :active_tab, tab)}\n  end\n\n  defp generate_sample_vehicules do\n    [\n      %{nom: \"Voiture 1\", entrees_carburant: 12, cout_carburant: 850.50, cout_maintenance: 320.00},\n      %{nom: \"Voiture 2\", entrees_carburant: 10, cout_carburant: 720.30, cout_maintenance: 280.50},\n      %{nom: \"Camion 1\", entrees_carburant: 15, cout_carburant: 1250.75, cout_maintenance: 450.00},\n      %{nom: \"Voiture 3\", entrees_carburant: 8, cout_carburant: 580.20, cout_maintenance: 210.00}\n    ]\n  end\nend\n"
+        }
+    ]
+}

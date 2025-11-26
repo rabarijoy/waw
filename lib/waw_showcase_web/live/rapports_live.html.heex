@@ -48,13 +48,17 @@
 
       <!-- BOUTON D'EXPORT -->
       <div class="mt-6 mb-6 flex justify-end">
-        <.waw_button
-          label="Exporter"
-          type="submit"
-          size="md"
-          icon="square-and-arrow-up"
-          data-component="Bouton de validation d’un formulaire"
-        />
+        <div data-component="Info-bulle">
+          <.tooltip position="top" color="white" content="Exporter les rapports au format Excel" variant="simple">
+            <.waw_button
+              label="Exporter"
+              type="submit"
+              size="md"
+              icon="square-and-arrow-up"
+              data-component="Bouton de validation d'un formulaire"
+            />
+          </.tooltip>
+        </div>
       </div>
 
       <!-- ONGLETS -->
@@ -156,10 +160,26 @@
               <.waw_table>
                 <!-- Entête du tableau -->
                 <:thead>
-                  <.waw_th>Véhicule</.waw_th>
-                  <.waw_th>Entrées de carburant</.waw_th>
-                  <.waw_th>Coût du carburant</.waw_th>
-                  <.waw_th>Coût de maintenance</.waw_th>
+                  <div data-component="Info-bulle">
+                    <.tooltip position="top" color="white" content="Nom du véhicule" variant="simple">
+                      <.waw_th>Véhicule</.waw_th>
+                    </.tooltip>
+                  </div>
+                  <div data-component="Info-bulle">
+                    <.tooltip position="top" color="white" content="Nombre total d'entrées de carburant enregistrées" variant="simple">
+                      <.waw_th>Entrées de carburant</.waw_th>
+                    </.tooltip>
+                  </div>
+                  <div data-component="Info-bulle">
+                    <.tooltip position="top" color="white" content="Coût total des dépenses en carburant" variant="simple">
+                      <.waw_th>Coût du carburant</.waw_th>
+                    </.tooltip>
+                  </div>
+                  <div data-component="Info-bulle">
+                    <.tooltip position="top" color="white" content="Coût total des dépenses de maintenance" variant="simple">
+                      <.waw_th>Coût de maintenance</.waw_th>
+                    </.tooltip>
+                  </div>
                 </:thead>
 
                 <!-- Lignes du tableau (extrait — 5 premières lignes) -->
@@ -409,7 +429,7 @@
               />
             </div>
 
-            <div class="space-y-4">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
               <%= for {mois, index} <- Enum.with_index(["Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"]) do %>
                 <div
                   class="bg-white rounded-lg border border-gray-300 p-4"
@@ -419,7 +439,11 @@
 
                   <div class="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-2 gap-4">
                     <div>
-                      <p class="text-sm text-gray-600 mb-2">Coût du carburant</p>
+                      <div data-component="Info-bulle">
+                        <.tooltip position="top" color="white" content="Coût total des dépenses en carburant pour ce mois" variant="simple">
+                          <p class="text-sm text-gray-600 mb-2">Coût du carburant</p>
+                        </.tooltip>
+                      </div>
                       <.currency
                         value={500.0 + (index * 50)}
                         currency="EUR"
@@ -428,7 +452,11 @@
                     </div>
 
                     <div>
-                      <p class="text-sm text-gray-600 mb-2">Coût de maintenance</p>
+                      <div data-component="Info-bulle">
+                        <.tooltip position="top" color="white" content="Coût total des dépenses de maintenance pour ce mois" variant="simple">
+                          <p class="text-sm text-gray-600 mb-2">Coût de maintenance</p>
+                        </.tooltip>
+                      </div>
                       <.currency
                         value={200.0 + (index * 30)}
                         currency="EUR"
