@@ -35,6 +35,36 @@
   </:header>
   <:main>
     <div class="px-4 py-8">
+      <%!-- Flashs paramétrés --%>
+      <div id="flash-profil-actif" style="display: none;" class="fixed top-2 right-2 w-80 sm:w-96 z-50 rounded-lg p-3 ring-1 ring-green-500 bg-green-50" role="alert" phx-click={JS.hide(to: "#flash-profil-actif", transition: {"transition-all ease-in duration-200", "opacity-100 scale-100", "opacity-0 scale-95"})}>
+        <p class="flex items-center gap-1.5 text-sm font-semibold leading-6 pr-4 text-green-800">
+          <.waw_icon name="checkmark-icloud-fill" size="4" stroke="none" />
+          Profil vérifié
+        </p>
+        <div class="text-sm leading-5 pr-4 mt-2 text-green-700 space-y-2">
+          <p>Votre compte est actif et vérifié</p>
+          <div class="mt-2">
+            <.waw_badge label="Actif" color="success" />
+          </div>
+        </div>
+        <button type="button" class="group absolute top-1 right-1 p-2" aria-label="close">
+          <.waw_icon name="cancel" size="5" stroke="none" />
+        </button>
+      </div>
+
+      <div id="flash-suppression-compte" style="display: none;" class="fixed top-2 right-2 w-80 sm:w-96 z-50 rounded-lg p-3 ring-1 ring-red-500 bg-red-50" role="alert" phx-click={JS.hide(to: "#flash-suppression-compte", transition: {"transition-all ease-in duration-200", "opacity-100 scale-100", "opacity-0 scale-95"})}>
+        <p class="flex items-center gap-1.5 text-sm font-semibold leading-6 pr-4 text-red-800">
+          <.waw_icon name="exclamationmark-circle-fill" size="4" stroke="none" />
+          Suppression de compte
+        </p>
+        <p class="text-sm leading-5 pr-4 mt-2 text-red-700">
+          Cette action supprimera définitivement votre compte et toutes vos données. Vous ne pourrez pas les récupérer.
+        </p>
+        <button type="button" class="group absolute top-1 right-1 p-2" aria-label="close">
+          <.waw_icon name="cancel" size="5" stroke="none" />
+        </button>
+      </div>
+
       <div data-component="Titre de bloc avec icône"><.waw_block_title label="Réglages" icon="gearshape-fill"/></div>
 
       <div class="mt-6 space-y-4">
@@ -87,6 +117,15 @@
                 />
               </div>
             </form>
+            <div data-component="Contenu paramétré en flash et Info-bulle" class="mt-4">
+              <.waw_button
+                type="button"
+                phx-click={JS.show(to: "#flash-profil-actif", transition: {"transition-all ease-out duration-300", "opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95", "opacity-100 translate-y-0 sm:scale-100"})}
+                label="Activer le profil"
+                size="md"
+                color="success"
+              />
+            </div>
           </div>
         </.waw_accordion>
 
@@ -129,14 +168,25 @@
                 checked={@form_data.rapports_quotidiens}
                 data-component="Sélection checkbox"
               />
-              <div data-component="Champs de saisie pour l'heure">
-                <.input
-                  label="Heures Ne pas déranger"
-                  name="ne_pas_deranger"
-                  size="sm"
-                  type="time"
-                  value={@form_data.ne_pas_deranger}
-                />
+              <div data-component="Champs de saisie pour l'heure" class="space-y-2">
+                <label class="label mb-1 text-sm font-medium">Heures Ne pas déranger</label>
+                <div class="flex items-center gap-3">
+                  <.input
+                    name="ne_pas_deranger_de"
+                    size="sm"
+                    type="time"
+                    value={@form_data.ne_pas_deranger_de}
+                    class="flex-1 border border-gray-300 rounded-lg px-4 py-2"
+                  />
+                  <span class="text-sm text-gray-600">à</span>
+                  <.input
+                    name="ne_pas_deranger_a"
+                    size="sm"
+                    type="time"
+                    value={@form_data.ne_pas_deranger_a}
+                    class="flex-1 border border-gray-300 rounded-lg px-4 py-2"
+                  />
+                </div>
               </div>
             </form>
             <div data-component="Bloc de status avec clé valeur et status" class="mt-6">
@@ -236,6 +286,15 @@
                 data-component="Champs de saisie texte"
               />
             </form>
+            <div data-component="Contenu paramétré en flash et Info-bulle" class="mt-4">
+              <.waw_button
+                type="button"
+                phx-click={JS.show(to: "#flash-suppression-compte", transition: {"transition-all ease-out duration-300", "opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95", "opacity-100 translate-y-0 sm:scale-100"})}
+                label="Supprimer mon compte"
+                size="md"
+                color="danger"
+              />
+            </div>
           </div>
         </.waw_accordion>
       </div>
