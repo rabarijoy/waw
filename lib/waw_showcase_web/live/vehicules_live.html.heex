@@ -213,7 +213,16 @@
                 <.waw_th>Kilométrage</.waw_th>
               </:thead>
 
-              <:tr :for={vehicule <- (fn -> taken = Enum.take(@paginated_vehicules, 10); taken ++ List.duplicate(nil, max(10 - length(taken), 0)) end).()} state="normal">
+              <:tr
+                :for={
+                  vehicule <-
+                    (fn ->
+                       vehicules_rows = Enum.take(@paginated_vehicules, 10)
+                       vehicules_rows ++ List.duplicate(nil, max(10 - length(vehicules_rows), 0))
+                     end).()
+                }
+                state="normal"
+              >
                 <.waw_td data-component="Element d'une liste">
                   <.waw_li>
                     {if vehicule, do: vehicule.nom, else: ""}
