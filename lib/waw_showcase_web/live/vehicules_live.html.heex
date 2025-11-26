@@ -206,38 +206,29 @@
           </div>
 
           <div data-component="Tableau - par défaut" class="contents mt-6">
-            <.waw_table>
+            <.waw_table id="paginated-vehicules" phx-update="stream">
               <:thead>
                 <.waw_th>Nom</.waw_th>
                 <.waw_th>Plaque</.waw_th>
                 <.waw_th>Kilométrage</.waw_th>
               </:thead>
 
-              <:tr
-                :for={
-                  vehicule <-
-                    (fn ->
-                       vehicules_rows = Enum.take(@paginated_vehicules, 10)
-                       vehicules_rows ++ List.duplicate(nil, max(10 - length(vehicules_rows), 0))
-                     end).()
-                }
-                state="normal"
-              >
+              <:tr :for={{dom_id, vehicule} <- @streams.paginated_vehicules} id={dom_id} state="normal">
                 <.waw_td data-component="Element d'une liste">
                   <.waw_li>
-                    {if vehicule, do: vehicule.nom, else: ""}
+                    {vehicule.nom}
                   </.waw_li>
                 </.waw_td>
                 <.waw_td data-component="Element d'une liste">
                   <.waw_text
-                    value={if vehicule, do: vehicule.plaque, else: ""}
+                    value={vehicule.plaque}
                     data-component="Texte"
                   />
                 </.waw_td>
                 <.waw_td data-component="Element d'une liste">
                   <.waw_distance
                     unit={:kilometer}
-                    value={if vehicule, do: vehicule.kilometrage, else: 0}
+                    value={vehicule.kilometrage}
                     data-component="Distance en km"
                   />
                 </.waw_td>

@@ -9,7 +9,7 @@ defmodule WawShowcaseWeb.RapportsLive do
     {:ok,
      socket
      |> assign(:active_tab, "general")
-     |> assign(:vehicules, vehicules)}
+     |> stream(:vehicules, vehicules, reset: true)}
   end
 
   @impl true

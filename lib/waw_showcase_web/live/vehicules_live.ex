@@ -14,7 +14,6 @@ defmodule WawShowcaseWeb.VehiculesLive do
      socket
      |> assign(:vehicules, vehicules)
      |> assign(:filtered_vehicules, vehicules)
-     |> assign(:paginated_vehicules, paginated)
      |> assign(:total_pages, total)
      |> assign(:search_query, "")
      |> assign(:current_page, 1)
@@ -28,7 +27,8 @@ defmodule WawShowcaseWeb.VehiculesLive do
        plaque: "",
        kilometrage: nil,
        niveau_carburant: ""
-     })}
+     })
+     |> stream(:paginated_vehicules, paginated, reset: true)}
   end
 
   @impl true
@@ -53,10 +53,10 @@ defmodule WawShowcaseWeb.VehiculesLive do
     {:noreply,
      socket
      |> assign(:filtered_vehicules, filtered)
-     |> assign(:paginated_vehicules, paginated)
      |> assign(:total_pages, total)
      |> assign(:search_query, query)
-     |> assign(:current_page, 1)}
+     |> assign(:current_page, 1)
+     |> stream(:paginated_vehicules, paginated, reset: true)}
   end
 
   @impl true
@@ -119,7 +119,7 @@ defmodule WawShowcaseWeb.VehiculesLive do
     {:noreply,
      socket
      |> assign(:current_page, new_page)
-     |> assign(:paginated_vehicules, paginated)}
+     |> stream(:paginated_vehicules, paginated, reset: true)}
   end
 
   defp generate_sample_vehicules do
