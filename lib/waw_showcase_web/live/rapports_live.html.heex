@@ -157,63 +157,55 @@
         <%= if @active_tab == "vehicule" do %>
           <div class="mt-6">
             <div data-component="Tableau - par défaut" class="contents">
-              <.waw_table id="rapport-vehicules" phx-update="stream">
-                <!-- Entête du tableau -->
-                <:thead>
-                  <div data-component="Info-bulle">
-                    <.tooltip position="top" color="white" content="Nom du véhicule" variant="simple">
-                      <.waw_th>Véhicule</.waw_th>
-                    </.tooltip>
-                  </div>
-                  <div data-component="Info-bulle">
-                    <.tooltip position="top" color="white" content="Nombre total d'entrées de carburant enregistrées" variant="simple">
-                      <.waw_th>Entrées de carburant</.waw_th>
-                    </.tooltip>
-                  </div>
-                  <div data-component="Info-bulle">
-                    <.tooltip position="top" color="white" content="Coût total des dépenses en carburant" variant="simple">
-                      <.waw_th>Coût du carburant</.waw_th>
-                    </.tooltip>
-                  </div>
-                  <div data-component="Info-bulle">
-                    <.tooltip position="top" color="white" content="Coût total des dépenses de maintenance" variant="simple">
-                      <.waw_th>Coût de maintenance</.waw_th>
-                    </.tooltip>
-                  </div>
-                </:thead>
-
-                <!-- Lignes du tableau -->
-                <:tr :for={{dom_id, vehicule} <- @streams.vehicules} id={dom_id} state="normal">
-                  <.waw_td data-component="Element d'une liste">
-                    <.waw_li>
-                      {vehicule.nom}
-                    </.waw_li>
-                  </.waw_td>
-
-                  <.waw_td data-component="Element d'une liste">
-                    <.waw_text
-                      value={to_string(vehicule.entrees_carburant)}
-                      data-component="Texte"
-                    />
-                  </.waw_td>
-
-                  <.waw_td data-component="Element d'une liste">
-                    <.currency
-                      value={vehicule.cout_carburant}
-                      currency="EUR"
-                      data-component="Devise"
-                    />
-                  </.waw_td>
-
-                  <.waw_td data-component="Element d'une liste">
-                    <.currency
-                      value={vehicule.cout_maintenance}
-                      currency="EUR"
-                      data-component="Devise"
-                    />
-                  </.waw_td>
-                </:tr>
-              </.waw_table>
+              <div class="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
+                <table class="min-w-full text-left text-sm">
+                  <thead class="bg-gray-50 text-xs font-semibold uppercase tracking-wide text-gray-500">
+                    <tr>
+                      <th class="px-4 py-3">Véhicule</th>
+                      <th class="px-4 py-3">Entrées de carburant</th>
+                      <th class="px-4 py-3">Coût du carburant</th>
+                      <th class="px-4 py-3">Coût de maintenance</th>
+                    </tr>
+                  </thead>
+                  <tbody
+                    id="rapport-vehicules"
+                    phx-update="stream"
+                    class="divide-y divide-gray-100"
+                  >
+                    <tr
+                      :for={{dom_id, vehicule} <- @streams.vehicules}
+                      id={dom_id}
+                      class="transition hover:bg-gray-50"
+                    >
+                      <td class="px-4 py-3">
+                        <.waw_li>
+                          {vehicule.nom}
+                        </.waw_li>
+                      </td>
+                      <td class="px-4 py-3">
+                        <.waw_text
+                          value={to_string(vehicule.entrees_carburant)}
+                          data-component="Texte"
+                        />
+                      </td>
+                      <td class="px-4 py-3">
+                        <.currency
+                          value={vehicule.cout_carburant}
+                          currency="EUR"
+                          data-component="Devise"
+                        />
+                      </td>
+                      <td class="px-4 py-3">
+                        <.currency
+                          value={vehicule.cout_maintenance}
+                          currency="EUR"
+                          data-component="Devise"
+                        />
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
             </div>
           </div>
         <% end %>

@@ -206,34 +206,44 @@
           </div>
 
           <div data-component="Tableau - par défaut" class="contents mt-6">
-            <.waw_table id="paginated-vehicules" phx-update="stream">
-              <:thead>
-                <.waw_th>Nom</.waw_th>
-                <.waw_th>Plaque</.waw_th>
-                <.waw_th>Kilométrage</.waw_th>
-              </:thead>
-
-              <:tr :for={{dom_id, vehicule} <- @streams.paginated_vehicules} id={dom_id} state="normal">
-                <.waw_td data-component="Element d'une liste">
-                  <.waw_li>
-                    {vehicule.nom}
-                  </.waw_li>
-                </.waw_td>
-                <.waw_td data-component="Element d'une liste">
-                  <.waw_text
-                    value={vehicule.plaque}
-                    data-component="Texte"
-                  />
-                </.waw_td>
-                <.waw_td data-component="Element d'une liste">
-                  <.waw_distance
-                    unit={:kilometer}
-                    value={vehicule.kilometrage}
-                    data-component="Distance en km"
-                  />
-                </.waw_td>
-              </:tr>
-            </.waw_table>
+            <div class="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
+              <table class="min-w-full text-left text-sm">
+                <thead class="bg-gray-50 text-xs font-semibold uppercase tracking-wide text-gray-500">
+                  <tr>
+                    <th class="px-4 py-3">Nom</th>
+                    <th class="px-4 py-3">Plaque</th>
+                    <th class="px-4 py-3">Kilométrage</th>
+                  </tr>
+                </thead>
+                <tbody
+                  id="paginated-vehicules"
+                  phx-update="stream"
+                  class="divide-y divide-gray-100"
+                >
+                  <tr
+                    :for={{dom_id, vehicule} <- @streams.paginated_vehicules}
+                    id={dom_id}
+                    class="transition hover:bg-gray-50"
+                  >
+                    <td class="px-4 py-3">
+                      <.waw_li>
+                        {vehicule.nom}
+                      </.waw_li>
+                    </td>
+                    <td class="px-4 py-3">
+                      <.waw_text value={vehicule.plaque} data-component="Texte" />
+                    </td>
+                    <td class="px-4 py-3">
+                      <.waw_distance
+                        unit={:kilometer}
+                        value={vehicule.kilometrage}
+                        data-component="Distance en km"
+                      />
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
           </div>
 
           <div class="contents mt-8" data-component="Pagination">

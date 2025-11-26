@@ -6,7 +6,7 @@ defmodule WawShowcaseWeb.VehiculesLive do
 
   @impl true
   def mount(_params, _session, socket) do
-    vehicules = generate_sample_vehicules()
+    vehicules = generate_sample_vehicules() |> attach_vehicle_ids()
     paginated = paginated_vehicules(vehicules, 1)
     total = total_pages(length(vehicules))
 
@@ -140,6 +140,14 @@ defmodule WawShowcaseWeb.VehiculesLive do
       %{nom: "Camion 5", plaque: "AB-012-CD", kilometrage: 201000},
       %{nom: "Voiture 10", plaque: "EF-345-GH", kilometrage: 19000}
     ]
+  end
+
+  defp attach_vehicle_ids(vehicules) do
+    vehicules
+    |> Enum.with_index(1)
+    |> Enum.map(fn {vehicule, index} ->
+      Map.put(vehicule, :id, "vehicule-#{index}-#{vehicule.plaque}")
+    end)
   end
 
   defp filter_vehicules(vehicules, query) when query == "" or query == nil do

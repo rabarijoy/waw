@@ -24,10 +24,10 @@ defmodule WawShowcaseWeb.RapportsLive do
 
   defp generate_sample_vehicules do
     [
-      %{nom: "Voiture 1", entrees_carburant: 12, cout_carburant: 850.50, cout_maintenance: 320.00},
-      %{nom: "Voiture 2", entrees_carburant: 10, cout_carburant: 720.30, cout_maintenance: 280.50},
-      %{nom: "Camion 1", entrees_carburant: 15, cout_carburant: 1250.75, cout_maintenance: 450.00},
-      %{nom: "Voiture 3", entrees_carburant: 8, cout_carburant: 580.20, cout_maintenance: 210.00}
+      %{id: "rapport-vehicule-1", nom: "Voiture 1", entrees_carburant: 12, cout_carburant: 850.50, cout_maintenance: 320.00},
+      %{id: "rapport-vehicule-2", nom: "Voiture 2", entrees_carburant: 10, cout_carburant: 720.30, cout_maintenance: 280.50},
+      %{id: "rapport-vehicule-3", nom: "Camion 1", entrees_carburant: 15, cout_carburant: 1250.75, cout_maintenance: 450.00},
+      %{id: "rapport-vehicule-4", nom: "Voiture 3", entrees_carburant: 8, cout_carburant: 580.20, cout_maintenance: 210.00}
     ]
   end
 end
