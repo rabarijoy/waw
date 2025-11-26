@@ -41,10 +41,10 @@
           <.waw_icon name="checkmark-icloud-fill" size="4" stroke="none" />
           Profil vérifié
         </p>
-        <div class="text-sm leading-5 pr-4 mt-2 text-green-700 space-y-2">
+        <div class="text-sm leading-5 pr-4 mt-2 text-green-700 space-y-2" data-component="Contenu paramétré en flash">
           <p>Votre compte est actif et vérifié</p>
           <div class="mt-2">
-            <.waw_badge label="Actif" color="success" />
+            <.waw_badge id="badge-profil-actif" label="Actif" color="success" />
           </div>
         </div>
         <button type="button" class="group absolute top-1 right-1 p-2" aria-label="close">
@@ -52,7 +52,7 @@
         </button>
       </div>
 
-      <div id="flash-suppression-compte" style="display: none;" class="fixed top-2 right-2 w-80 sm:w-96 z-50 rounded-lg p-3 ring-1 ring-red-500 bg-red-50" role="alert" phx-click={JS.hide(to: "#flash-suppression-compte", transition: {"transition-all ease-in duration-200", "opacity-100 scale-100", "opacity-0 scale-95"})}>
+      <div id="flash-suppression-compte" style="display: none;" class="fixed top-2 right-2 w-80 sm:w-96 z-50 rounded-lg p-3 ring-1 ring-red-500 bg-red-50" role="alert" phx-click={JS.hide(to: "#flash-suppression-compte", transition: {"transition-all ease-in duration-200", "opacity-100 scale-100", "opacity-0 scale-95"})} data-component="Contenu paramétré en flash">
         <p class="flex items-center gap-1.5 text-sm font-semibold leading-6 pr-4 text-red-800">
           <.waw_icon name="exclamationmark-circle-fill" size="4" stroke="none" />
           Suppression de compte
@@ -101,7 +101,7 @@
                 label="Numéro de téléphone"
                 name="telephone"
                 type="tel"
-                placeholder="Number"
+                placeholder="06 12 345 678"
                 value={@form_data.telephone}
                 size="sm"
                 data-component="Champs de saisie téléphone"
@@ -117,7 +117,7 @@
                 />
               </div>
             </form>
-            <div data-component="Contenu paramétré en flash et Info-bulle" class="mt-4">
+            <div data-component="Contenu paramétré en flash" class="mt-4">
               <.waw_button
                 type="button"
                 phx-click={JS.show(to: "#flash-profil-actif", transition: {"transition-all ease-out duration-300", "opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95", "opacity-100 translate-y-0 sm:scale-100"})}
@@ -286,14 +286,16 @@
                 data-component="Champs de saisie texte"
               />
             </form>
-            <div data-component="Contenu paramétré en flash et Info-bulle" class="mt-4">
-              <.waw_button
-                type="button"
-                phx-click={JS.show(to: "#flash-suppression-compte", transition: {"transition-all ease-out duration-300", "opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95", "opacity-100 translate-y-0 sm:scale-100"})}
-                label="Supprimer mon compte"
-                size="md"
-                color="danger"
-              />
+            <div data-component="Contenu paramétré en flash" class="mt-4">
+              <div class="no-truncate-button [&_button]:w-fit [&_button]:min-w-max">
+                <.waw_button
+                  type="button"
+                  phx-click={JS.show(to: "#flash-suppression-compte", transition: {"transition-all ease-out duration-300", "opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95", "opacity-100 translate-y-0 sm:scale-100"})}
+                  label="Supprimer mon compte"
+                  size="md"
+                  color="danger"
+                />
+              </div>
             </div>
           </div>
         </.waw_accordion>
