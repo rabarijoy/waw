@@ -7,6 +7,9 @@ defmodule WawShowcase.Application do
 
   @impl true
   def start(_type, _args) do
+    # Initialiser le cache ETS
+    WawShowcase.Cache.init()
+
     children = [
       WawShowcaseWeb.Telemetry,
       {DNSCluster, query: Application.get_env(:waw_showcase, :dns_cluster_query) || :ignore},

@@ -4,15 +4,12 @@ defmodule WawShowcaseWeb.RapportsLive do
 
   @impl true
   def mount(_params, _session, socket) do
-    socket =
-      socket
-      |> assign(:active_tab, "general")
-      |> assign(:vehicules_loaded, false)
+    vehicules = get_cached_vehicules()
 
-    # Charger les données pour l'onglet "general" par défaut
-    socket = load_vehicules_if_needed(socket)
-
-    {:ok, socket}
+    {:ok,
+     socket
+     |> assign(:active_tab, "general")
+     |> stream(:vehicules, vehicules, reset: true)}
   end
 
   @impl true
@@ -22,30 +19,13 @@ defmodule WawShowcaseWeb.RapportsLive do
 
   @impl true
   def handle_event("switch_tab", %{"tab" => tab}, socket) do
-    socket =
-      case tab do
-        "general" ->
-          load_vehicules_if_needed(socket)
-
-        "vehicule" ->
-          load_vehicules_if_needed(socket)
-
-        _ ->
-          socket
-      end
-
     {:noreply, assign(socket, :active_tab, tab)}
   end
 
-  defp load_vehicules_if_needed(socket) do
-    if socket.assigns[:vehicules_loaded] do
-      socket
-    else
-      vehicules = generate_sample_vehicules()
-      socket
-      |> stream(:vehicules, vehicules, reset: true)
-      |> assign(:vehicules_loaded, true)
-    end
+  defp get_cached_vehicules do
+    WawShowcase.Cache.get(:rapports_vehicules, fn ->
+      generate_sample_vehicules()
+    end)
   end
 
   defp generate_sample_vehicules do

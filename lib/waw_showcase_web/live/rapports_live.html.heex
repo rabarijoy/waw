@@ -154,61 +154,59 @@
         <% end %>
 
         <!-- TAB: PAR VÉHICULE -->
-        <%= if @active_tab == "vehicule" do %>
-          <div class="mt-6">
-            <div data-component="Tableau - par défaut" class="contents">
-              <div class="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
-                <table class="min-w-full text-left text-sm">
-                  <thead class="bg-gray-50 text-xs font-semibold uppercase tracking-wide text-gray-500">
-                    <tr>
-                      <th class="px-4 py-3">Véhicule</th>
-                      <th class="px-4 py-3">Entrées de carburant</th>
-                      <th class="px-4 py-3">Coût du carburant</th>
-                      <th class="px-4 py-3">Coût de maintenance</th>
-                    </tr>
-                  </thead>
-                  <tbody
-                    id="rapport-vehicules"
-                    phx-update="stream"
-                    class="divide-y divide-gray-100"
+        <div class={["mt-6", @active_tab != "vehicule" && "hidden"]}>
+          <div data-component="Tableau - par défaut" class="contents">
+            <div class="overflow-hidden bg-white border border-gray-100 rounded-sm">
+              <.waw_table class="min-w-full text-left text-sm">
+                <thead class="bg-gray-50 text-xs font-semibold uppercase tracking-wide text-gray-500">
+                  <tr>
+                    <th class="px-4 py-3">Véhicule</th>
+                    <th class="px-4 py-3">Entrées de carburant</th>
+                    <th class="px-4 py-3">Coût du carburant</th>
+                    <th class="px-4 py-3">Coût de maintenance</th>
+                  </tr>
+                </thead>
+                <tbody
+                  id="rapport-vehicules"
+                  phx-update="stream"
+                  class="divide-y divide-gray-100"
+                >
+                  <tr
+                    :for={{dom_id, vehicule} <- @streams.vehicules}
+                    id={dom_id}
+                    class="transition hover:bg-gray-50"
                   >
-                    <tr
-                      :for={{dom_id, vehicule} <- @streams.vehicules}
-                      id={dom_id}
-                      class="transition hover:bg-gray-50"
-                    >
-                      <td class="px-4 py-3">
-                        <.waw_li>
-                          {vehicule.nom}
-                        </.waw_li>
-                      </td>
-                      <td class="px-4 py-3">
-                        <.waw_text
-                          value={to_string(vehicule.entrees_carburant)}
-                          data-component="Texte"
-                        />
-                      </td>
-                      <td class="px-4 py-3">
-                        <.currency
-                          value={vehicule.cout_carburant}
-                          currency="EUR"
-                          data-component="Devise"
-                        />
-                      </td>
-                      <td class="px-4 py-3">
-                        <.currency
-                          value={vehicule.cout_maintenance}
-                          currency="EUR"
-                          data-component="Devise"
-                        />
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
+                    <td class="px-4 py-3">
+                      <span class="text-sm font-medium text-gray-900">
+                        {vehicule.nom}
+                      </span>
+                    </td>
+                    <td class="px-4 py-3">
+                      <.waw_text
+                        value={to_string(vehicule.entrees_carburant)}
+                        data-component="Texte"
+                      />
+                    </td>
+                    <td class="px-4 py-3">
+                      <.currency
+                        value={vehicule.cout_carburant}
+                        currency="EUR"
+                        data-component="Devise"
+                      />
+                    </td>
+                    <td class="px-4 py-3">
+                      <.currency
+                        value={vehicule.cout_maintenance}
+                        currency="EUR"
+                        data-component="Devise"
+                      />
+                    </td>
+                  </tr>
+                </tbody>
+              </.waw_table>
             </div>
           </div>
-        <% end %>
+        </div>
 
         <!-- TAB: PAR PÉRIODE (mois) -->
         <%= if @active_tab == "periode" do %>

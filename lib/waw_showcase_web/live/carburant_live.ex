@@ -33,9 +33,9 @@ defmodule WawShowcaseWeb.CarburantLive do
 
   @impl true
   def handle_info(:load_data, socket) do
-    vehicules = generate_sample_vehicules()
-    entries = generate_sample_entries()
-    fuel_cards = generate_fuel_cards()
+    vehicules = get_cached_vehicules()
+    entries = get_cached_entries()
+    fuel_cards = get_cached_fuel_cards()
     vehicule_options = [{"", "Sélectionner un véhicule"}] ++ Enum.map(vehicules, fn v -> {v, v} end)
 
     {:noreply,
@@ -84,6 +84,24 @@ defmodule WawShowcaseWeb.CarburantLive do
   def handle_event("update_form", params, socket) do
     form_data = Map.merge(socket.assigns.form_data, params)
     {:noreply, assign(socket, :form_data, form_data)}
+  end
+
+  defp get_cached_vehicules do
+    WawShowcase.Cache.get(:carburant_vehicules, fn ->
+      generate_sample_vehicules()
+    end)
+  end
+
+  defp get_cached_fuel_cards do
+    WawShowcase.Cache.get(:carburant_fuel_cards, fn ->
+      generate_fuel_cards()
+    end)
+  end
+
+  defp get_cached_entries do
+    WawShowcase.Cache.get(:carburant_entries, fn ->
+      generate_sample_entries()
+    end)
   end
 
   defp generate_sample_vehicules do

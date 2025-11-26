@@ -6,7 +6,7 @@ defmodule WawShowcaseWeb.VehiculesLive do
 
   @impl true
   def mount(_params, _session, socket) do
-    vehicules = generate_sample_vehicules() |> attach_vehicle_ids()
+    vehicules = get_cached_vehicules() |> attach_vehicle_ids()
     paginated = paginated_vehicules(vehicules, 1)
     total = total_pages(length(vehicules))
 
@@ -120,6 +120,12 @@ defmodule WawShowcaseWeb.VehiculesLive do
      socket
      |> assign(:current_page, new_page)
      |> stream(:paginated_vehicules, paginated, reset: true)}
+  end
+
+  defp get_cached_vehicules do
+    WawShowcase.Cache.get(:vehicules_list, fn ->
+      generate_sample_vehicules()
+    end)
   end
 
   defp generate_sample_vehicules do
