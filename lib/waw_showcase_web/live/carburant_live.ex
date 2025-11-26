@@ -4,29 +4,47 @@ defmodule WawShowcaseWeb.CarburantLive do
 
   @impl true
   def mount(_params, _session, socket) do
-    vehicules = generate_sample_vehicules()
-    entries = generate_sample_entries()
-    fuel_cards = generate_fuel_cards()
-    vehicule_options = [{"", "Sélectionner un véhicule"}] ++ Enum.map(vehicules, fn v -> {v, v} end)
+    socket =
+      socket
+      |> assign(:show_modal, false)
+      |> assign(:loading, true)
+      |> assign(:vehicules, [])
+      |> assign(:vehicule_options, [{"", "Sélectionner un véhicule"}])
+      |> assign(:entries, [])
+      |> assign(:fuel_cards, [])
+      |> assign(:form_data, %{
+        vehicule: "",
+        date: nil,
+        litres: nil,
+        prix_litre: nil
+      })
 
-    {:ok,
-     socket
-     |> assign(:show_modal, false)
-     |> assign(:vehicules, vehicules)
-     |> assign(:vehicule_options, vehicule_options)
-     |> assign(:entries, entries)
-     |> assign(:fuel_cards, fuel_cards)
-     |> assign(:form_data, %{
-       vehicule: "",
-       date: nil,
-       litres: nil,
-       prix_litre: nil
-     })}
+    if connected?(socket) do
+      send(self(), :load_data)
+    end
+
+    {:ok, socket}
   end
 
   @impl true
   def handle_params(_params, _uri, socket) do
     {:noreply, socket}
+  end
+
+  @impl true
+  def handle_info(:load_data, socket) do
+    vehicules = generate_sample_vehicules()
+    entries = generate_sample_entries()
+    fuel_cards = generate_fuel_cards()
+    vehicule_options = [{"", "Sélectionner un véhicule"}] ++ Enum.map(vehicules, fn v -> {v, v} end)
+
+    {:noreply,
+     socket
+     |> assign(:loading, false)
+     |> assign(:vehicules, vehicules)
+     |> assign(:vehicule_options, vehicule_options)
+     |> assign(:entries, entries)
+     |> assign(:fuel_cards, fuel_cards)}
   end
 
   @impl true
