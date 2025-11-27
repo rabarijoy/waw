@@ -4,7 +4,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="csrf-token" content={get_csrf_token()} />
-    <.live_title default="WawShowcase" suffix=" · Phoenix Framework">
+    <.live_title default="WawShowcase">
       {assigns[:page_title]}
     </.live_title>
     <link phx-track-static rel="stylesheet" href={~p"/assets/css/app.css"} />
@@ -32,5 +32,74 @@
   </head>
   <body id="app-body">
     {@inner_content}
+
+    <%!-- Popup de notification explicative du menu contextuel --%>
+    <div id="context-menu-notification-popup" style="display: none;" class="fixed bottom-4 right-4 z-50">
+      <div data-component="Popup de notification">
+        <.waw_notification_popup
+          time="00:00:00"
+          description="Utilisez le clic droit sur n'importe quel composant pour accéder au menu contextuel et découvrir ses informations."
+          title="Astuce : Menu contextuel"
+          icon="circle-grid-3x3">
+          <:show>
+            <.waw_button_text label="Compris" />
+          </:show>
+          <:close>
+            <.waw_button_text label="Fermer" />
+          </:close>
+        </.waw_notification_popup>
+      </div>
+    </div>
+
+    <script>
+      (() => {
+        // Vérifier si le popup a déjà été affiché dans cette session
+        const STORAGE_KEY = "waw_showcase_context_menu_notification_shown";
+        
+        function showNotificationPopup() {
+          const popup = document.getElementById("context-menu-notification-popup");
+          if (popup) {
+            popup.style.display = "block";
+            // Marquer comme affiché dans sessionStorage
+            sessionStorage.setItem(STORAGE_KEY, "true");
+          }
+        }
+
+        function hideNotificationPopup() {
+          const popup = document.getElementById("context-menu-notification-popup");
+          if (popup) {
+            popup.style.display = "none";
+          }
+        }
+
+        // Vérifier au chargement de la page
+        function initNotificationPopup() {
+          const hasBeenShown = sessionStorage.getItem(STORAGE_KEY);
+          if (!hasBeenShown) {
+            // Attendre un peu pour que le DOM soit complètement chargé
+            setTimeout(showNotificationPopup, 500);
+          }
+        }
+
+        // Initialiser quand le DOM est prêt
+        if (document.readyState === "loading") {
+          document.addEventListener("DOMContentLoaded", initNotificationPopup);
+        } else {
+          initNotificationPopup();
+        }
+
+        // Gérer les clics sur les boutons du popup
+        document.addEventListener("click", (e) => {
+          const popup = document.getElementById("context-menu-notification-popup");
+          if (!popup) return;
+
+          // Vérifier si le clic est sur un bouton du popup
+          const button = e.target.closest(".waw_button_text");
+          if (button && popup.contains(button)) {
+            hideNotificationPopup();
+          }
+        });
+      })();
+    </script>
   </body>
 </html>
