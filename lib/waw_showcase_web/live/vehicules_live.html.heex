@@ -120,7 +120,7 @@
                 size="md"
                 phx-click="previous_step"
                 disabled={@form_step == 1}
-                data-component="Bouton d’annulation d’un formulaire"
+                data-component={if @form_step == 1, do: "Bouton desactivé", else: "Bouton d’annulation d’un formulaire"}
               />
 
               <%= if @form_step == 4 do %>
@@ -163,7 +163,7 @@
               type="button"
               size="md"
               phx-click="toggle_form"
-              data-component="Bouton de validation d'un formulaire"
+              data-component="Bouton par défaut"
             />
           </div>
 
