@@ -37,16 +37,13 @@
     <div id="context-menu-notification-popup" style="display: none;" class="fixed bottom-4 right-4 z-50">
       <div data-component="Popup de notification">
         <.waw_notification_popup
-          time="00:00:00"
-          description="Utilisez le clic droit sur n'importe quel composant pour accéder au menu contextuel et découvrir ses informations."
-          title="Astuce : Menu contextuel"
-          icon="circle-grid-3x3">
+          time=""
+          description="Utilisez le clic droit importe-où"
+          title="Menu-contextuel"
+          icon="lightbulb">
           <:show>
-            <.waw_button_text label="Compris" />
+            <.waw_button_text label="Compris" data-context-menu-popup-button="dismiss" />
           </:show>
-          <:close>
-            <.waw_button_text label="Fermer" />
-          </:close>
         </.waw_notification_popup>
       </div>
     </div>
@@ -94,7 +91,7 @@
           if (!popup) return;
 
           // Vérifier si le clic est sur un bouton du popup
-          const button = e.target.closest(".waw_button_text");
+          const button = e.target.closest("[data-context-menu-popup-button]");
           if (button && popup.contains(button)) {
             hideNotificationPopup();
           }
