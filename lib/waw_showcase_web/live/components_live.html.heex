@@ -1,0 +1,80 @@
+<div class="px-4 py-8 space-y-6">
+    <div class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+      <div>
+        <h1 class="text-2xl font-bold text-gray-900">Composants Waw</h1>
+        <p class="text-sm text-gray-600 mt-1">
+          Liste des composants extraits depuis la dépendance Waw
+        </p>
+      </div>
+      <button
+        phx-click="refresh"
+        class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+      >
+        Actualiser
+      </button>
+    </div>
+
+    <div class="bg-white rounded-lg border border-gray-200 p-4">
+      <form phx-change="search" class="w-full">
+        <.input
+          type="text"
+          name="search"
+          value={@search_term}
+          placeholder="Rechercher un composant..."
+          class="w-full"
+        />
+      </form>
+    </div>
+
+    <div class="grid grid-cols-1 gap-4">
+      <%= if Enum.empty?(@filtered_components) do %>
+        <div class="bg-white rounded-lg border border-gray-200 p-8 text-center">
+          <p class="text-gray-500">
+            <%= if @search_term != "" do %>
+              Aucun composant trouvé pour "<%= @search_term %>"
+            <% else %>
+              Aucun composant disponible
+            <% end %>
+          </p>
+        </div>
+      <% else %>
+        <div class="space-y-4">
+          <%= for component <- @filtered_components do %>
+            <div
+              class="bg-white rounded-lg border border-gray-200 p-6 hover:shadow-md transition-shadow"
+              data-component={component.nom}
+            >
+              <div class="space-y-4">
+                <div>
+                  <h2 class="text-xl font-semibold text-gray-900">
+                    <%= component.nom || "Composant sans nom" %>
+                  </h2>
+                  <p class="text-sm text-gray-500 mt-1">
+                    Module: <code class="px-2 py-1 bg-gray-100 rounded"><%= component.module %></code>
+                  </p>
+                </div>
+
+                <%= if component.code_source do %>
+                  <div class="space-y-2">
+                    <h3 class="text-sm font-medium text-gray-700">Code source:</h3>
+                    <div class="bg-gray-50 rounded-lg p-4 overflow-x-auto">
+                      <pre class="text-sm text-gray-800"><code phx-no-curly-interpolation><%= component.code_source %></code></pre>
+                    </div>
+                  </div>
+                <% else %>
+                  <div class="text-sm text-gray-400 italic">
+                    Aucun code source disponible
+                  </div>
+                <% end %>
+              </div>
+            </div>
+          <% end %>
+        </div>
+      <% end %>
+    </div>
+
+    <div class="text-sm text-gray-500 text-center">
+      <%= length(@filtered_components) %> composant(s) affiché(s) sur <%= length(@components) %> total
+    </div>
+</div>
+

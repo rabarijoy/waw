@@ -10,6 +10,11 @@ defmodule WawShowcase.Application do
     # Initialiser le cache ETS
     WawShowcase.Cache.init()
 
+    # Charger les composants Waw au démarrage (en arrière-plan)
+    Task.start(fn ->
+      WawShowcase.ComponentExtractor.load_components()
+    end)
+
     children = [
       WawShowcaseWeb.Telemetry,
       {DNSCluster, query: Application.get_env(:waw_showcase, :dns_cluster_query) || :ignore},

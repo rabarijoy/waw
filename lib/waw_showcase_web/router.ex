@@ -23,6 +23,7 @@ defmodule WawShowcaseWeb.Router do
       live "/carburant", CarburantLive, :index
       live "/rapports", RapportsLive, :index
       live "/reglages", ReglagesLive, :index
+      live "/components", ComponentsLive, :index
       live "/components/:component", ComponentDetailLive, :show
     end
   end
