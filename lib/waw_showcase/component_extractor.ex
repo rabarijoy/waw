@@ -81,18 +81,18 @@ defmodule WawShowcase.ComponentExtractor do
       case Code.fetch_docs(module) do
         {:docs_v1, _, _, _, moduledoc, _, docs} ->
           moduledoc_content = extract_moduledoc_content(moduledoc)
+          
+          # Chercher dans la doc de la fonction principale (généralement contient la section ## Usage)
+          function_doc_content = extract_from_function_docs(docs)
+          
+          # Utiliser la fonction doc si elle existe et contient ## Usage, sinon le moduledoc
+          doc_content = function_doc_content || moduledoc_content
 
-          # Si le moduledoc est vide, chercher dans la doc de la fonction principale
-          moduledoc_content =
-            if moduledoc_content in [nil, ""] do
-              extract_from_function_docs(docs)
-            else
-              moduledoc_content
-            end
-
-          if moduledoc_content do
-            nom = extract_nom(moduledoc_content)
-            code_source = extract_usage_code(moduledoc_content)
+          if doc_content do
+            # Extraire le nom depuis la fonction doc en priorité, sinon depuis le moduledoc
+            nom = extract_nom(function_doc_content) || extract_nom(moduledoc_content)
+            # Chercher le code_source d'abord dans la fonction doc, puis dans le moduledoc
+            code_source = extract_usage_code(function_doc_content) || extract_usage_code(moduledoc_content)
             tag = extract_tag(module)
 
             %__MODULE__{
@@ -138,15 +138,38 @@ defmodule WawShowcase.ComponentExtractor do
 
   # Extrait la documentation depuis les fonctions si le moduledoc est vide.
   defp extract_from_function_docs(docs) when is_list(docs) do
-    # Chercher la fonction principale (généralement la première fonction publique)
-    docs
-    |> Enum.find_value(fn
-      {{:function, _name, _arity}, _meta, _signature, doc, _metadata} when is_map(doc) ->
-        doc |> Map.values() |> List.first()
-
-      _ ->
-        nil
-    end)
+    # Chercher la fonction principale (généralement la première fonction publique qui commence par waw_)
+    # Prioriser les fonctions qui commencent par waw_
+    waw_functions = 
+      docs
+      |> Enum.filter(fn
+        {{:function, name, _arity}, _meta, _signature, doc, _metadata} when is_map(doc) ->
+          name_str = Atom.to_string(name)
+          String.starts_with?(name_str, "waw_")
+        _ ->
+          false
+      end)
+    
+    # Si on trouve des fonctions waw_, prendre la première
+    # Sinon, prendre la première fonction publique
+    result = 
+      if Enum.empty?(waw_functions) do
+        docs
+        |> Enum.find_value(fn
+          {{:function, _name, _arity}, _meta, _signature, doc, _metadata} when is_map(doc) ->
+            doc |> Map.values() |> List.first()
+          _ ->
+            nil
+        end)
+      else
+        waw_functions
+        |> List.first()
+        |> then(fn {{:function, _name, _arity}, _meta, _signature, doc, _metadata} ->
+          doc |> Map.values() |> List.first()
+        end)
+      end
+    
+    result
   end
 
   defp extract_from_function_docs(_), do: nil

@@ -142,6 +142,14 @@ function showComponentMenu(component, x, y, targetElement) {
   title.textContent = component.nom || "Composant inconnu"
   menu.appendChild(title)
   
+  // Sous-titre avec le nom du composant (première ligne du @doc)
+  if (component.nom && component.nom !== "Composant inconnu") {
+    const subtitle = document.createElement("div")
+    subtitle.className = "component-inspector-subtitle"
+    subtitle.textContent = component.nom
+    menu.appendChild(subtitle)
+  }
+  
   // Boutons
   const buttonsContainer = document.createElement("div")
   buttonsContainer.className = "component-inspector-buttons"
