@@ -85,27 +85,30 @@ defmodule WawShowcase.ComponentExtractor do
           # Chercher dans la doc de la fonction principale (généralement contient la section ## Usage)
           function_doc_content = extract_from_function_docs(docs)
 
-          # Utiliser la fonction doc si elle existe et contient ## Usage, sinon le moduledoc
+          # Utiliser la fonction doc si elle existe, sinon le moduledoc
           doc_content = function_doc_content || moduledoc_content
 
-          # Extraire le nom depuis la fonction doc en priorité, sinon depuis le moduledoc
-          nom = extract_nom(function_doc_content) || extract_nom(moduledoc_content) || "Composant inconnu"
-          
-          # Chercher le code_source dans les deux endroits (fonction doc ET moduledoc)
-          # Certains composants ont le code source dans le moduledoc, d'autres dans la fonction doc
-          code_source = 
-            extract_usage_code(function_doc_content) || 
-            extract_usage_code(moduledoc_content)
-          
-          tag = extract_tag(module)
+          if doc_content do
+            # Extraire le nom depuis la fonction doc en priorité, sinon depuis le moduledoc
+            nom = extract_nom(function_doc_content) || extract_nom(moduledoc_content)
 
-          # Créer le composant même si le code_source est nil (on peut avoir un nom sans code source)
-          %__MODULE__{
-            nom: nom,
-            code_source: code_source,
-            module: inspect(module),
-            tag: tag
-          }
+            # Chercher le code_source dans les deux endroits (fonction doc ET moduledoc)
+            # Certains composants ont le code source dans le moduledoc, d'autres dans la fonction doc
+            code_source =
+              extract_usage_code(function_doc_content) ||
+              extract_usage_code(moduledoc_content)
+
+            tag = extract_tag(module)
+
+            %__MODULE__{
+              nom: nom,
+              code_source: code_source,
+              module: inspect(module),
+              tag: tag
+            }
+          else
+            nil
+          end
 
         _ ->
           nil
@@ -198,17 +201,17 @@ defmodule WawShowcase.ComponentExtractor do
     # Recherche de la section ## Usage avec le code entre triples backticks
     # Supporte différents formats: ```, ```heex, ```elixir, ```heex\n, etc.
     # Le flag 's' permet à . de matcher les newlines aussi
-    
+
     # Essayer d'abord avec le format le plus spécifique (avec langue)
     regex1 = ~r/## Usage\s*```(?:heex|elixir)?\s*\n?(.*?)```/ms
-    
+
     # Ensuite sans langue mais avec newline optionnelle
     regex2 = ~r/## Usage\s*```\s*\n?(.*?)```/ms
-    
+
     # Enfin, format le plus simple
     regex3 = ~r/## Usage\s*```(.*?)```/ms
 
-    result = 
+    result =
       case Regex.run(regex1, doc) do
         [_, code] -> String.trim(code)
         _ ->
@@ -221,7 +224,7 @@ defmodule WawShowcase.ComponentExtractor do
               end
           end
       end
-    
+
     result
   end
 
