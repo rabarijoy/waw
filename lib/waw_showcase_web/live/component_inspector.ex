@@ -35,17 +35,17 @@ defmodule WawShowcaseWeb.Live.ComponentInspector do
               nil
 
             key ->
-              WawShowcase.ComponentFinder.find_component_by_key(key)
+              WawShowcase.ComponentCache.find_by_tag(key)
           end
 
         # Retourner les informations du composant au client
         component_data =
           if component do
             %{
-              nom: component["Nom du composant"],
-              type: component["Type"],
-              sous_categorie: component["Sous catégorie"],
-              code_source: component["Code source"]
+              nom: component.nom,
+              code_source: component.code_source,
+              module: component.module,
+              tag: component.tag
             }
           else
             nil

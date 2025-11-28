@@ -364,8 +364,6 @@ function initComponentInspector() {
         // Afficher un menu temporaire en attendant la réponse
         showComponentMenu({
           nom: "Chargement...",
-          type: null,
-          sous_categorie: null,
           code_source: null
         }, clientX, clientY, targetElement)
         
@@ -379,8 +377,6 @@ function initComponentInspector() {
         // Afficher un menu de base en cas d'erreur
         showComponentMenu({
           nom: "Composant non identifié",
-          type: null,
-          sous_categorie: null,
           code_source: null
         }, clientX, clientY, targetElement)
         // Nettoyer l'élément temporaire et la cible
@@ -393,8 +389,6 @@ function initComponentInspector() {
       // Afficher un menu de base même sans LiveView
       showComponentMenu({
         nom: "Composant non identifié",
-        type: null,
-        sous_categorie: null,
         code_source: null
       }, clientX, clientY, targetElement)
     }
@@ -432,8 +426,6 @@ function handleComponentInspected(event) {
       // Afficher un menu même si aucun composant n'est trouvé
       showComponentMenu({
         nom: "Composant non identifié",
-        type: null,
-        sous_categorie: null,
         code_source: null
       }, detail.x, detail.y, targetElement)
     }

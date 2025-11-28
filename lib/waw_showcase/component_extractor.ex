@@ -6,7 +6,7 @@ defmodule WawShowcase.ComponentExtractor do
 
   @waw_path "/Volumes/PortableSSD/School/CNED/2A/Stage/waw-components/lib/waw"
 
-  defstruct [:nom, :code_source, :module]
+  defstruct [:nom, :code_source, :module, :tag]
 
   @doc """
   Récupère tous les composants depuis Waw et les met en cache.
@@ -93,11 +93,13 @@ defmodule WawShowcase.ComponentExtractor do
           if moduledoc_content do
             nom = extract_nom(moduledoc_content)
             code_source = extract_usage_code(moduledoc_content)
+            tag = extract_tag(module)
 
             %__MODULE__{
               nom: nom,
               code_source: code_source,
-              module: inspect(module)
+              module: inspect(module),
+              tag: tag
             }
           else
             nil
@@ -183,6 +185,20 @@ defmodule WawShowcase.ComponentExtractor do
     end
   end
 
+  @doc """
+  Extrait le nom du tag depuis le module (ex: Waw.Button -> "waw_button").
+  """
+  def extract_tag(module) when is_atom(module) do
+    module
+    |> inspect()
+    |> String.replace("Elixir.", "")
+    |> String.replace("Waw.", "")
+    |> Macro.underscore()
+    |> then(&"waw_#{&1}")
+  end
+
+  def extract_tag(_), do: nil
+
   # Récupère le chemin vers le dossier lib/waw de Waw.
   defp get_waw_path do
     # Essayer de trouver le chemin depuis la dépendance
@@ -192,4 +208,3 @@ defmodule WawShowcase.ComponentExtractor do
     end
   end
 end
-
