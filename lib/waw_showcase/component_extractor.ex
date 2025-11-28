@@ -88,22 +88,24 @@ defmodule WawShowcase.ComponentExtractor do
           # Utiliser la fonction doc si elle existe et contient ## Usage, sinon le moduledoc
           doc_content = function_doc_content || moduledoc_content
 
-          if doc_content do
-            # Extraire le nom depuis la fonction doc en priorité, sinon depuis le moduledoc
-            nom = extract_nom(function_doc_content) || extract_nom(moduledoc_content)
-            # Chercher le code_source dans toutes les fonctions et le moduledoc
-            code_source = extract_usage_code_from_all_docs(docs, moduledoc_content)
-            tag = extract_tag(module)
+          # Extraire le nom depuis la fonction doc en priorité, sinon depuis le moduledoc
+          nom = extract_nom(function_doc_content) || extract_nom(moduledoc_content) || "Composant inconnu"
+          
+          # Chercher le code_source dans les deux endroits (fonction doc ET moduledoc)
+          # Certains composants ont le code source dans le moduledoc, d'autres dans la fonction doc
+          code_source = 
+            extract_usage_code(function_doc_content) || 
+            extract_usage_code(moduledoc_content)
+          
+          tag = extract_tag(module)
 
-            %__MODULE__{
-              nom: nom,
-              code_source: code_source,
-              module: inspect(module),
-              tag: tag
-            }
-          else
-            nil
-          end
+          # Créer le composant même si le code_source est nil (on peut avoir un nom sans code source)
+          %__MODULE__{
+            nom: nom,
+            code_source: code_source,
+            module: inspect(module),
+            tag: tag
+          }
 
         _ ->
           nil
@@ -174,53 +176,6 @@ defmodule WawShowcase.ComponentExtractor do
 
   defp extract_from_function_docs(_), do: nil
 
-  # Extrait le code source depuis toutes les fonctions et le moduledoc
-  # Cherche dans toutes les fonctions qui contiennent ## Usage
-  defp extract_usage_code_from_all_docs(docs, moduledoc_content) when is_list(docs) do
-    # D'abord chercher dans le moduledoc
-    case extract_usage_code(moduledoc_content) do
-      nil ->
-        # Ensuite chercher dans toutes les fonctions, en priorisant celles qui commencent par waw_
-        waw_functions =
-          docs
-          |> Enum.filter(fn
-            {{:function, name, _arity}, _meta, _signature, doc, _metadata} when is_map(doc) ->
-              name_str = Atom.to_string(name)
-              String.starts_with?(name_str, "waw_")
-            _ ->
-              false
-          end)
-
-        # Chercher dans les fonctions waw_ d'abord
-        case waw_functions
-             |> Enum.find_value(fn {{:function, _name, _arity}, _meta, _signature, doc, _metadata} ->
-               doc_content = doc |> Map.values() |> List.first()
-               extract_usage_code(doc_content)
-             end) do
-          nil ->
-            # Si pas trouvé, chercher dans toutes les autres fonctions
-            docs
-            |> Enum.find_value(fn
-              {{:function, _name, _arity}, _meta, _signature, doc, _metadata} when is_map(doc) ->
-                doc_content = doc |> Map.values() |> List.first()
-                extract_usage_code(doc_content)
-              _ ->
-                nil
-            end)
-
-          code ->
-            code
-        end
-
-      code ->
-        code
-    end
-  end
-
-  defp extract_usage_code_from_all_docs(_, moduledoc_content) do
-    extract_usage_code(moduledoc_content)
-  end
-
   @doc """
   Extrait le nom du composant depuis la première ligne du moduledoc.
   """
@@ -235,24 +190,39 @@ defmodule WawShowcase.ComponentExtractor do
 
   @doc """
   Extrait le code source depuis la section ## Usage.
+  Supporte différents formats de backticks et de langages.
   """
   def extract_usage_code(nil), do: nil
 
   def extract_usage_code(doc) when is_binary(doc) do
     # Recherche de la section ## Usage avec le code entre triples backticks
-    # Supporte différents formats: ```, ```heex, ```elixir
-    regex = ~r/## Usage\s*```(?:heex|elixir)?\s*(.*?)```/ms
+    # Supporte différents formats: ```, ```heex, ```elixir, ```heex\n, etc.
+    # Le flag 's' permet à . de matcher les newlines aussi
+    
+    # Essayer d'abord avec le format le plus spécifique (avec langue)
+    regex1 = ~r/## Usage\s*```(?:heex|elixir)?\s*\n?(.*?)```/ms
+    
+    # Ensuite sans langue mais avec newline optionnelle
+    regex2 = ~r/## Usage\s*```\s*\n?(.*?)```/ms
+    
+    # Enfin, format le plus simple
+    regex3 = ~r/## Usage\s*```(.*?)```/ms
 
-    case Regex.run(regex, doc) do
-      [_, code] -> String.trim(code)
-      _ ->
-        # Essayer aussi sans le préfixe de langue
-        regex2 = ~r/## Usage\s*```\s*(.*?)```/ms
-        case Regex.run(regex2, doc) do
-          [_, code] -> String.trim(code)
-          _ -> nil
-        end
-    end
+    result = 
+      case Regex.run(regex1, doc) do
+        [_, code] -> String.trim(code)
+        _ ->
+          case Regex.run(regex2, doc) do
+            [_, code] -> String.trim(code)
+            _ ->
+              case Regex.run(regex3, doc) do
+                [_, code] -> String.trim(code)
+                _ -> nil
+              end
+          end
+      end
+    
+    result
   end
 
   @doc """
