@@ -26,6 +26,101 @@ import {hooks as colocatedHooks} from "phoenix-colocated/waw_showcase"
 import topbar from "../vendor/topbar"
 
 // Component Inspector Hook - détecte le clic droit et identifie les composants
+
+// Fonction pour afficher un flash (style Waw)
+function showFlash(type, message) {
+  // Supprimer les flashes existants
+  const existingFlash = document.getElementById("component-copy-flash")
+  if (existingFlash) {
+    existingFlash.remove()
+  }
+
+  // Définir les couleurs selon le type
+  const colors = {
+    success: {
+      ring: "ring-green-500",
+      bg: "bg-green-50",
+      text: "text-green-800",
+      textSecondary: "text-green-700",
+      icon: "checkmark-icloud-fill"
+    },
+    danger: {
+      ring: "ring-red-500",
+      bg: "bg-red-50",
+      text: "text-red-800",
+      textSecondary: "text-red-700",
+      icon: "exclamationmark-circle-fill"
+    }
+  }
+
+  const color = colors[type] || colors.danger
+
+  // Créer l'élément flash
+  const flash = document.createElement("div")
+  flash.id = "component-copy-flash"
+  flash.className = `fixed top-2 right-2 w-80 sm:w-96 z-50 rounded-lg p-3 ring-1 ${color.ring} ${color.bg} transition-all ease-out duration-300 opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95`
+  flash.style.position = "fixed"
+  flash.style.top = "0.5rem"
+  flash.style.right = "0.5rem"
+  flash.setAttribute("role", "alert")
+
+  // Contenu du flash
+  flash.innerHTML = `
+    <p class="flex items-center gap-1.5 text-sm font-semibold leading-6 pr-4 ${color.text}">
+      <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+        ${type === "success" 
+          ? '<path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>'
+          : '<path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"></path>'
+        }
+      </svg>
+      ${type === "success" ? "Copie réussie" : "Erreur"}
+    </p>
+    <p class="text-sm leading-5 pr-4 mt-2 ${color.textSecondary}">
+      ${message}
+    </p>
+    <button type="button" class="group absolute top-1 right-1 p-2" aria-label="close">
+      <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+        <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+      </svg>
+    </button>
+  `
+
+  // Ajouter au body
+  document.body.appendChild(flash)
+
+  // Animation d'entrée
+  requestAnimationFrame(() => {
+    flash.classList.remove("opacity-0", "translate-y-4", "sm:scale-95")
+    flash.classList.add("opacity-100", "translate-y-0", "sm:scale-100")
+  })
+
+  // Gestion du clic pour fermer
+  const closeButton = flash.querySelector("button")
+  const closeFlash = () => {
+    flash.classList.remove("opacity-100", "translate-y-0", "sm:scale-100")
+    flash.classList.add("opacity-0", "translate-y-4", "sm:scale-95")
+    setTimeout(() => {
+      if (flash.parentNode) {
+        flash.remove()
+      }
+    }, 200)
+  }
+
+  closeButton.addEventListener("click", closeFlash)
+  flash.addEventListener("click", (e) => {
+    if (e.target === flash || e.target.closest("button")) {
+      closeFlash()
+    }
+  })
+
+  // Fermer automatiquement après 5 secondes
+  setTimeout(() => {
+    if (flash.parentNode) {
+      closeFlash()
+    }
+  }, 5000)
+}
+
 // Fonction pour afficher le menu flottant
 function showComponentMenu(component, x, y, targetElement) {
   // Fermer le menu existant s'il y en a un
@@ -59,7 +154,14 @@ function showComponentMenu(component, x, y, targetElement) {
     if (component.code_source) {
       navigator.clipboard.writeText(component.code_source).then(() => {
         closeComponentMenu()
+        showFlash("success", "Code source copié avec succès")
+      }).catch(() => {
+        closeComponentMenu()
+        showFlash("danger", "Erreur lors de la copie")
       })
+    } else {
+      closeComponentMenu()
+      showFlash("danger", "Rien n'est copié car le code source n'est pas disponible")
     }
   })
   buttonsContainer.appendChild(copyButton)
