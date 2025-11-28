@@ -79,14 +79,20 @@ defmodule WawShowcaseWeb.ReglagesLive do
 
   defp normalize_number(params, key) do
     case Map.get(params, key) do
-      nil -> params
-      "" -> params
+      nil ->
+        params
+
+      "" ->
+        params
+
       value when is_binary(value) ->
         case Integer.parse(value) do
           {int, _} -> Map.put(params, key, int)
           :error -> params
         end
-      _ -> params
+
+      _ ->
+        params
     end
   end
 end

@@ -7,18 +7,18 @@ defmodule WawShowcaseWeb.CarburantLive do
   @impl true
   def mount(_params, _session, socket) do
     socket =
-     socket
-     |> assign(:show_modal, false)
+      socket
+      |> assign(:show_modal, false)
       |> assign(:loading, true)
       |> assign(:vehicules, [])
       |> assign(:vehicule_options, [{"", "Sélectionner un véhicule"}])
       |> assign(:entries, [])
       |> assign(:fuel_cards, [])
-     |> assign(:form_data, %{
-       vehicule: "",
-       date: nil,
-       litres: nil,
-       prix_litre: nil
+      |> assign(:form_data, %{
+        vehicule: "",
+        date: nil,
+        litres: nil,
+        prix_litre: nil
       })
 
     if connected?(socket) do
@@ -38,7 +38,9 @@ defmodule WawShowcaseWeb.CarburantLive do
     vehicules = get_cached_carburant_vehicules()
     entries = get_cached_carburant_entries()
     fuel_cards = get_cached_fuel_cards()
-    vehicule_options = [{"", "Sélectionner un véhicule"}] ++ Enum.map(vehicules, fn v -> {v, v} end)
+
+    vehicule_options =
+      [{"", "Sélectionner un véhicule"}] ++ Enum.map(vehicules, fn v -> {v, v} end)
 
     {:noreply,
      socket
@@ -110,18 +112,78 @@ defmodule WawShowcaseWeb.CarburantLive do
   defp get_cached_fuel_cards do
     WawShowcase.Cache.get(:fuel_cards, fn ->
       [
-        %{vehicule: "Voiture 1", value: "35", number: "1510", title: "Consommation totale de carburant"},
-        %{vehicule: "Voiture 2", value: "28", number: "1200", title: "Consommation totale de carburant"},
-        %{vehicule: "Camion 1", value: "85", number: "3200", title: "Consommation totale de carburant"},
-        %{vehicule: "Voiture 3", value: "32", number: "1380", title: "Consommation totale de carburant"},
-        %{vehicule: "Camion 2", value: "92", number: "3450", title: "Consommation totale de carburant"},
-        %{vehicule: "Voiture 4", value: "26", number: "1100", title: "Consommation totale de carburant"},
-        %{vehicule: "Fourgon 1", value: "45", number: "1800", title: "Consommation totale de carburant"},
-        %{vehicule: "Voiture 5", value: "30", number: "1250", title: "Consommation totale de carburant"},
-        %{vehicule: "Camion 3", value: "88", number: "3300", title: "Consommation totale de carburant"},
-        %{vehicule: "Voiture 6", value: "29", number: "1220", title: "Consommation totale de carburant"},
-        %{vehicule: "Fourgon 2", value: "42", number: "1750", title: "Consommation totale de carburant"},
-        %{vehicule: "Voiture 7", value: "33", number: "1400", title: "Consommation totale de carburant"}
+        %{
+          vehicule: "Voiture 1",
+          value: "35",
+          number: "1510",
+          title: "Consommation totale de carburant"
+        },
+        %{
+          vehicule: "Voiture 2",
+          value: "28",
+          number: "1200",
+          title: "Consommation totale de carburant"
+        },
+        %{
+          vehicule: "Camion 1",
+          value: "85",
+          number: "3200",
+          title: "Consommation totale de carburant"
+        },
+        %{
+          vehicule: "Voiture 3",
+          value: "32",
+          number: "1380",
+          title: "Consommation totale de carburant"
+        },
+        %{
+          vehicule: "Camion 2",
+          value: "92",
+          number: "3450",
+          title: "Consommation totale de carburant"
+        },
+        %{
+          vehicule: "Voiture 4",
+          value: "26",
+          number: "1100",
+          title: "Consommation totale de carburant"
+        },
+        %{
+          vehicule: "Fourgon 1",
+          value: "45",
+          number: "1800",
+          title: "Consommation totale de carburant"
+        },
+        %{
+          vehicule: "Voiture 5",
+          value: "30",
+          number: "1250",
+          title: "Consommation totale de carburant"
+        },
+        %{
+          vehicule: "Camion 3",
+          value: "88",
+          number: "3300",
+          title: "Consommation totale de carburant"
+        },
+        %{
+          vehicule: "Voiture 6",
+          value: "29",
+          number: "1220",
+          title: "Consommation totale de carburant"
+        },
+        %{
+          vehicule: "Fourgon 2",
+          value: "42",
+          number: "1750",
+          title: "Consommation totale de carburant"
+        },
+        %{
+          vehicule: "Voiture 7",
+          value: "33",
+          number: "1400",
+          title: "Consommation totale de carburant"
+        }
       ]
     end)
   end
@@ -137,5 +199,4 @@ defmodule WawShowcaseWeb.CarburantLive do
       ]
     end)
   end
-
 end

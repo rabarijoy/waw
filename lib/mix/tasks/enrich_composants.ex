@@ -46,7 +46,10 @@ defmodule Mix.Tasks.EnrichComposants do
         IO.puts("📊 Statistiques:")
         IO.puts("   - Composants traités: #{length(enriched)}")
         IO.puts("   - Composants avec tag: #{Enum.count(enriched, fn c -> c["tag"] != "" end)}")
-        IO.puts("   - Composants avec attributs: #{Enum.count(enriched, fn c -> length(c["attributs"]) > 0 end)}")
+
+        IO.puts(
+          "   - Composants avec attributs: #{Enum.count(enriched, fn c -> length(c["attributs"]) > 0 end)}"
+        )
 
       {:error, reason} ->
         IO.puts("❌ Erreur lors de la lecture de #{json_file}: #{inspect(reason)}")
@@ -79,7 +82,9 @@ defmodule Mix.Tasks.EnrichComposants do
         # Utiliser \b pour les bornes de mot et capturer uniquement le nom avant le =
         Regex.scan(~r/\b(\w+)\s*=/, attrs_string)
         |> Enum.map(fn [_, key] -> key end)
-      _ -> []
+
+      _ ->
+        []
     end
   end
 end

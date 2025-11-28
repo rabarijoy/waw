@@ -11,7 +11,7 @@ defmodule WawShowcaseWeb.Components.Layout do
     <div class="min-h-screen bg-gray-50">
       <WawShowcaseWeb.Components.Sidebar.sidebar />
       <main class="ml-64">
-        <%= render_slot(@inner_block) %>
+        {render_slot(@inner_block)}
       </main>
     </div>
     """

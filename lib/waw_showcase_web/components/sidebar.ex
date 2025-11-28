@@ -3,6 +3,7 @@ defmodule WawShowcaseWeb.Components.Sidebar do
   Composant sidebar pour la navigation dans le showcase.
   """
   use Phoenix.Component
+
   use Phoenix.VerifiedRoutes,
     endpoint: WawShowcaseWeb.Endpoint,
     router: WawShowcaseWeb.Router,

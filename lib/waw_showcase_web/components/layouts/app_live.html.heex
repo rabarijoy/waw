@@ -1,6 +1,11 @@
 <.waw_fixed_header_footer>
   <:header>
-    <div id="app-header" phx-update="ignore" data-component="Header et Footer fixes" class="contents">
+    <div
+      id="app-header"
+      phx-update="ignore"
+      data-component="Header et Footer fixes"
+      class="contents"
+    >
       <.waw_header title="Waw Showcase" logout_url="" current_user_profile_url="">
         <:nav>
           <.waw_navbar navigate={~p"/"} icon="speedometer" theme="light">
@@ -39,9 +44,13 @@
     </div>
   </:main>
   <:footer>
-    <div id="app-footer" phx-update="ignore" data-component="Header et Footer fixes" class="contents">
+    <div
+      id="app-footer"
+      phx-update="ignore"
+      data-component="Header et Footer fixes"
+      class="contents"
+    >
       <.waw_footer copyright_year={DateTime.utc_now().year} />
     </div>
   </:footer>
 </.waw_fixed_header_footer>
-

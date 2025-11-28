@@ -1,19 +1,21 @@
 <div class="px-4 py-8">
-    <div data-component="Titre de bloc avec icône"><.waw_block_title label="Carburant" icon="gas-station-fill"/></div>
+  <div data-component="Titre de bloc avec icône">
+    <.waw_block_title label="Carburant" icon="gas-station-fill" />
+  </div>
 
-    <div class="mt-6 mb-6 flex justify-end">
-      <.waw_button
-        label="Ajouter une entrée"
-        type="submit"
-        size="md"
-        phx-click="open_modal"
-        class="no-truncate-button"
-        data-component="Bouton de validation d'un formulaire"
-      />
-    </div>
+  <div class="mt-6 mb-6 flex justify-end">
+    <.waw_button
+      label="Ajouter une entrée"
+      type="submit"
+      size="md"
+      phx-click="open_modal"
+      class="no-truncate-button"
+      data-component="Bouton de validation d'un formulaire"
+    />
+  </div>
 
-    <%= if @show_modal do %>
-      <div data-component="Modal pour un filtre" class="contents">
+  <%= if @show_modal do %>
+    <div data-component="Modal pour un filtre" class="contents">
       <.waw_modal id="carburant-modal" show={true}>
         <:title>
           Ajouter une entrée carburant
@@ -76,14 +78,14 @@
           />
         </:actions>
       </.waw_modal>
-      </div>
-    <% end %>
+    </div>
+  <% end %>
 
-    <%= if @loading do %>
-      <div class="py-16 flex flex-col items-center gap-4 text-gray-600">
-        <.loading/>
-      </div>
-    <% else %>
+  <%= if @loading do %>
+    <div class="py-16 flex flex-col items-center gap-4 text-gray-600">
+      <.loading />
+    </div>
+  <% else %>
     <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mb-8">
       <%= for card <- @fuel_cards do %>
         <div data-component="Volume de carburant">
@@ -101,14 +103,20 @@
     </div>
 
     <div class="mt-6">
-      <div data-component="Titre de bloc avec icône"><.waw_block_title label="Historique des entrées" icon="archivebox-fill"/></div>
-      <div data-component="Liste complète des statuts (asset-body-padlick-trackable)" class="contents">
+      <div data-component="Titre de bloc avec icône">
+        <.waw_block_title label="Historique des entrées" icon="archivebox-fill" />
+      </div>
+      <div
+        data-component="Liste complète des statuts (asset-body-padlick-trackable)"
+        class="contents"
+      >
         <.waw_ul>
           <.waw_li
             icon="car"
             battery_number="60"
             connexion_status="normal"
-            title="Renault Clio, 12.01.2024, 45 L, 1.70 €/L, Total 76.50 €">
+            title="Renault Clio, 12.01.2024, 45 L, 1.70 €/L, Total 76.50 €"
+          >
             Renault Clio, 45 L, 76.50 €
           </.waw_li>
 
@@ -117,7 +125,8 @@
             state="selected"
             battery_number="80"
             connexion_status="moving"
-            title="Peugeot 208, 20.01.2024, 38 L, 1.72 €/L, Total 65.36 €">
+            title="Peugeot 208, 20.01.2024, 38 L, 1.72 €/L, Total 65.36 €"
+          >
             Peugeot 208, 38 L, 65.36 €
           </.waw_li>
 
@@ -125,7 +134,8 @@
             icon="truck"
             battery_number="50"
             connexion_status="low_activity"
-            title="Camion Iveco, 03.02.2024, 70 L, 1.68 €/L, Total 117.60 €">
+            title="Camion Iveco, 03.02.2024, 70 L, 1.68 €/L, Total 117.60 €"
+          >
             Camion Iveco, 70 L, 117.60 €
           </.waw_li>
 
@@ -133,7 +143,8 @@
             icon="moto"
             connexion_status="offline"
             battery_number="40"
-            title="Yamaha MT07, 15.02.2024, 14 L, 1.75 €/L, Total 24.50 €">
+            title="Yamaha MT07, 15.02.2024, 14 L, 1.75 €/L, Total 24.50 €"
+          >
             Yamaha MT07, 14 L, 24.50 €
           </.waw_li>
 
@@ -142,11 +153,12 @@
             state="alert"
             connexion_status="defective"
             battery_number="20"
-            title="Audi A3, 22.02.2024, 50 L, 1.80 €/L, Total 90.00 €">
+            title="Audi A3, 22.02.2024, 50 L, 1.80 €/L, Total 90.00 €"
+          >
             Audi A3, 50 L, 90.00 €
           </.waw_li>
         </.waw_ul>
       </div>
     </div>
-    <% end %>
-  </div>
+  <% end %>
+</div>

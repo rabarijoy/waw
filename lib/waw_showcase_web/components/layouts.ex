@@ -35,40 +35,63 @@ defmodule WawShowcaseWeb.Layouts do
 
   def app(assigns) do
     ~H"""
-    <header class="navbar px-4 sm:px-6 lg:px-8">
-      <div class="flex-1">
-        <a href="/" class="flex-1 flex w-fit items-center gap-2">
-          <img src={~p"/images/logo.svg"} width="36" />
-          <span class="text-sm font-semibold">v{Application.spec(:phoenix, :vsn)}</span>
-        </a>
-      </div>
-      <div class="flex-none">
-        <ul class="flex flex-column px-1 space-x-4 items-center">
-          <li>
-            <a href="https://phoenixframework.org/" class="btn btn-ghost">Website</a>
-          </li>
-          <li>
-            <a href="https://github.com/phoenixframework/phoenix" class="btn btn-ghost">GitHub</a>
-          </li>
-          <li>
-            <.theme_toggle />
-          </li>
-          <li>
-            <a href="https://hexdocs.pm/phoenix/overview.html" class="btn btn-primary">
-              Get Started <span aria-hidden="true">&rarr;</span>
-            </a>
-          </li>
-        </ul>
-      </div>
-    </header>
+    <div id="layout-root" phx-hook="ThemeManager" class="relative flex min-h-screen flex-col">
+      <header class="navbar px-4 sm:px-6 lg:px-8">
+        <div class="flex-1">
+          <a href="/" class="flex flex-1 w-fit items-center gap-2">
+            <img src={~p"/images/logo.svg"} width="36" />
+            <span class="text-sm font-semibold">v{Application.spec(:phoenix, :vsn)}</span>
+          </a>
+        </div>
+        <div class="flex-none">
+          <ul class="flex flex-column items-center space-x-4 px-1">
+            <li>
+              <a href="https://phoenixframework.org/" class="btn btn-ghost">Website</a>
+            </li>
+            <li>
+              <a href="https://github.com/phoenixframework/phoenix" class="btn btn-ghost">GitHub</a>
+            </li>
+            <li>
+              <.theme_toggle />
+            </li>
+            <li>
+              <a href="https://hexdocs.pm/phoenix/overview.html" class="btn btn-primary">
+                Get Started <span aria-hidden="true">&rarr;</span>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </header>
 
-    <main class="px-4 py-20 sm:px-6 lg:px-8">
-      <div class="mx-auto max-w-2xl space-y-4">
-        {render_slot(@inner_block)}
-      </div>
-    </main>
+      <main class="px-4 py-20 sm:px-6 lg:px-8">
+        <div class="mx-auto max-w-2xl space-y-4">
+          {render_slot(@inner_block)}
+        </div>
+      </main>
 
-    <.flash_group flash={@flash} />
+      <.flash_group flash={@flash} />
+
+      <%!-- Popup de notification explicative du menu contextuel --%>
+      <div
+        id="context-menu-notification-popup"
+        phx-hook="ContextMenuNotification"
+        data-popup-delay="500"
+        class="pointer-events-none fixed bottom-4 right-4 z-50 hidden opacity-0 transition-opacity duration-200"
+      >
+        <div data-component="Popup de notification">
+          <.waw_notification_popup
+            time=""
+            description="Utilisez le clic droit importe-où"
+            title="Menu-contextuel"
+            icon="lightbulb"
+          >
+            <:show>
+              <.waw_button_text label="Compris" data-context-menu-popup-button="dismiss" />
+            </:show>
+          </.waw_notification_popup>
+        </div>
+      </div>
+    </div>
     """
   end
 
@@ -152,35 +175,67 @@ defmodule WawShowcaseWeb.Layouts do
     """
   end
 
-
   @doc """
   Layout avec navigation fixe pour les LiveViews (composant).
   Le header et le footer utilisent phx-update="ignore" pour ne pas être remplacés
   lors des mises à jour LiveView.
   """
-  attr :current_page, :string, default: "", doc: "Page actuelle pour mettre en évidence le lien de navigation"
+  attr :current_page, :string,
+    default: "",
+    doc: "Page actuelle pour mettre en évidence le lien de navigation"
+
   slot :inner_block, required: true
 
   def app_with_nav(assigns) do
     ~H"""
     <.waw_fixed_header_footer>
       <:header>
-        <div id="app-header" phx-update="ignore" data-component="Header et Footer fixes" class="contents">
+        <div
+          id="app-header"
+          phx-update="ignore"
+          data-component="Header et Footer fixes"
+          class="contents"
+        >
           <.waw_header title="Waw Showcase" logout_url="" current_user_profile_url="">
             <:nav>
-              <.waw_navbar active={@current_page == "/"} navigate={~p"/"} icon="speedometer" theme="light">
+              <.waw_navbar
+                active={@current_page == "/"}
+                navigate={~p"/"}
+                icon="speedometer"
+                theme="light"
+              >
                 Tableau de bord
               </.waw_navbar>
-              <.waw_navbar active={@current_page == "/vehicules"} navigate={~p"/vehicules"} icon="car" theme="light">
+              <.waw_navbar
+                active={@current_page == "/vehicules"}
+                navigate={~p"/vehicules"}
+                icon="car"
+                theme="light"
+              >
                 Véhicules
               </.waw_navbar>
-              <.waw_navbar active={@current_page == "/carburant"} navigate={~p"/carburant"} icon="fuel-pump" theme="light">
+              <.waw_navbar
+                active={@current_page == "/carburant"}
+                navigate={~p"/carburant"}
+                icon="fuel-pump"
+                theme="light"
+              >
                 Carburant
               </.waw_navbar>
-              <.waw_navbar active={@current_page == "/rapports"} navigate={~p"/rapports"} icon="doc-text" theme="light">
+              <.waw_navbar
+                active={@current_page == "/rapports"}
+                navigate={~p"/rapports"}
+                icon="doc-text"
+                theme="light"
+              >
                 Rapports
               </.waw_navbar>
-              <.waw_navbar active={@current_page == "/reglages"} navigate={~p"/reglages"} icon="gearshape" theme="light">
+              <.waw_navbar
+                active={@current_page == "/reglages"}
+                navigate={~p"/reglages"}
+                icon="gearshape"
+                theme="light"
+              >
                 Réglages
               </.waw_navbar>
             </:nav>
@@ -204,7 +259,12 @@ defmodule WawShowcaseWeb.Layouts do
         </div>
       </:main>
       <:footer>
-        <div id="app-footer" phx-update="ignore" data-component="Header et Footer fixes" class="contents">
+        <div
+          id="app-footer"
+          phx-update="ignore"
+          data-component="Header et Footer fixes"
+          class="contents"
+        >
           <.waw_footer copyright_year={DateTime.utc_now().year} />
         </div>
       </:footer>

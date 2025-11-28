@@ -83,6 +83,7 @@ defmodule WawShowcaseWeb.VehiculesLive do
           rescue
             ArgumentError -> {String.to_atom(k), v}
           end
+
         {k, v} ->
           {k, v}
       end)
@@ -127,18 +128,18 @@ defmodule WawShowcaseWeb.VehiculesLive do
       [
         %{nom: "Voiture 1", plaque: "AB-123-CD", kilometrage: 45000},
         %{nom: "Voiture 2", plaque: "EF-456-GH", kilometrage: 32000},
-        %{nom: "Camion 1", plaque: "IJ-789-KL", kilometrage: 125000},
+        %{nom: "Camion 1", plaque: "IJ-789-KL", kilometrage: 125_000},
         %{nom: "Voiture 3", plaque: "MN-012-OP", kilometrage: 28000},
         %{nom: "Camion 2", plaque: "QR-345-ST", kilometrage: 98000},
         %{nom: "Voiture 4", plaque: "UV-678-WX", kilometrage: 15000},
         %{nom: "Voiture 5", plaque: "YZ-901-AB", kilometrage: 67000},
-        %{nom: "Camion 3", plaque: "CD-234-EF", kilometrage: 156000},
+        %{nom: "Camion 3", plaque: "CD-234-EF", kilometrage: 156_000},
         %{nom: "Voiture 6", plaque: "GH-567-IJ", kilometrage: 42000},
         %{nom: "Voiture 7", plaque: "KL-890-MN", kilometrage: 23000},
-        %{nom: "Camion 4", plaque: "OP-123-QR", kilometrage: 189000},
+        %{nom: "Camion 4", plaque: "OP-123-QR", kilometrage: 189_000},
         %{nom: "Voiture 8", plaque: "ST-456-UV", kilometrage: 54000},
         %{nom: "Voiture 9", plaque: "WX-789-YZ", kilometrage: 31000},
-        %{nom: "Camion 5", plaque: "AB-012-CD", kilometrage: 201000},
+        %{nom: "Camion 5", plaque: "AB-012-CD", kilometrage: 201_000},
         %{nom: "Voiture 10", plaque: "EF-345-GH", kilometrage: 19000}
       ]
     end)

@@ -47,14 +47,6 @@ function showComponentMenu(component, x, y, targetElement) {
   title.textContent = component.nom || "Composant inconnu"
   menu.appendChild(title)
   
-  // Sous-titre
-  if (component.type && component.sous_categorie) {
-    const subtitle = document.createElement("div")
-    subtitle.className = "component-inspector-subtitle"
-    subtitle.textContent = `${component.type} > ${component.sous_categorie}`
-    menu.appendChild(subtitle)
-  }
-  
   // Boutons
   const buttonsContainer = document.createElement("div")
   buttonsContainer.className = "component-inspector-buttons"
@@ -196,6 +188,94 @@ function extractAttributes(element) {
 // Stocker la référence à l'élément cible pour l'utiliser dans la réponse
 // Utiliser un Map pour stocker plusieurs cibles avec leurs coordonnées
 const inspectTargets = new Map()
+
+const ThemeManagerHook = {
+  mounted() {
+    this.storageKey = "phx:theme"
+
+    this.setTheme = (theme) => {
+      if (theme === "system") {
+        localStorage.removeItem(this.storageKey)
+        document.documentElement.removeAttribute("data-theme")
+      } else {
+        localStorage.setItem(this.storageKey, theme)
+        document.documentElement.setAttribute("data-theme", theme)
+      }
+    }
+
+    if (!document.documentElement.hasAttribute("data-theme")) {
+      this.setTheme(localStorage.getItem(this.storageKey) || "system")
+    }
+
+    this.storageHandler = (event) => {
+      if (event.key === this.storageKey) {
+        this.setTheme(event.newValue || "system")
+      }
+    }
+
+    this.themeEventHandler = (event) => {
+      const theme = event.target?.dataset?.phxTheme || "system"
+      this.setTheme(theme)
+    }
+
+    window.addEventListener("storage", this.storageHandler)
+    window.addEventListener("phx:set-theme", this.themeEventHandler)
+  },
+
+  destroyed() {
+    window.removeEventListener("storage", this.storageHandler)
+    window.removeEventListener("phx:set-theme", this.themeEventHandler)
+  }
+}
+
+const ContextMenuNotificationHook = {
+  mounted() {
+    this.storageKey = "waw_showcase_context_menu_notification_shown"
+    this.delay = Number(this.el.dataset.popupDelay || "500")
+
+    this.dismissHandler = (event) => {
+      const button = event.target?.closest("[data-context-menu-popup-button]")
+      if (button && this.el.contains(button)) {
+        this.hide()
+      }
+    }
+
+    document.addEventListener("click", this.dismissHandler)
+
+    if (!sessionStorage.getItem(this.storageKey)) {
+      this.showTimer = window.setTimeout(() => this.show(), this.delay)
+    } else {
+      this.hide(true)
+    }
+  },
+
+  destroyed() {
+    document.removeEventListener("click", this.dismissHandler)
+    if (this.showTimer) {
+      window.clearTimeout(this.showTimer)
+    }
+  },
+
+  show() {
+    sessionStorage.setItem(this.storageKey, "true")
+    this.el.classList.remove("hidden")
+
+    requestAnimationFrame(() => {
+      this.el.classList.remove("opacity-0", "pointer-events-none")
+      this.el.classList.add("opacity-100")
+    })
+  },
+
+  hide(force = false) {
+    if (force) {
+      this.el.classList.add("hidden", "opacity-0", "pointer-events-none")
+      return
+    }
+
+    this.el.classList.add("opacity-0", "pointer-events-none")
+    window.setTimeout(() => this.el.classList.add("hidden"), 200)
+  }
+}
 
 // Initialiser l'inspecteur de composants directement sur document
 // Utiliser capture: true pour intercepter l'événement avant qu'il ne soit traité par le navigateur
@@ -438,11 +518,17 @@ if (document.body) {
 }
 
 
+const hooks = {
+  ...colocatedHooks,
+  ThemeManager: ThemeManagerHook,
+  ContextMenuNotification: ContextMenuNotificationHook
+}
+
 const csrfToken = document.querySelector("meta[name='csrf-token']").getAttribute("content")
 const liveSocket = new LiveSocket("/live", Socket, {
   longPollFallbackMs: 2500,
   params: {_csrf_token: csrfToken},
-  hooks: {...colocatedHooks},
+  hooks,
 })
 
 // Show progress bar on live navigation and form submits

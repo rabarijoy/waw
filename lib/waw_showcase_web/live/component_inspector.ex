@@ -61,7 +61,6 @@ defmodule WawShowcaseWeb.Live.ComponentInspector do
 
         {:noreply, socket}
       end
-
     end
   end
 end

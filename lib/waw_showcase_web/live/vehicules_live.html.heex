@@ -1,244 +1,263 @@
 <div class="px-4 py-8 space-y-12">
-      <%!-- Entête de page --%>
-      <div data-component="Titre de bloc avec icône" class="mb-8">
-        <.waw_block_title label="Vehicules" icon="car-2-fill" />
+  <%!-- Entête de page --%>
+  <div data-component="Titre de bloc avec icône" class="mb-8">
+    <.waw_block_title label="Vehicules" icon="car-2-fill" />
+  </div>
+
+  <%!-- Contenu conditionnel : formulaire multi-étapes ou tableau liste --%>
+  <%= if @show_form do %>
+    <%!-- Formulaire multi-étapes --%>
+    <section class="space-y-8">
+      <.waw_steps data-component="Steps">
+        <:step status={if(@form_step >= 1, do: :valid, else: :disabled)} active={@form_step == 1}>
+          Informations générales
+        </:step>
+        <:step
+          status={
+            if(@form_step >= 2,
+              do: :valid,
+              else: if(@form_step == 2, do: :invalid, else: :disabled)
+            )
+          }
+          active={@form_step == 2}
+        >
+          Détails véhicule
+        </:step>
+        <:step
+          status={
+            if(@form_step >= 3,
+              do: :valid,
+              else: if(@form_step == 3, do: :invalid, else: :disabled)
+            )
+          }
+          active={@form_step == 3}
+        >
+          Kilométrage et carburant
+        </:step>
+        <:step
+          status={if(@form_step == 4, do: :invalid, else: :disabled)}
+          active={@form_step == 4}
+        >
+          Confirmation
+        </:step>
+      </.waw_steps>
+
+      <div class="mt-8 space-y-6">
+        <%= cond do %>
+          <% @form_step == 1 -> %>
+            <form phx-change="update_form" class="space-y-6">
+              <.input
+                label="Marque"
+                name="marque"
+                type="text"
+                placeholder="Marque du véhicule"
+                value={@form_data.marque}
+                data-component="Champs de saisie texte"
+              />
+              <.input
+                label="Modèle"
+                name="modele"
+                type="text"
+                placeholder="Modèle du véhicule"
+                value={@form_data.modele}
+                data-component="Champs de saisie texte"
+              />
+              <.input
+                label="Description"
+                name="description"
+                type="textarea"
+                placeholder="Description du véhicule"
+                value={@form_data.description}
+                data-component="Champs de saisie pour description ou note"
+              />
+            </form>
+          <% @form_step == 2 -> %>
+            <form phx-change="update_form" class="space-y-6">
+              <.input
+                label="Année"
+                name="annee"
+                type="number"
+                placeholder="Année"
+                value={@form_data.annee}
+                data-component="Champs de saisie téléphone"
+              />
+              <.input
+                label="Plaque d'immatriculation"
+                name="plaque"
+                type="text"
+                placeholder="Plaque"
+                value={@form_data.plaque}
+                data-component="Champs de saisie texte"
+              />
+            </form>
+          <% @form_step == 3 -> %>
+            <form phx-change="update_form" class="space-y-6">
+              <.input
+                label="Kilométrage"
+                name="kilometrage"
+                type="number"
+                placeholder="Kilométrage"
+                value={@form_data.kilometrage}
+                data-component="Champs de saisie téléphone"
+              />
+              <.input
+                label="Niveau de carburant"
+                name="niveau_carburant"
+                type="text"
+                placeholder="Niveau de carburant"
+                value={@form_data.niveau_carburant}
+                data-component="Champs de saisie texte"
+              />
+            </form>
+          <% @form_step == 4 -> %>
+            <div class="space-y-3 rounded-lg border border-gray-200 p-6">
+              <p><strong>Marque:</strong> {@form_data.marque}</p>
+              <p><strong>Modèle:</strong> {@form_data.modele}</p>
+              <p>
+                <strong>Année:</strong> {if @form_data.annee,
+                  do: @form_data.annee,
+                  else: "Non renseigné"}
+              </p>
+              <p><strong>Plaque:</strong> {@form_data.plaque}</p>
+              <p>
+                <strong>Kilométrage:</strong> {if @form_data.kilometrage,
+                  do: @form_data.kilometrage,
+                  else: "Non renseigné"}
+              </p>
+              <p><strong>Niveau de carburant:</strong> {@form_data.niveau_carburant}</p>
+            </div>
+        <% end %>
+
+        <div class="mt-8 flex items-center justify-between">
+          <.waw_button
+            label="Précédent"
+            type="cancel"
+            size="md"
+            phx-click="previous_step"
+            disabled={@form_step == 1}
+            data-component={
+              if @form_step == 1,
+                do: "Bouton desactivé",
+                else: "Bouton d’annulation d’un formulaire"
+            }
+          />
+
+          <%= if @form_step == 4 do %>
+            <.waw_button
+              label="Sauvegarder"
+              type="submit"
+              size="md"
+              color="success"
+              phx-click="save_vehicule"
+              data-component="Bouton de validation d’un formulaire"
+            />
+          <% else %>
+            <.waw_button
+              label="Suivant"
+              type="submit"
+              size="md"
+              phx-click="next_step"
+              data-component="Bouton de validation d’un formulaire"
+            />
+          <% end %>
+        </div>
+      </div>
+    </section>
+  <% else %>
+    <%!-- Tableau liste des véhicules avec recherche et pagination --%>
+    <section class="space-y-8">
+      <div class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between mb-6">
+        <.input
+          id="search-vehicules"
+          name="search"
+          type="search"
+          placeholder="Rechercher un véhicule..."
+          value={@search_query}
+          phx-debounce="300"
+          phx-change="search"
+          data-component="Champs de saisie recherche"
+        />
+        <.waw_button
+          label="Ajouter un véhicule"
+          type="button"
+          size="md"
+          phx-click="toggle_form"
+          data-component="Bouton par défaut"
+        />
       </div>
 
-      <%!-- Contenu conditionnel : formulaire multi-étapes ou tableau liste --%>
-      <%= if @show_form do %>
-        <%!-- Formulaire multi-étapes --%>
-        <section class="space-y-8">
-          <.waw_steps data-component="Steps">
-            <:step status={if(@form_step >= 1, do: :valid, else: :disabled)} active={@form_step == 1}>
-              Informations générales
-            </:step>
-            <:step
-              status={if(@form_step >= 2, do: :valid, else: if(@form_step == 2, do: :invalid, else: :disabled))}
-              active={@form_step == 2}
+      <div data-component="Tableau - par défaut" class="contents mt-6">
+        <div class="overflow-hidden bg-white border border-gray-100 rounded-sm">
+          <.waw_table class="min-w-full text-left text-sm">
+            <thead class="bg-gray-50 text-xs font-semibold uppercase tracking-wide text-gray-500">
+              <tr>
+                <th class="px-4 py-3">Nom</th>
+                <th class="px-4 py-3">Plaque</th>
+                <th class="px-4 py-3">Kilométrage</th>
+              </tr>
+            </thead>
+            <tbody
+              id="paginated-vehicules"
+              phx-update="stream"
+              class="divide-y divide-gray-100"
             >
-              Détails véhicule
-            </:step>
-            <:step
-              status={if(@form_step >= 3, do: :valid, else: if(@form_step == 3, do: :invalid, else: :disabled))}
-              active={@form_step == 3}
-            >
-              Kilométrage et carburant
-            </:step>
-            <:step status={if(@form_step == 4, do: :invalid, else: :disabled)} active={@form_step == 4}>
-              Confirmation
-            </:step>
-          </.waw_steps>
-
-          <div class="mt-8 space-y-6">
-            <%= cond do %>
-              <% @form_step == 1 -> %>
-                <form phx-change="update_form" class="space-y-6">
-                  <.input
-                    label="Marque"
-                    name="marque"
-                    type="text"
-                    placeholder="Marque du véhicule"
-                    value={@form_data.marque}
-                    data-component="Champs de saisie texte"
+              <tr
+                :for={{dom_id, vehicule} <- @streams.paginated_vehicules}
+                id={dom_id}
+                class="transition hover:bg-gray-50"
+              >
+                <td class="px-4 py-3">
+                  <span class="text-sm font-medium text-gray-900">
+                    {vehicule.nom}
+                  </span>
+                </td>
+                <td class="px-4 py-3">
+                  <.waw_text value={vehicule.plaque} data-component="Texte" />
+                </td>
+                <td class="px-4 py-3">
+                  <.waw_distance
+                    unit={:kilometer}
+                    value={vehicule.kilometrage}
+                    data-component="Distance en km"
                   />
-                  <.input
-                    label="Modèle"
-                    name="modele"
-                    type="text"
-                    placeholder="Modèle du véhicule"
-                    value={@form_data.modele}
-                    data-component="Champs de saisie texte"
-                  />
-                  <.input
-                    label="Description"
-                    name="description"
-                    type="textarea"
-                    placeholder="Description du véhicule"
-                    value={@form_data.description}
-                    data-component="Champs de saisie pour description ou note"
-                  />
-                </form>
+                </td>
+              </tr>
+            </tbody>
+          </.waw_table>
+        </div>
+      </div>
 
-              <% @form_step == 2 -> %>
-                <form phx-change="update_form" class="space-y-6">
-                  <.input
-                    label="Année"
-                    name="annee"
-                    type="number"
-                    placeholder="Année"
-                    value={@form_data.annee}
-                    data-component="Champs de saisie téléphone"
-                  />
-                  <.input
-                    label="Plaque d'immatriculation"
-                    name="plaque"
-                    type="text"
-                    placeholder="Plaque"
-                    value={@form_data.plaque}
-                    data-component="Champs de saisie texte"
-                  />
-                </form>
-
-              <% @form_step == 3 -> %>
-                <form phx-change="update_form" class="space-y-6">
-                  <.input
-                    label="Kilométrage"
-                    name="kilometrage"
-                    type="number"
-                    placeholder="Kilométrage"
-                    value={@form_data.kilometrage}
-                    data-component="Champs de saisie téléphone"
-                  />
-                  <.input
-                    label="Niveau de carburant"
-                    name="niveau_carburant"
-                    type="text"
-                    placeholder="Niveau de carburant"
-                    value={@form_data.niveau_carburant}
-                    data-component="Champs de saisie texte"
-                  />
-
-                </form>
-
-              <% @form_step == 4 -> %>
-                <div class="space-y-3 rounded-lg border border-gray-200 p-6">
-                  <p><strong>Marque:</strong> {@form_data.marque}</p>
-                  <p><strong>Modèle:</strong> {@form_data.modele}</p>
-                  <p><strong>Année:</strong> {if @form_data.annee, do: @form_data.annee, else: "Non renseigné"}</p>
-                  <p><strong>Plaque:</strong> {@form_data.plaque}</p>
-                  <p>
-                    <strong>Kilométrage:</strong> {if @form_data.kilometrage, do: @form_data.kilometrage, else: "Non renseigné"}
-                  </p>
-                  <p><strong>Niveau de carburant:</strong> {@form_data.niveau_carburant}</p>
-                </div>
-            <% end %>
-
-            <div class="mt-8 flex items-center justify-between">
-              <.waw_button
-                label="Précédent"
-                type="cancel"
-                size="md"
-                phx-click="previous_step"
-                disabled={@form_step == 1}
-                data-component={if @form_step == 1, do: "Bouton desactivé", else: "Bouton d’annulation d’un formulaire"}
-              />
-
-              <%= if @form_step == 4 do %>
-                <.waw_button
-                  label="Sauvegarder"
-                  type="submit"
-                  size="md"
-                  color="success"
-                  phx-click="save_vehicule"
-                  data-component="Bouton de validation d’un formulaire"
-                />
-              <% else %>
-                <.waw_button
-                  label="Suivant"
-                  type="submit"
-                  size="md"
-                  phx-click="next_step"
-                  data-component="Bouton de validation d’un formulaire"
-                />
-              <% end %>
-            </div>
-          </div>
-        </section>
-      <% else %>
-        <%!-- Tableau liste des véhicules avec recherche et pagination --%>
-        <section class="space-y-8">
-          <div class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between mb-6">
-            <.input
-              id="search-vehicules"
-              name="search"
-              type="search"
-              placeholder="Rechercher un véhicule..."
-              value={@search_query}
-              phx-debounce="300"
-              phx-change="search"
-              data-component="Champs de saisie recherche"
+      <div class="contents mt-8" data-component="Pagination">
+        <.waw_pagination
+          label="Page"
+          total={@total_pages}
+          current_page={@current_page}
+        >
+          <:left>
+            <.waw_button_icon
+              icon="caret-left"
+              icon_size={5}
+              disabled={@current_page == 1}
+              phx-click="change_page"
+              phx-value-page={@current_page - 1}
             />
-            <.waw_button
-              label="Ajouter un véhicule"
-              type="button"
-              size="md"
-              phx-click="toggle_form"
-              data-component="Bouton par défaut"
+          </:left>
+          <:right>
+            <.waw_button_icon
+              icon="caret-right"
+              icon_size={5}
+              disabled={@current_page >= @total_pages}
+              phx-click="change_page"
+              phx-value-page={@current_page + 1}
             />
-          </div>
+          </:right>
+        </.waw_pagination>
+      </div>
 
-          <div data-component="Tableau - par défaut" class="contents mt-6">
-            <div class="overflow-hidden bg-white border border-gray-100 rounded-sm">
-              <.waw_table class="min-w-full text-left text-sm">
-                <thead class="bg-gray-50 text-xs font-semibold uppercase tracking-wide text-gray-500">
-                  <tr>
-                    <th class="px-4 py-3">Nom</th>
-                    <th class="px-4 py-3">Plaque</th>
-                    <th class="px-4 py-3">Kilométrage</th>
-                  </tr>
-                </thead>
-                <tbody
-                  id="paginated-vehicules"
-                  phx-update="stream"
-                  class="divide-y divide-gray-100"
-                >
-                  <tr
-                    :for={{dom_id, vehicule} <- @streams.paginated_vehicules}
-                    id={dom_id}
-                    class="transition hover:bg-gray-50"
-                  >
-                    <td class="px-4 py-3">
-                      <span class="text-sm font-medium text-gray-900">
-                        {vehicule.nom}
-                      </span>
-                    </td>
-                    <td class="px-4 py-3">
-                      <.waw_text value={vehicule.plaque} data-component="Texte" />
-                    </td>
-                    <td class="px-4 py-3">
-                      <.waw_distance
-                        unit={:kilometer}
-                        value={vehicule.kilometrage}
-                        data-component="Distance en km"
-                      />
-                    </td>
-                  </tr>
-                </tbody>
-              </.waw_table>
-            </div>
-          </div>
-
-          <div class="contents mt-8" data-component="Pagination">
-            <.waw_pagination
-              label="Page"
-              total={@total_pages}
-              current_page={@current_page}
-            >
-              <:left>
-                <.waw_button_icon
-                  icon="caret-left"
-                  icon_size={5}
-                  disabled={@current_page == 1}
-                  phx-click="change_page"
-                  phx-value-page={@current_page - 1}
-                />
-              </:left>
-              <:right>
-                <.waw_button_icon
-                  icon="caret-right"
-                  icon_size={5}
-                  disabled={@current_page >= @total_pages}
-                  phx-click="change_page"
-                  phx-value-page={@current_page + 1}
-                />
-              </:right>
-            </.waw_pagination>
-          </div>
-
-          <%!-- Séparateur de bloc discret --%>
-          <div data-component="Séparateur de blocs avec label" class="mt-12">
-            <.waw_block_separator label="Véhicules" />
-          </div>
-        </section>
-      <% end %>
-    </div>
+      <%!-- Séparateur de bloc discret --%>
+      <div data-component="Séparateur de blocs avec label" class="mt-12">
+        <.waw_block_separator label="Véhicules" />
+      </div>
+    </section>
+  <% end %>
+</div>

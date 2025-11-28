@@ -15,7 +15,7 @@ defmodule WawShowcaseWeb.Components.CodePreview do
           <span class="text-sm font-medium text-gray-700">Preview</span>
         </div>
         <div class="p-6">
-          <%= render_slot(@inner_block) %>
+          {render_slot(@inner_block)}
         </div>
       </div>
       <div class="mt-4 bg-gray-900 rounded-lg shadow-sm overflow-hidden">
