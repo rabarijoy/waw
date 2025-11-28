@@ -11,7 +11,10 @@ defmodule WawShowcase.Application do
     WawShowcase.Cache.init()
 
     # Charger les composants Waw au démarrage (en arrière-plan)
+    # Ne pas attendre la fin du chargement pour démarrer l'application
     Task.start(fn ->
+      # Attendre un peu pour que les modules soient compilés
+      Process.sleep(1000)
       WawShowcase.ComponentExtractor.load_components()
     end)
 
