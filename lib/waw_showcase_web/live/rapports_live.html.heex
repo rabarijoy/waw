@@ -1,12 +1,12 @@
 <div class="px-4 py-8">
   <!-- TITRE DE BLOC -->
-  <div data-component="Titre de bloc avec icône">
+  <div data-component="waw_block_title">
     <.waw_block_title label="Rapports" icon="chart-bar-fill" />
   </div>
   
 <!-- BOUTON D'EXPORT -->
   <div class="mt-6 mb-6 flex justify-end">
-    <div data-component="Info-bulle">
+    <div data-component="tooltip">
       <.tooltip
         position="top"
         color="white"
@@ -18,14 +18,14 @@
           type="submit"
           size="md"
           icon="square-and-arrow-up"
-          data-component="Bouton de validation d'un formulaire"
+          data-component="waw_button"
         />
       </.tooltip>
     </div>
   </div>
   
 <!-- ONGLETS -->
-  <div data-component="Onglets - taille moyenne" class="contents">
+  <div data-component="waw_tabs" class="contents">
     <.waw_tabs size="lg" align_tab="left">
       <.waw_tab active={@active_tab == "general"} phx-click="switch_tab" phx-value-tab="general">
         General
@@ -52,7 +52,7 @@
             description="Nombre total de véhicules"
             title="Véhicules totaux"
             icon="car"
-            data-component="Carte statistique avec unité de valeurs"
+            data-component="waw_stat"
           />
 
           <.waw_stat
@@ -60,7 +60,7 @@
             description="Total des dépenses en carburant"
             title="Total carburant"
             icon="fuel-pump"
-            data-component="Carte statistique avec unité de valeurs"
+            data-component="waw_stat"
           />
 
           <.waw_stat
@@ -68,7 +68,7 @@
             description="Total des coûts de maintenance"
             title="Coût de maintenance"
             icon="wrench-and-screwdriver-fill"
-            data-component="Carte statistique avec unité de valeurs"
+            data-component="waw_stat"
           />
 
           <.waw_stat
@@ -76,7 +76,7 @@
             description="Coût moyen par véhicule"
             title="Coût moyen par véhicule"
             icon="credit-card"
-            data-component="Carte statistique avec unité de valeurs"
+            data-component="waw_stat"
           />
         </div>
         
@@ -91,17 +91,17 @@
               previous_value={90}
               previous_at={~U[2025-11-20 07:59:45.682352Z]}
               col={2}
-              data-component="Carte statistique complète"
+              data-component="waw_stat"
             />
           <% end %>
         </div>
         <!-- Cartes comptes-rendus-->
-        <div data-component="Titre de bloc avec icône" class="mb-6">
+        <div data-component="waw_block_title" class="mb-6">
           <.waw_block_title label="Comptes-rendus" icon="doc-text-fill" />
         </div>
         <div class="grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-4">
           <%= for {_dom_id, vehicule} <- @streams.vehicules do %>
-            <div data-component="Compte-rendu - Par défaut">
+            <div data-component="waw_card">
               <.waw_card
                 title={"Compte rendu de " <> vehicule.nom}
                 tooltip_description="Informations sur le dernier compte rendu disponible"
@@ -122,7 +122,7 @@
     
 <!-- TAB: PAR VÉHICULE -->
     <div class={["mt-6", @active_tab != "vehicule" && "hidden"]}>
-      <div data-component="Tableau - par défaut" class="contents">
+      <div data-component="waw_table" class="contents">
         <div class="overflow-hidden bg-white border border-gray-100 rounded-sm">
           <.waw_table class="min-w-full text-left text-sm">
             <thead class="bg-gray-50 text-xs font-semibold uppercase tracking-wide text-gray-500">
@@ -151,21 +151,21 @@
                 <td class="px-4 py-3">
                   <.waw_text
                     value={to_string(vehicule.entrees_carburant)}
-                    data-component="Texte"
+                    data-component="waw_text"
                   />
                 </td>
                 <td class="px-4 py-3">
                   <.currency
                     value={vehicule.cout_carburant}
                     currency="EUR"
-                    data-component="Devise"
+                    data-component="currency"
                   />
                 </td>
                 <td class="px-4 py-3">
                   <.currency
                     value={vehicule.cout_maintenance}
                     currency="EUR"
-                    data-component="Devise"
+                    data-component="currency"
                   />
                 </td>
               </tr>
@@ -281,7 +281,7 @@
         </div>
 
         <%!-- Boutons de déclenchement des flashs --%>
-        <div data-component="Contenu paramétré en message" class="mb-6 flex flex-wrap gap-3">
+        <div data-component="waw_button" class="mb-6 flex flex-wrap gap-3">
           <.waw_button
             type="button"
             phx-click={
@@ -347,13 +347,13 @@
           <%= for {mois, index} <- Enum.with_index(["Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"]) do %>
             <div
               class="bg-white rounded-lg border border-gray-300 p-4"
-              data-component="Dashboard - par défaut"
+              data-component="waw_dashboard_card"
             >
               <h3 class="text-lg font-semibold mb-4">{mois}</h3>
 
               <div class="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-2 gap-4">
                 <div>
-                  <div data-component="Info-bulle">
+                  <div data-component="tooltip">
                     <.tooltip
                       position="top"
                       color="white"
@@ -366,12 +366,12 @@
                   <.currency
                     value={500.0 + index * 50}
                     currency="EUR"
-                    data-component="Devise"
+                    data-component="currency"
                   />
                 </div>
 
                 <div>
-                  <div data-component="Info-bulle">
+                  <div data-component="tooltip">
                     <.tooltip
                       position="top"
                       color="white"
@@ -384,7 +384,7 @@
                   <.currency
                     value={200.0 + index * 30}
                     currency="EUR"
-                    data-component="Devise"
+                    data-component="currency"
                   />
                 </div>
               </div>

@@ -1,7 +1,7 @@
 <div class="px-4 py-8 space-y-12">
   <%!-- Bloc chiffres clés --%>
   <section class="space-y-6">
-    <div data-component="Titre de bloc avec icône">
+    <div data-component="waw_block_title">
       <.waw_block_title label="Chiffres clés" icon="chart-bar-fill" />
     </div>
     <div class="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
@@ -10,7 +10,7 @@
         description="Information concernant les véhicules géolocalisés"
         title="Véhicules"
         icon="car"
-        data-component="Statistique - Par défaut"
+        data-component="waw_stat"
       />
 
       <.waw_stat
@@ -20,7 +20,7 @@
         description="Information concernant les véhicules actuellement en mouvement"
         title="Actifs"
         icon="speedometer"
-        data-component="Carte statistique avec nombre total de valeurs avec un état"
+        data-component="waw_stat"
       />
 
       <.waw_stat
@@ -29,25 +29,25 @@
         description="Nombre d'alertes actives"
         title="Alertes"
         icon="exclamationmark-triangle-fill"
-        data-component="Carte statistique complète non-cliquable"
+        data-component="waw_stat"
       />
 
       <.waw_stat
         loading
         title="Maintenance"
         icon="wrench-and-screwdriver-fill"
-        data-component="Statistique - Loading"
+        data-component="waw_stat"
       />
     </div>
   </section>
 
   <%!-- Bloc statistiques avancées --%>
   <section class="space-y-6">
-    <div data-component="Titre de bloc avec icône">
+    <div data-component="waw_block_title">
       <.waw_block_title label="Statistiques avancées" icon="chart-line-uptrend-xyaxis" />
     </div>
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-      <div data-component="Carte statistique avec ratio">
+      <div data-component="waw_stat">
         <.waw_stat
           total={251}
           value={100}
@@ -57,7 +57,7 @@
         />
       </div>
 
-      <div data-component="Carte statistique avec un intervalle de temps">
+      <div data-component="waw_stat">
         <.waw_stat
           title="Heure de pointe d'utilisation des véhicules"
           icon="calendar"
@@ -66,7 +66,7 @@
         />
       </div>
 
-      <div data-component="Carte statistique avec une durée">
+      <div data-component="waw_stat">
         <.waw_stat
           unit={:second}
           value={4210}
@@ -80,11 +80,11 @@
   <%!-- Bloc activités récentes --%>
   <section class="space-y-6">
     <div class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-      <div data-component="Titre de bloc avec icône">
+      <div data-component="waw_block_title">
         <.waw_block_title label="Activités recentes" icon="text-bubble" />
       </div>
       <div class="flex flex-wrap gap-2">
-        <div data-component="Badge avec button fermer">
+        <div data-component="waw_badge">
           <.waw_badge
             id="badge-single-standard"
             label="Prioritaire"
@@ -96,7 +96,7 @@
             </:action>
           </.waw_badge>
         </div>
-        <div data-component="Badge avec étiquette">
+        <div data-component="waw_badge">
           <.waw_badge
             id="badge-single-scope"
             label="aujourd'hui"
@@ -108,7 +108,7 @@
       </div>
     </div>
 
-    <div data-component="Tableau - par défaut" class="contents">
+    <div data-component="waw_table" class="contents">
       <div class="overflow-hidden bg-white border border-gray-100 rounded-sm">
         <.waw_table class="min-w-full text-left text-sm">
           <:thead>
@@ -118,101 +118,101 @@
           </:thead>
 
           <:tr state="normal">
-            <.waw_td data-component="Element d'une liste">
+            <.waw_td data-component="waw_date">
               <.waw_date
                 value={~U[2025-01-15 10:30:00Z]}
                 format={:short}
-                data-component="Date - Medium"
+                data-component="waw_date"
               />
             </.waw_td>
-            <.waw_td data-component="Element d'une liste">
+            <.waw_td data-component="waw_badge">
               <.waw_badge
                 id="badge-alerte-1"
                 label="Alerte"
                 description="title"
                 color="danger"
-                data-component="Badge par défaut"
+                data-component="waw_badge"
               />
             </.waw_td>
-            <.waw_td data-component="Element d'une liste">
+            <.waw_td data-component="waw_text">
               <.waw_text
                 value="Faible niveau de carburant détecté"
-                data-component="Texte"
+                data-component="waw_text"
               />
             </.waw_td>
           </:tr>
 
           <:tr state="normal">
-            <.waw_td data-component="Element d'une liste">
+            <.waw_td data-component="waw_date">
               <.waw_date
                 value={~U[2025-01-15 09:15:00Z]}
                 format={:short}
-                data-component="Date - Medium"
+                data-component="waw_date"
               />
             </.waw_td>
-            <.waw_td data-component="Element d'une liste">
+            <.waw_td data-component="waw_badge">
               <.waw_badge
                 id="badge-maintenance-1"
                 label="Maintenance"
                 description="title"
                 color="info"
-                data-component="Badge par défaut"
+                data-component="waw_badge"
               />
             </.waw_td>
-            <.waw_td data-component="Element d'une liste">
+            <.waw_td data-component="waw_text">
               <.waw_text
                 value="Maintenance programmée effectuée"
-                data-component="Texte"
+                data-component="waw_text"
               />
             </.waw_td>
           </:tr>
 
           <:tr state="normal">
-            <.waw_td data-component="Element d'une liste">
+            <.waw_td data-component="waw_date">
               <.waw_date
                 value={~U[2025-01-15 08:00:00Z]}
                 format={:short}
-                data-component="Date - Medium"
+                data-component="waw_date"
               />
             </.waw_td>
-            <.waw_td data-component="Element d'une liste">
+            <.waw_td data-component="waw_badge">
               <.waw_badge
                 id="badge-fuel-1"
                 label="Fuel"
                 description="title"
                 color="orange"
-                data-component="Badge par défaut"
+                data-component="waw_badge"
               />
             </.waw_td>
-            <.waw_td data-component="Element d'une liste">
+            <.waw_td data-component="waw_text">
               <.waw_text
                 value="Ravitaillement 45.5L"
-                data-component="Texte"
+                data-component="waw_text"
               />
             </.waw_td>
           </:tr>
 
           <:tr state="normal">
-            <.waw_td data-component="Element d'une liste">
+            <.waw_td data-component="waw_date">
               <.waw_date
                 value={~U[2025-01-14 16:45:00Z]}
                 format={:short}
-                data-component="Date - Medium"
+                data-component="waw_date"
               />
             </.waw_td>
-            <.waw_td data-component="Element d'une liste">
+            <.waw_td data-component="waw_badge">
               <.waw_badge
                 id="badge-alerte-2"
                 label="Alerte"
                 description="title"
                 color="danger"
-                data-component="Badge par défaut"
+                data-component="waw_badge"
               />
             </.waw_td>
-            <.waw_td data-component="Element d'une liste">
+            <.waw_td data-component="waw_text">
               <.waw_text
                 value="Vitesse excessive détectée"
-                data-component="Texte"
+                data-component="waw_text"
               />
             </.waw_td>
           </:tr>
@@ -222,7 +222,7 @@
               <.waw_date
                 value={~U[2025-01-14 14:20:00Z]}
                 format={:short}
-                data-component="Date - Medium"
+                data-component="waw_date"
               />
             </.waw_td>
             <.waw_td>
@@ -231,13 +231,13 @@
                 label="Fuel"
                 description="title"
                 color="orange"
-                data-component="Badge par défaut"
+                data-component="waw_badge"
               />
             </.waw_td>
             <.waw_td>
               <.waw_text
                 value="Ravitaillement 52.3L"
-                data-component="Texte"
+                data-component="waw_text"
               />
             </.waw_td>
           </:tr>
@@ -248,17 +248,17 @@
 
   <%!-- Bloc États et valeurs spéciales --%>
   <section class="space-y-6">
-    <div data-component="Titre de bloc avec icône">
+    <div data-component="waw_block_title">
       <.waw_block_title label="États et valeurs spéciales" icon="staroflife" />
     </div>
     <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
-      <div data-component="Afficher un trackable - avec symbole">
+      <div data-component="waw_dashboard_card">
         <.waw_dashboard_card
           description="Information concernant les véhicules géolocalisés"
           title="Véhicules géolocalisés"
         >
           <div class="grid h-full place-content-center p-4">
-            <div data-component="Titre de bloc">
+            <div data-component="waw_block_title">
               <.waw_block_title label="Suivi d'élément trackable" />
             </div>
             <.waw_name
@@ -278,7 +278,7 @@
         </.waw_dashboard_card>
       </div>
 
-      <div data-component="Valeur nil">
+      <div data-component="waw_dashboard_card">
         <.waw_dashboard_card
           description="Gestion des valeurs nulles"
           title="Gestion des valeurs nulles"

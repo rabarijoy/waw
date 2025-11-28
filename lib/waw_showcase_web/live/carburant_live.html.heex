@@ -1,5 +1,5 @@
 <div class="px-4 py-8">
-  <div data-component="Titre de bloc avec icône">
+  <div data-component="waw_block_title">
     <.waw_block_title label="Carburant" icon="gas-station-fill" />
   </div>
 
@@ -10,18 +10,18 @@
       size="md"
       phx-click="open_modal"
       class="no-truncate-button"
-      data-component="Bouton de validation d'un formulaire"
+      data-component="waw_button"
     />
   </div>
 
   <%= if @show_modal do %>
-    <div data-component="Modal pour un filtre" class="contents">
+    <div data-component="waw_modal" class="contents">
       <.waw_modal id="carburant-modal" show={true}>
         <:title>
           Ajouter une entrée carburant
         </:title>
         <:cancel>
-          <.waw_button_icon icon="cancel" icon_size={5} stroke="none" phx-click="close_modal" />
+          <.waw_button_icon icon="cancel" icon_size={5} stroke="none" phx-click="close_modal" data-component="waw_button_icon" />
         </:cancel>
         <:content>
           <form phx-change="update_form" class="space-y-4">
@@ -31,7 +31,7 @@
               type="select"
               value={@form_data.vehicule}
               options={@vehicule_options}
-              data-component="Champs de saisie pour la sélection"
+              data-component="input"
             />
 
             <.input
@@ -39,7 +39,7 @@
               name="date"
               type="datetime-local"
               value={@form_data.date}
-              data-component="Champs de saisie calendrier avec time local"
+              data-component="input"
             />
 
             <.input
@@ -48,7 +48,7 @@
               type="number"
               placeholder="Litres"
               value={@form_data.litres}
-              data-component="Champs de saisie téléphone"
+              data-component="input"
             />
 
             <.input
@@ -57,7 +57,7 @@
               type="number"
               placeholder="Prix au litre"
               value={@form_data.prix_litre}
-              data-component="Champs de saisie téléphone"
+              data-component="input"
             />
           </form>
         </:content>
@@ -67,14 +67,14 @@
             type="cancel"
             size="md"
             phx-click="close_modal"
-            data-component="Bouton d'annulation d'un formulaire"
+            data-component="waw_button"
           />
           <.waw_button
             label="Valider"
             type="submit"
             size="md"
             phx-click="save_entry"
-            data-component="Bouton de validation d'un formulaire"
+            data-component="waw_button"
           />
         </:actions>
       </.waw_modal>
@@ -88,7 +88,7 @@
   <% else %>
     <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mb-8">
       <%= for card <- @fuel_cards do %>
-        <div data-component="Volume de carburant">
+        <div data-component="waw_fuel_card">
           <.waw_block_title
             label={card.vehicule}
             icon="fuel-pump"
@@ -103,11 +103,11 @@
     </div>
 
     <div class="mt-6">
-      <div data-component="Titre de bloc avec icône">
+      <div data-component="waw_block_title">
         <.waw_block_title label="Historique des entrées" icon="archivebox-fill" />
       </div>
       <div
-        data-component="Liste complète des statuts (asset-body-padlick-trackable)"
+        data-component="waw_ul"
         class="contents"
       >
         <.waw_ul>

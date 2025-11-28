@@ -1,6 +1,6 @@
 <div class="px-4 py-8 space-y-12">
   <%!-- Entête de page --%>
-  <div data-component="Titre de bloc avec icône" class="mb-8">
+  <div data-component="waw_block_title" class="mb-8">
     <.waw_block_title label="Vehicules" icon="car-2-fill" />
   </div>
 
@@ -8,7 +8,7 @@
   <%= if @show_form do %>
     <%!-- Formulaire multi-étapes --%>
     <section class="space-y-8">
-      <.waw_steps data-component="Steps">
+      <.waw_steps data-component="waw_steps">
         <:step status={if(@form_step >= 1, do: :valid, else: :disabled)} active={@form_step == 1}>
           Informations générales
         </:step>
@@ -52,7 +52,7 @@
                 type="text"
                 placeholder="Marque du véhicule"
                 value={@form_data.marque}
-                data-component="Champs de saisie texte"
+                data-component="input"
               />
               <.input
                 label="Modèle"
@@ -60,7 +60,7 @@
                 type="text"
                 placeholder="Modèle du véhicule"
                 value={@form_data.modele}
-                data-component="Champs de saisie texte"
+                data-component="input"
               />
               <.input
                 label="Description"
@@ -68,7 +68,7 @@
                 type="textarea"
                 placeholder="Description du véhicule"
                 value={@form_data.description}
-                data-component="Champs de saisie pour description ou note"
+                data-component="input"
               />
             </form>
           <% @form_step == 2 -> %>
@@ -79,7 +79,7 @@
                 type="number"
                 placeholder="Année"
                 value={@form_data.annee}
-                data-component="Champs de saisie téléphone"
+                data-component="input"
               />
               <.input
                 label="Plaque d'immatriculation"
@@ -87,7 +87,7 @@
                 type="text"
                 placeholder="Plaque"
                 value={@form_data.plaque}
-                data-component="Champs de saisie texte"
+                data-component="input"
               />
             </form>
           <% @form_step == 3 -> %>
@@ -98,7 +98,7 @@
                 type="number"
                 placeholder="Kilométrage"
                 value={@form_data.kilometrage}
-                data-component="Champs de saisie téléphone"
+                data-component="input"
               />
               <.input
                 label="Niveau de carburant"
@@ -106,7 +106,7 @@
                 type="text"
                 placeholder="Niveau de carburant"
                 value={@form_data.niveau_carburant}
-                data-component="Champs de saisie texte"
+                data-component="input"
               />
             </form>
           <% @form_step == 4 -> %>
@@ -135,11 +135,7 @@
             size="md"
             phx-click="previous_step"
             disabled={@form_step == 1}
-            data-component={
-              if @form_step == 1,
-                do: "Bouton desactivé",
-                else: "Bouton d’annulation d’un formulaire"
-            }
+            data-component="waw_button"
           />
 
           <%= if @form_step == 4 do %>
@@ -149,7 +145,7 @@
               size="md"
               color="success"
               phx-click="save_vehicule"
-              data-component="Bouton de validation d’un formulaire"
+              data-component="waw_button"
             />
           <% else %>
             <.waw_button
@@ -157,7 +153,7 @@
               type="submit"
               size="md"
               phx-click="next_step"
-              data-component="Bouton de validation d’un formulaire"
+              data-component="waw_button"
             />
           <% end %>
         </div>
@@ -175,18 +171,18 @@
           value={@search_query}
           phx-debounce="300"
           phx-change="search"
-          data-component="Champs de saisie recherche"
+          data-component="input"
         />
         <.waw_button
           label="Ajouter un véhicule"
           type="button"
           size="md"
           phx-click="toggle_form"
-          data-component="Bouton par défaut"
+          data-component="waw_button"
         />
       </div>
 
-      <div data-component="Tableau - par défaut" class="contents mt-6">
+      <div data-component="waw_table" class="contents mt-6">
         <div class="overflow-hidden bg-white border border-gray-100 rounded-sm">
           <.waw_table class="min-w-full text-left text-sm">
             <thead class="bg-gray-50 text-xs font-semibold uppercase tracking-wide text-gray-500">
@@ -212,13 +208,13 @@
                   </span>
                 </td>
                 <td class="px-4 py-3">
-                  <.waw_text value={vehicule.plaque} data-component="Texte" />
+                  <.waw_text value={vehicule.plaque} data-component="waw_text" />
                 </td>
                 <td class="px-4 py-3">
                   <.waw_distance
                     unit={:kilometer}
                     value={vehicule.kilometrage}
-                    data-component="Distance en km"
+                    data-component="waw_distance"
                   />
                 </td>
               </tr>
@@ -227,7 +223,7 @@
         </div>
       </div>
 
-      <div class="contents mt-8" data-component="Pagination">
+      <div class="contents mt-8" data-component="waw_pagination">
         <.waw_pagination
           label="Page"
           total={@total_pages}
@@ -255,7 +251,7 @@
       </div>
 
       <%!-- Séparateur de bloc discret --%>
-      <div data-component="Séparateur de blocs avec label" class="mt-12">
+      <div data-component="waw_block_separator" class="mt-12">
         <.waw_block_separator label="Véhicules" />
       </div>
     </section>

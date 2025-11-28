@@ -18,7 +18,7 @@
     </p>
     <div
       class="text-sm leading-5 pr-4 mt-2 text-green-700 space-y-2"
-      data-component="Contenu paramétré en flash"
+      data-component="waw_badge"
     >
       <p>Votre compte est actif et vérifié</p>
       <div class="mt-2">
@@ -42,7 +42,7 @@
           {"transition-all ease-in duration-200", "opacity-100 scale-100", "opacity-0 scale-95"}
       )
     }
-    data-component="Contenu paramétré en flash"
+    data-component="waw_flash"
   >
     <p class="flex items-center gap-1.5 text-sm font-semibold leading-6 pr-4 text-red-800">
       <.waw_icon name="exclamationmark-circle-fill" size="4" stroke="none" />
@@ -56,7 +56,7 @@
     </button>
   </div>
 
-  <div data-component="Titre de bloc avec icône">
+  <div data-component="waw_block_title">
     <.waw_block_title label="Réglages" icon="gearshape-fill" />
   </div>
 
@@ -68,7 +68,7 @@
       expanded={@accordions.profil}
       phx-click="toggle_accordion"
       phx-value-id="profil"
-      data-component="Accordion avec un status séléctionné"
+      data-component="waw_accordion"
     >
       <div class="p-4 space-y-4">
         <form phx-change="update_form" class="space-y-4">
@@ -79,7 +79,7 @@
             placeholder="Votre nom"
             value={@form_data.nom}
             size="sm"
-            data-component="Champs de saisie texte"
+            data-component="input"
           />
           <.input
             label="Adresse email"
@@ -88,7 +88,7 @@
             placeholder="nom@tag-ip.com"
             value={@form_data.email}
             size="sm"
-            data-component="Champs de saisie e-mail"
+            data-component="input"
           />
           <.input
             label="Numéro de téléphone"
@@ -97,9 +97,9 @@
             placeholder="06 12 345 678"
             value={@form_data.telephone}
             size="sm"
-            data-component="Champs de saisie téléphone"
+            data-component="input"
           />
-          <div data-component="Champs de saisie pour description ou note">
+          <div data-component="input">
             <.input
               label="Description du profil"
               name="description"
@@ -110,7 +110,7 @@
             />
           </div>
         </form>
-        <div data-component="Contenu paramétré en flash" class="mt-4">
+        <div data-component="waw_button" class="mt-4">
           <.waw_button
             type="button"
             phx-click={
@@ -137,7 +137,7 @@
       expanded={@accordions.notifications}
       phx-click="toggle_accordion"
       phx-value-id="notifications"
-      data-component="Accordion avec un status séléctionné"
+      data-component="waw_accordion"
     >
       <div class="p-4 space-y-4">
         <form phx-change="update_form" class="space-y-4">
@@ -146,32 +146,32 @@
             name="email_notifications"
             type="checkbox"
             checked={@form_data.email_notifications}
-            data-component="Sélection checkbox"
+            data-component="input"
           />
           <.input
             label="Alertes carburant"
             name="alertes_carburant"
             type="checkbox"
             checked={@form_data.alertes_carburant}
-            data-component="Sélection checkbox"
+            data-component="input"
           />
           <.input
             label="Alertes maintenance"
             name="alertes_maintenance"
             type="checkbox"
             checked={@form_data.alertes_maintenance}
-            data-component="Sélection checkbox"
+            data-component="input"
           />
           <.input
             label="Rapports quotidiens"
             name="rapports_quotidiens"
             type="checkbox"
             checked={@form_data.rapports_quotidiens}
-            data-component="Sélection checkbox"
+            data-component="input"
           />
-          <div data-component="Champs de saisie pour l'heure" class="space-y-2">
+          <div data-component="input" class="space-y-2">
             <label class="label mb-1 text-sm font-medium">Heures Ne pas déranger</label>
-            <div class="flex items-center gap-3" data-component="Champs de saisie pour l’heure">
+            <div class="flex items-center gap-3" data-component="input">
               <.input
                 name="ne_pas_deranger_de"
                 size="sm"
@@ -190,7 +190,7 @@
             </div>
           </div>
         </form>
-        <div data-component="Bloc de status avec clé valeur et status" class="mt-6">
+        <div data-component="waw_status_block" class="mt-6">
           <.waw_status_block title="Notifications" icon="bell">
             <:table>
               <.waw_table without_border>
@@ -224,7 +224,7 @@
       expanded={@accordions.affichage}
       phx-click="toggle_accordion"
       phx-value-id="affichage"
-      data-component="Accordion avec un status séléctionné"
+      data-component="waw_accordion"
     >
       <div class="p-4 space-y-4">
         <form phx-change="update_form" class="space-y-4">
@@ -235,7 +235,7 @@
             value={@form_data.theme}
             size="sm"
             options={[{"auto", "Auto"}, {"dark", "Dark mode"}, {"light", "Light mode"}]}
-            data-component="Champs de saisie pour la sélection"
+            data-component="input"
           />
           <.input
             label="Langue"
@@ -244,7 +244,7 @@
             value={@form_data.langue}
             size="sm"
             options={[{"fr", "Français"}, {"en", "English"}, {"es", "Español"}]}
-            data-component="Champs de saisie pour la sélection"
+            data-component="input"
           />
         </form>
       </div>
@@ -257,7 +257,7 @@
       expanded={@accordions.confidentialite}
       phx-click="toggle_accordion"
       phx-value-id="confidentialite"
-      data-component="Accordion avec un status séléctionné"
+      data-component="waw_accordion"
     >
       <div class="p-4 space-y-4">
         <form phx-change="update_form" class="space-y-4">
@@ -266,7 +266,7 @@
             name="deux_facteurs"
             type="checkbox"
             checked={@form_data.deux_facteurs}
-            data-component="Sélection checkbox"
+            data-component="input"
           />
           <.input
             label="Délai d'expiration de session (minutes)"
@@ -275,7 +275,7 @@
             placeholder="30"
             value={@form_data.delai_expiration}
             size="sm"
-            data-component="Champs de saisie texte"
+            data-component="input"
           />
           <.input
             label="Clé API"
@@ -284,10 +284,10 @@
             placeholder="Votre clé API"
             value={@form_data.cle_api}
             size="sm"
-            data-component="Champs de saisie texte"
+            data-component="input"
           />
         </form>
-        <div data-component="Contenu paramétré en flash" class="mt-4">
+        <div data-component="waw_button" class="mt-4">
           <div class="no-truncate-button [&_button]:w-fit [&_button]:min-w-max">
             <.waw_button
               type="button"
@@ -316,7 +316,7 @@
       type="submit"
       color="success"
       phx-click="save_settings"
-      data-component="Bouton de validation d’un formulaire"
+      data-component="waw_button"
     />
   </div>
 </div>
