@@ -17,7 +17,7 @@ defmodule WawShowcase.ComponentCache do
   """
   def find_by_tag(tag_name) when is_binary(tag_name) do
     # D'abord chercher dans les composants Waw
-    component = 
+    component =
       get_components()
       |> Enum.find(fn component ->
         component.tag == tag_name
@@ -75,4 +75,3 @@ defmodule WawShowcase.ComponentCache do
 
   def find_by_nom(_), do: nil
 end
-
