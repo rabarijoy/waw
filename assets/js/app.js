@@ -136,14 +136,14 @@ function showComponentMenu(component, x, y, targetElement) {
   menu.style.zIndex = "10000"
   menu.style.pointerEvents = "auto"
   
-  // Titre
+  // Titre (nom du module)
   const title = document.createElement("div")
   title.className = "component-inspector-title"
-  title.textContent = component.nom || "Composant inconnu"
+  title.textContent = component.module || component.nom || "Composant inconnu"
   menu.appendChild(title)
   
-  // Sous-titre avec le nom du composant (première ligne du @doc)
-  if (component.nom && component.nom !== "Composant inconnu") {
+  // Sous-titre avec la description (première ligne du @doc)
+  if (component.nom && component.nom !== "Composant inconnu" && component.module) {
     const subtitle = document.createElement("div")
     subtitle.className = "component-inspector-subtitle"
     subtitle.textContent = component.nom
@@ -531,12 +531,17 @@ function handleComponentInspected(event) {
     closeComponentMenu()
     
     if (detail.component && detail.component.nom) {
+      // Debug: vérifier que le code_source est présent
+      if (!detail.component.code_source) {
+        console.warn("Component code_source is missing:", detail.component)
+      }
       showComponentMenu(detail.component, detail.x, detail.y, targetElement)
     } else {
       // Afficher un menu même si aucun composant n'est trouvé
       showComponentMenu({
         nom: "Composant non identifié",
-        code_source: null
+        code_source: null,
+        module: null
       }, detail.x, detail.y, targetElement)
     }
     
