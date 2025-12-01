@@ -19,21 +19,23 @@ defmodule WawShowcase.ComponentExtractor do
 
   @doc """
   Extrait tous les composants depuis le dossier lib/waw de Waw.
+  Parcourt récursivement les sous-dossiers et extrait plusieurs composants par fichier.
   """
   def extract_all_components do
     waw_path = get_waw_path()
 
     if File.exists?(waw_path) do
       waw_path
-      |> File.ls!()
-      |> Enum.filter(&String.ends_with?(&1, ".ex"))
-      |> Enum.reject(&String.starts_with?(&1, "._"))  # Filtrer les fichiers de métadonnées macOS
-      |> Enum.map(fn file ->
+      |> list_ex_files_recursive()
+      |> Enum.flat_map(fn file_path ->
         try do
-          module_name = path_to_module(file)
-          extract_component(module_name)
+          relative_path = Path.relative_to(file_path, waw_path)
+          module_name = path_to_module(relative_path)
+          
+          # Extraire tous les composants depuis ce module (peut y en avoir plusieurs)
+          extract_all_components_from_module(module_name)
         rescue
-          _ -> nil
+          _ -> []
         end
       end)
       |> Enum.filter(& &1 != nil)
@@ -42,14 +44,26 @@ defmodule WawShowcase.ComponentExtractor do
     end
   end
 
+  # Parcourt récursivement tous les fichiers .ex dans waw_path
+  defp list_ex_files_recursive(waw_path) do
+    waw_path
+    |> Path.join("**/*.ex")
+    |> Path.wildcard()
+    |> Enum.reject(&String.contains?(&1, "/._"))  # Filtrer les fichiers de métadonnées macOS
+    |> Enum.sort()
+  end
+
   @doc """
-  Transforme un chemin de fichier en nom de module Elixir.
+  Transforme un chemin de fichier relatif en nom de module Elixir.
+  Gère les sous-dossiers (ex: "text/number.ex" -> "Waw.Text.Number").
   """
-  def path_to_module(file) do
+  def path_to_module(relative_path) do
     module_name =
-      file
+      relative_path
       |> Path.rootname()
-      |> Macro.camelize()
+      |> String.split("/")
+      |> Enum.map(&Macro.camelize/1)
+      |> Enum.join(".")
       |> then(&"Waw.#{&1}")
 
     # Essayer de convertir en atom
@@ -63,59 +77,120 @@ defmodule WawShowcase.ComponentExtractor do
   end
 
   @doc """
-  Extrait les informations d'un composant depuis son module.
+  Extrait tous les composants depuis un module.
+  Un module peut contenir plusieurs fonctions publiques, chacune étant un composant.
   """
-  def extract_component(module_name) when is_binary(module_name) do
+  def extract_all_components_from_module(module_name) when is_binary(module_name) do
     try do
       module = String.to_existing_atom("Elixir.#{module_name}")
-      extract_component(module)
+      extract_all_components_from_module(module)
     rescue
       ArgumentError ->
-        nil
+        []
     end
   end
 
-  def extract_component(module) when is_atom(module) do
+  def extract_all_components_from_module(module) when is_atom(module) do
     try do
       case Code.fetch_docs(module) do
         {:docs_v1, _, _, _, moduledoc, _, docs} ->
           moduledoc_content = extract_moduledoc_content(moduledoc)
 
-          # Chercher dans la doc de la fonction principale (généralement contient la section ## Usage)
-          function_doc_content = extract_from_function_docs(docs)
+          # Extraire tous les composants depuis chaque fonction publique
+          components_from_functions =
+            docs
+            |> Enum.filter(fn
+              {{:function, _name, _arity}, _meta, _signature, doc, _metadata} when is_map(doc) ->
+                true
+              _ ->
+                false
+            end)
+            |> Enum.map(fn {{:function, function_name, _arity}, _meta, _signature, doc, _metadata} ->
+              function_doc_content = doc |> Map.values() |> List.first()
+              
+              # Utiliser la fonction doc si elle existe, sinon le moduledoc
+              doc_content = function_doc_content || moduledoc_content
 
-          # Utiliser la fonction doc si elle existe, sinon le moduledoc
-          doc_content = function_doc_content || moduledoc_content
+              if doc_content do
+                # Extraire le nom depuis la fonction doc en priorité
+                # Si la fonction doc commence par "## Attributes", utiliser le moduledoc ou le nom de la fonction
+                nom =
+                  if function_doc_content && String.starts_with?(String.trim(function_doc_content), "##") do
+                    # La fonction doc commence par un titre markdown, utiliser le moduledoc ou le nom de la fonction
+                    extract_nom(moduledoc_content) || format_function_name(function_name)
+                  else
+                    extract_nom(function_doc_content) || extract_nom(moduledoc_content) || format_function_name(function_name)
+                  end
 
-          if doc_content do
-            # Extraire le nom depuis la fonction doc en priorité, sinon depuis le moduledoc
-            nom = extract_nom(function_doc_content) || extract_nom(moduledoc_content)
+                # Chercher le code_source dans les deux endroits
+                code_source =
+                  extract_usage_code(function_doc_content) ||
+                  extract_usage_code(moduledoc_content)
 
-            # Chercher le code_source dans les deux endroits (fonction doc ET moduledoc)
-            # Certains composants ont le code source dans le moduledoc, d'autres dans la fonction doc
-            code_source =
-              extract_usage_code(function_doc_content) ||
-              extract_usage_code(moduledoc_content)
+                # Le tag est basé sur le nom de la fonction, pas sur le module
+                tag = extract_tag_from_function(function_name)
 
-            tag = extract_tag(module)
+                %__MODULE__{
+                  nom: nom,
+                  code_source: code_source,
+                  module: inspect(module),
+                  tag: tag
+                }
+              else
+                nil
+              end
+            end)
+            |> Enum.filter(& &1 != nil)
 
-            %__MODULE__{
-              nom: nom,
-              code_source: code_source,
-              module: inspect(module),
-              tag: tag
-            }
+          # Si aucune fonction n'a de doc, essayer de créer un composant depuis le moduledoc
+          if Enum.empty?(components_from_functions) && moduledoc_content do
+            nom = extract_nom(moduledoc_content)
+            code_source = extract_usage_code(moduledoc_content)
+
+            if nom && nom != "Composant inconnu" do
+              # Essayer de trouver la première fonction publique pour le tag
+              first_function =
+                docs
+                |> Enum.find_value(fn
+                  {{:function, name, _arity}, _, _, _, _} -> name
+                  _ -> nil
+                end)
+
+              tag = if first_function, do: extract_tag_from_function(first_function), else: extract_tag(module)
+
+              [
+                %__MODULE__{
+                  nom: nom,
+                  code_source: code_source,
+                  module: inspect(module),
+                  tag: tag
+                }
+              ]
+            else
+              []
+            end
           else
-            nil
+            components_from_functions
           end
 
         _ ->
-          nil
+          []
       end
     rescue
       _ ->
-        nil
+        []
     end
+  end
+
+  @doc """
+  Extrait les informations d'un composant depuis son module (version legacy, retourne le premier).
+  """
+  def extract_component(module_name) when is_binary(module_name) do
+    extract_all_components_from_module(module_name) |> List.first()
+  end
+
+  def extract_component(module) when is_atom(module) do
+    extract_all_components_from_module(module) |> List.first()
   end
 
   @doc """
@@ -140,54 +215,24 @@ defmodule WawShowcase.ComponentExtractor do
     nil
   end
 
-  # Extrait la documentation depuis les fonctions si le moduledoc est vide.
-  defp extract_from_function_docs(docs) when is_list(docs) do
-    # Chercher la fonction principale (généralement la première fonction publique qui commence par waw_)
-    # Prioriser les fonctions qui commencent par waw_
-    waw_functions =
-      docs
-      |> Enum.filter(fn
-        {{:function, name, _arity}, _meta, _signature, doc, _metadata} when is_map(doc) ->
-          name_str = Atom.to_string(name)
-          String.starts_with?(name_str, "waw_")
-        _ ->
-          false
-      end)
-
-    # Si on trouve des fonctions waw_, prendre la première
-    # Sinon, prendre la première fonction publique
-    result =
-      if Enum.empty?(waw_functions) do
-        docs
-        |> Enum.find_value(fn
-          {{:function, _name, _arity}, _meta, _signature, doc, _metadata} when is_map(doc) ->
-            doc |> Map.values() |> List.first()
-          _ ->
-            nil
-        end)
-      else
-        waw_functions
-        |> List.first()
-        |> then(fn {{:function, _name, _arity}, _meta, _signature, doc, _metadata} ->
-          doc |> Map.values() |> List.first()
-        end)
-      end
-
-    result
-  end
-
-  defp extract_from_function_docs(_), do: nil
 
   @doc """
-  Extrait le nom du composant depuis la première ligne du moduledoc.
+  Extrait le nom du composant depuis la documentation.
+  Ignore les lignes qui commencent par ## (titres markdown).
   """
   def extract_nom(nil), do: "Composant inconnu"
 
   def extract_nom(doc) when is_binary(doc) do
     doc
     |> String.split("\n")
-    |> Enum.at(0)
-    |> String.trim()
+    |> Enum.find(fn line ->
+      trimmed = String.trim(line)
+      trimmed != "" && !String.starts_with?(trimmed, "##")
+    end)
+    |> case do
+      nil -> "Composant inconnu"
+      line -> String.trim(line)
+    end
   end
 
   @doc """
@@ -228,7 +273,36 @@ defmodule WawShowcase.ComponentExtractor do
   end
 
   @doc """
+  Extrait le nom du tag depuis le nom de la fonction.
+  Si la fonction ne commence pas par "waw_", ajoute le préfixe.
+  """
+  def extract_tag_from_function(function_name) when is_atom(function_name) do
+    function_name
+    |> Atom.to_string()
+    |> then(fn name ->
+      if String.starts_with?(name, "waw_") do
+        name
+      else
+        "waw_#{name}"
+      end
+    end)
+  end
+
+  def extract_tag_from_function(_), do: nil
+
+  # Formate le nom de la fonction en nom de composant (ex: :currency -> "Currency")
+  defp format_function_name(function_name) when is_atom(function_name) do
+    function_name
+    |> Atom.to_string()
+    |> String.replace("waw_", "")
+    |> Macro.camelize()
+  end
+
+  defp format_function_name(_), do: "Composant inconnu"
+
+  @doc """
   Extrait le nom du tag depuis le module (ex: Waw.Button -> "waw_button").
+  Utilisé comme fallback quand on n'a pas de fonction spécifique.
   """
   def extract_tag(module) when is_atom(module) do
     module

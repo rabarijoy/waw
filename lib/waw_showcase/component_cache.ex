@@ -33,7 +33,7 @@ defmodule WawShowcase.ComponentCache do
 
   def find_by_tag(_), do: nil
 
-  # Composants Phoenix standards
+  # Composants Phoenix standards et exceptions
   defp find_phoenix_component("input") do
     %WawShowcase.ComponentExtractor{
       nom: "Input",
@@ -59,6 +59,17 @@ defmodule WawShowcase.ComponentCache do
       module: "Phoenix.Component",
       tag: "link"
     }
+  end
+
+  # Exception: currency est utilisé sans préfixe waw_ dans les templates
+  defp find_phoenix_component("currency") do
+    # Chercher waw_currency dans les composants Waw
+    get_components()
+    |> Enum.find(fn component -> component.tag == "waw_currency" end)
+    |> case do
+      nil -> nil
+      component -> %{component | tag: "currency"}
+    end
   end
 
   defp find_phoenix_component(_), do: nil
