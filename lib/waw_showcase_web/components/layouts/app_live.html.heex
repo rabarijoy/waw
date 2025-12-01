@@ -58,10 +58,10 @@
       data-component="waw_footer"
       class="contents"
     >
-      <div class="md:hidden px-4 pt-2 pb-1 flex justify-start">
+      <div class="md:hidden px-4 pt-2 pb-1 flex justify-start bg-white">
         <button
           type="button"
-          class="inline-flex items-center gap-2 rounded-full bg-white/90 border border-gray-200 shadow-sm px-3 py-1.5 text-xs font-medium text-gray-700"
+          class="inline-flex items-center gap-2 rounded-full bg-white border border-gray-200 shadow-sm px-3 py-1.5 text-xs font-medium text-gray-700"
         >
           <span class="inline-flex h-6 items-center rounded-full bg-gray-900 text-white px-2 text-[0.7rem]">
             Demo
@@ -72,7 +72,9 @@
         </button>
       </div>
 
-      <.waw_footer copyright_year={DateTime.utc_now().year} />
+      <div class="flex justify-end md:justify-center">
+        <.waw_footer copyright_year={DateTime.utc_now().year} />
+      </div>
     </div>
   </:footer>
 </.waw_fixed_header_footer>
