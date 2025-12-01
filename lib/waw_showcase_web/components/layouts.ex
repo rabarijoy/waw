@@ -193,7 +193,7 @@ defmodule WawShowcaseWeb.Layouts do
         <div
           id="app-header"
           phx-update="ignore"
-          data-component="Header et Footer fixes"
+          data-component="waw_header"
           class="contents"
         >
           <.waw_header title="Waw Showcase" logout_url="" current_user_profile_url="">
@@ -262,7 +262,7 @@ defmodule WawShowcaseWeb.Layouts do
         <div
           id="app-footer"
           phx-update="ignore"
-          data-component="Header et Footer fixes"
+          data-component="waw_footer"
           class="contents"
         >
           <.waw_footer copyright_year={DateTime.utc_now().year} />

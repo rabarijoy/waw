@@ -30,9 +30,19 @@ defmodule WawShowcaseWeb.Live.ComponentInspector do
             ""
 
         # Pour les inputs, récupérer le type
+        # Phoenix convertit les tirets en underscores dans phx-value-*, donc phx-value-input-type devient input_type
+        # Mais vérifier aussi les variantes possibles
         input_type =
           Map.get(params, "input_type") ||
-            Map.get(params, "phx-value-input-type")
+            Map.get(params, "input-type") ||
+            Map.get(params, "phx-value-input-type") ||
+            Map.get(params, "phx-value-input_type")
+        
+        # Debug: logger le type trouvé pour les inputs
+        if component_key == "input" do
+          require Logger
+          Logger.debug("Input type detection - params keys: #{inspect(Map.keys(params))}, found: #{inspect(input_type)}")
+        end
 
         component =
           case String.trim(component_key) do

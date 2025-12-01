@@ -20,7 +20,7 @@ defmodule WawShowcase.ComponentCache do
 
   def find_by_tag(tag_name, opts) when is_binary(tag_name) do
     input_type = Keyword.get(opts, :input_type)
-    
+
     # D'abord chercher dans les composants Waw
     component =
       get_components()
@@ -66,7 +66,7 @@ defmodule WawShowcase.ComponentCache do
   defp find_phoenix_component("input", opts) do
     input_type = Keyword.get(opts, :input_type, "text")
     type_label = format_input_type(input_type)
-    
+
     %WawShowcase.ComponentExtractor{
       nom: "Input (#{type_label})",
       code_source: "<.input field={@form[:field]} type=\"#{input_type}\" />",

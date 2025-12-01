@@ -139,14 +139,16 @@ function showComponentMenu(component, x, y, targetElement) {
   // Titre (nom du module)
   const title = document.createElement("div")
   title.className = "component-inspector-title"
-  title.textContent = component.module || component.nom || "Composant inconnu"
+  // Afficher le nom du composant comme titre, le module comme sous-titre
+  title.textContent = component.nom || component.module || "Composant inconnu"
   menu.appendChild(title)
   
   // Sous-titre avec la description (première ligne du @doc)
   if (component.nom && component.nom !== "Composant inconnu" && component.module) {
     const subtitle = document.createElement("div")
     subtitle.className = "component-inspector-subtitle"
-    subtitle.textContent = component.nom
+    // Afficher le module comme sous-titre si le nom est différent
+    subtitle.textContent = component.module && component.module !== component.nom ? component.module : ""
     menu.appendChild(subtitle)
   }
   
@@ -478,6 +480,8 @@ function initComponentInspector() {
         tempElement.setAttribute("phx-value-component", eventData.component)
       }
       if (eventData.input_type) {
+        // Phoenix convertit les tirets en underscores dans phx-value-*
+        // Utiliser input-type pour que ça devienne input_type dans les params
         tempElement.setAttribute("phx-value-input-type", eventData.input_type)
       }
       // eventData est envoyé via phx-value-* attributes
