@@ -281,3 +281,14 @@ header.navbar nav a {
   padding-top: 0.5rem;
   padding-bottom: 0.5rem;
 }
+
+/* Mobile: aligner le contenu du footer Waw à droite, desktop: revenir au centrage */
+[data-component="waw_footer"] > div {
+  justify-content: flex-end;
+}
+
+@media (min-width: 768px) {
+  [data-component="waw_footer"] > div {
+    justify-content: center;
+  }
+}
