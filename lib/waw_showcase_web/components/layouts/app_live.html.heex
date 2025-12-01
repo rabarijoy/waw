@@ -8,7 +8,7 @@
     >
       <.waw_header title="Waw Showcase" logout_url="" current_user_profile_url="">
         <:nav>
-          <div class="flex items-center gap-4">
+          <div id="app-main-nav" class="flex items-center gap-4 transition-all duration-200">
             <.waw_navbar navigate={~p"/"} theme="light">
               Tableau de bord
             </.waw_navbar>
@@ -29,12 +29,16 @@
               <div class="inline-flex h-8 items-center rounded-full bg-white/90 border border-gray-200 shadow-sm text-xs font-medium text-gray-600 px-1">
                 <button
                   type="button"
+                  data-mode-toggle="desktop"
+                  data-mode-value="demo"
                   class="inline-flex h-7 items-center px-3 rounded-full bg-gray-900 text-white shadow-sm transition-colors duration-150 hover:bg-gray-800"
                 >
                   Demo
                 </button>
                 <button
                   type="button"
+                  data-mode-toggle="desktop"
+                  data-mode-value="ui"
                   class="inline-flex h-7 items-center px-3 rounded-full text-gray-500 hover:text-gray-900 hover:bg-gray-50 transition-colors duration-150"
                 >
                   UI
@@ -50,18 +54,30 @@
     <div id="app-main-content" phx-update="replace">
       {@inner_content}
     </div>
+    <div
+      id="ui-library-panel"
+      class="hidden opacity-0 transition-opacity duration-200"
+    >
+      <div class="max-w-5xl mx-auto py-8 px-4">
+        <h1 class="text-lg font-semibold text-gray-900 mb-2">Bibliothèque UI</h1>
+        <p class="text-sm text-gray-500">
+          La bibliothèque d’interfaces sera affichée ici.
+        </p>
+      </div>
+    </div>
   </:main>
   <:footer>
     <div id="app-footer" phx-update="ignore" data-component="waw_footer" class="contents">
       <div class="md:hidden px-4 pt-2 pb-1 flex justify-start bg-white">
         <button
           type="button"
+          data-mode-toggle="mobile"
           class="inline-flex items-center gap-2 rounded-full bg-white border border-gray-200 shadow-sm px-3 py-1.5 text-xs font-medium text-gray-700"
         >
-          <span class="inline-flex h-6 items-center rounded-full bg-gray-900 text-white px-2 text-[0.7rem]">
+          <span data-mode-active-label class="inline-flex h-6 items-center rounded-full bg-gray-900 text-white px-2 text-[0.7rem]">
             Demo
           </span>
-          <span class="text-[0.7rem] text-gray-500">
+          <span data-mode-alt-label class="text-[0.7rem] text-gray-500">
             Voir l’UI
           </span>
         </button>

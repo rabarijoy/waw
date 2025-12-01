@@ -536,6 +536,108 @@ if (document.readyState === "loading") {
   initComponentInspector()
 }
 
+// --- Mode Demo / UI (switch global) ---
+
+let currentMode = "demo"
+
+function applyMode(mode) {
+  currentMode = mode
+
+  const body = document.getElementById("app-body") || document.body
+  body.dataset.appMode = mode
+
+  const navWrapper = document.getElementById("app-main-nav")
+  const mainContent = document.getElementById("app-main-content")
+  const uiPanel = document.getElementById("ui-library-panel")
+
+  // Mettre à jour les boutons desktop
+  const desktopButtons = document.querySelectorAll("[data-mode-toggle=\"desktop\"]")
+  desktopButtons.forEach((btn) => {
+    const value = btn.getAttribute("data-mode-value")
+    const isActive = value === mode
+    btn.classList.toggle("bg-gray-900", isActive)
+    btn.classList.toggle("text-white", isActive)
+    btn.classList.toggle("hover:bg-gray-800", isActive)
+    btn.classList.toggle("text-gray-500", !isActive)
+    btn.classList.toggle("hover:text-gray-900", !isActive)
+    btn.classList.toggle("hover:bg-gray-50", !isActive)
+  })
+
+  // Mettre à jour la pillule mobile
+  const mobileButton = document.querySelector("[data-mode-toggle=\"mobile\"]")
+  if (mobileButton) {
+    const activeLabel = mobileButton.querySelector("[data-mode-active-label]")
+    const altLabel = mobileButton.querySelector("[data-mode-alt-label]")
+
+    if (activeLabel && altLabel) {
+      if (mode === "demo") {
+        activeLabel.textContent = "Demo"
+        altLabel.textContent = "Voir l’UI"
+      } else {
+        activeLabel.textContent = "UI"
+        altLabel.textContent = "Voir la démo"
+      }
+    }
+  }
+
+  // Afficher / masquer la navbar principale
+  if (navWrapper) {
+    if (mode === "ui") {
+      navWrapper.classList.add("opacity-0", "pointer-events-none", "scale-95")
+    } else {
+      navWrapper.classList.remove("opacity-0", "pointer-events-none", "scale-95")
+    }
+  }
+
+  // Afficher / masquer le contenu principal vs bibliothèque UI
+  if (mainContent && uiPanel) {
+    if (mode === "ui") {
+      mainContent.classList.add("hidden")
+      uiPanel.classList.remove("hidden")
+      window.requestAnimationFrame(() => {
+        uiPanel.classList.remove("opacity-0")
+      })
+    } else {
+      uiPanel.classList.add("opacity-0")
+      uiPanel.classList.add("hidden")
+      mainContent.classList.remove("hidden")
+    }
+  }
+}
+
+function initModeSwitch() {
+  // Initialiser le mode par défaut
+  applyMode(currentMode)
+
+  // Boutons desktop
+  document.querySelectorAll("[data-mode-toggle=\"desktop\"]").forEach((btn) => {
+    btn.addEventListener("click", (event) => {
+      event.preventDefault()
+      const value = btn.getAttribute("data-mode-value")
+      if (value && value !== currentMode) {
+        applyMode(value)
+      }
+    })
+  })
+
+  // Bouton mobile
+  const mobileButton = document.querySelector("[data-mode-toggle=\"mobile\"]")
+  if (mobileButton) {
+    mobileButton.addEventListener("click", (event) => {
+      event.preventDefault()
+      const nextMode = currentMode === "demo" ? "ui" : "demo"
+      applyMode(nextMode)
+    })
+  }
+}
+
+// Initialiser le switch de mode une fois le DOM prêt
+if (document.readyState === "loading") {
+  document.addEventListener("DOMContentLoaded", initModeSwitch)
+} else {
+  initModeSwitch()
+}
+
 // Handler pour les événements component_inspected envoyés par le serveur
 // Utiliser la délégation d'événement sur document pour capturer tous les événements
 function handleComponentInspected(event) {
