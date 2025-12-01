@@ -8,51 +8,40 @@
     >
       <.waw_header title="Waw Showcase" logout_url="" current_user_profile_url="">
         <:nav>
-          <div class="flex items-center gap-4">
-            <div class="flex items-center h-8">
-              <.waw_navbar navigate={~p"/"} theme="light">
-                Tableau de bord
-              </.waw_navbar>
-            </div>
-            <div class="flex items-center h-8">
-              <.waw_navbar navigate={~p"/vehicules"} theme="light">
-                Véhicules
-              </.waw_navbar>
-            </div>
-            <div class="flex items-center h-8">
-              <.waw_navbar navigate={~p"/carburant"} theme="light">
-                Carburant
-              </.waw_navbar>
-            </div>
-            <div class="flex items-center h-8">
-              <.waw_navbar navigate={~p"/rapports"} theme="light">
-                Rapports
-              </.waw_navbar>
-            </div>
-            <div class="flex items-center h-8">
-              <.waw_navbar navigate={~p"/reglages"} theme="light">
-                Réglages
-              </.waw_navbar>
-            </div>
-
-            <div class="inline-flex items-center ml-6">
+          <.waw_navbar navigate={~p"/"} theme="light">
+            Tableau de bord
+          </.waw_navbar>
+          <.waw_navbar navigate={~p"/vehicules"} theme="light">
+            Véhicules
+          </.waw_navbar>
+          <.waw_navbar navigate={~p"/carburant"} theme="light">
+            Carburant
+          </.waw_navbar>
+          <.waw_navbar navigate={~p"/rapports"} theme="light">
+            Rapports
+          </.waw_navbar>
+          <.waw_navbar navigate={~p"/reglages"} theme="light">
+            Réglages
+          </.waw_navbar>
+        </:nav>
+        <:actions>
+          <div class="inline-flex items-center gap-3">
             <div class="inline-flex h-8 items-center rounded-full bg-white/90 border border-gray-200 shadow-sm text-xs font-medium text-gray-600 px-1">
-                <button
-                  type="button"
+              <button
+                type="button"
                 class="inline-flex h-7 items-center px-3 rounded-full bg-gray-900 text-white shadow-sm transition-colors duration-150 hover:bg-gray-800"
-                >
-                  Demo
-                </button>
-                <button
-                  type="button"
+              >
+                Demo
+              </button>
+              <button
+                type="button"
                 class="inline-flex h-7 items-center px-3 rounded-full text-gray-500 hover:text-gray-900 hover:bg-gray-50 transition-colors duration-150"
-                >
-                  UI
-                </button>
-              </div>
+              >
+                UI
+              </button>
             </div>
           </div>
-        </:nav>
+        </:actions>
       </.waw_header>
     </div>
   </:header>
