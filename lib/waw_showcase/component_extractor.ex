@@ -49,7 +49,6 @@ defmodule WawShowcase.ComponentExtractor do
     module_name =
       file
       |> Path.rootname()
-      |> String.replace("_", " ")
       |> Macro.camelize()
       |> then(&"Waw.#{&1}")
 
