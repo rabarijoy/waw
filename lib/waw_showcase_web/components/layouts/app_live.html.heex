@@ -25,7 +25,7 @@
               Réglages
             </.waw_navbar>
 
-            <div class="inline-flex items-center ml-6">
+            <div class="hidden md:inline-flex items-center ml-6">
               <div class="inline-flex h-8 items-center rounded-full bg-white/90 border border-gray-200 shadow-sm text-xs font-medium text-gray-600 px-1">
                 <button
                   type="button"
@@ -58,7 +58,24 @@
       data-component="waw_footer"
       class="contents"
     >
-      <.waw_footer copyright_year={DateTime.utc_now().year} />
+      <div class="flex items-center justify-between px-4 py-2 gap-3">
+        <div class="md:hidden">
+          <button
+            type="button"
+            class="inline-flex items-center gap-2 rounded-full bg-white/90 border border-gray-200 shadow-sm px-3 py-1.5 text-xs font-medium text-gray-700"
+          >
+            <span class="inline-flex h-6 items-center rounded-full bg-gray-900 text-white px-2 text-[0.7rem]">
+              Demo / UI
+            </span>
+            <span class="text-[0.7rem] text-gray-500">
+              Changer d’affichage
+            </span>
+          </button>
+        </div>
+        <div class="flex-1 flex justify-center">
+          <.waw_footer copyright_year={DateTime.utc_now().year} />
+        </div>
+      </div>
     </div>
   </:footer>
 </.waw_fixed_header_footer>
