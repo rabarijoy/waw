@@ -37,7 +37,7 @@ defmodule WawShowcaseWeb.Live.ComponentInspector do
             Map.get(params, "input-type") ||
             Map.get(params, "phx-value-input-type") ||
             Map.get(params, "phx-value-input_type")
-        
+
         # Debug: logger le type trouvé pour les inputs
         if component_key == "input" do
           require Logger
