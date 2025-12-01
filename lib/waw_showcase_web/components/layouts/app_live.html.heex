@@ -9,21 +9,31 @@
       <.waw_header title="Waw Showcase" logout_url="" current_user_profile_url="">
         <:nav>
           <div class="flex items-center gap-4">
-            <.waw_navbar navigate={~p"/"} theme="light">
-              Tableau de bord
-            </.waw_navbar>
-            <.waw_navbar navigate={~p"/vehicules"} theme="light">
-              Véhicules
-            </.waw_navbar>
-            <.waw_navbar navigate={~p"/carburant"} theme="light">
-              Carburant
-            </.waw_navbar>
-            <.waw_navbar navigate={~p"/rapports"} theme="light">
-              Rapports
-            </.waw_navbar>
-            <.waw_navbar navigate={~p"/reglages"} theme="light">
-              Réglages
-            </.waw_navbar>
+            <div class="flex items-center h-8">
+              <.waw_navbar navigate={~p"/"} theme="light">
+                Tableau de bord
+              </.waw_navbar>
+            </div>
+            <div class="flex items-center h-8">
+              <.waw_navbar navigate={~p"/vehicules"} theme="light">
+                Véhicules
+              </.waw_navbar>
+            </div>
+            <div class="flex items-center h-8">
+              <.waw_navbar navigate={~p"/carburant"} theme="light">
+                Carburant
+              </.waw_navbar>
+            </div>
+            <div class="flex items-center h-8">
+              <.waw_navbar navigate={~p"/rapports"} theme="light">
+                Rapports
+              </.waw_navbar>
+            </div>
+            <div class="flex items-center h-8">
+              <.waw_navbar navigate={~p"/reglages"} theme="light">
+                Réglages
+              </.waw_navbar>
+            </div>
 
             <div class="inline-flex items-center ml-6">
             <div class="inline-flex h-8 items-center rounded-full bg-white/90 border border-gray-200 shadow-sm text-xs font-medium text-gray-600 px-1">
