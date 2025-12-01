@@ -52,29 +52,28 @@
     </div>
   </:main>
   <:footer>
-    <div
-      id="app-footer"
-      phx-update="ignore"
-      data-component="waw_footer"
-      class="contents"
-    >
-      <div class="flex items-center justify-between px-4 py-2 gap-3">
-        <div class="md:hidden">
-          <button
-            type="button"
-            class="inline-flex items-center gap-2 rounded-full bg-white/90 border border-gray-200 shadow-sm px-3 py-1.5 text-xs font-medium text-gray-700"
-          >
-            <span class="inline-flex h-6 items-center rounded-full bg-gray-900 text-white px-2 text-[0.7rem]">
-              Demo
-            </span>
-            <span class="text-[0.7rem] text-gray-500">
-              Voir l’UI
-            </span>
-          </button>
-        </div>
-        <div class="flex-1 flex justify-center">
-          <.waw_footer copyright_year={DateTime.utc_now().year} />
-        </div>
+    <div class="relative">
+      <div class="md:hidden absolute left-4 top-1/2 -translate-y-1/2 z-10">
+        <button
+          type="button"
+          class="inline-flex items-center gap-2 rounded-full bg-white/90 border border-gray-200 shadow-sm px-3 py-1.5 text-xs font-medium text-gray-700"
+        >
+          <span class="inline-flex h-6 items-center rounded-full bg-gray-900 text-white px-2 text-[0.7rem]">
+            Demo
+          </span>
+          <span class="text-[0.7rem] text-gray-500">
+            Voir l’UI
+          </span>
+        </button>
+      </div>
+
+      <div
+        id="app-footer"
+        phx-update="ignore"
+        data-component="waw_footer"
+        class="contents"
+      >
+        <.waw_footer copyright_year={DateTime.utc_now().year} />
       </div>
     </div>
   </:footer>
