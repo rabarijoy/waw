@@ -31,7 +31,7 @@ defmodule WawShowcase.ComponentExtractor do
         try do
           relative_path = Path.relative_to(file_path, waw_path)
           module_name = path_to_module(relative_path)
-          
+
           # Extraire tous les composants depuis ce module (peut y en avoir plusieurs)
           extract_all_components_from_module(module_name)
         rescue
@@ -97,7 +97,8 @@ defmodule WawShowcase.ComponentExtractor do
           moduledoc_content = extract_moduledoc_content(moduledoc)
 
           # Extraire tous les composants depuis chaque fonction publique
-          components_from_functions =
+          # Prioriser les fonctions qui commencent par waw_ pour éviter les fonctions dépréciées
+          all_functions =
             docs
             |> Enum.filter(fn
               {{:function, _name, _arity}, _meta, _signature, doc, _metadata} when is_map(doc) ->
@@ -105,9 +106,17 @@ defmodule WawShowcase.ComponentExtractor do
               _ ->
                 false
             end)
+            |> Enum.sort_by(fn {{:function, name, _arity}, _, _, _, _} ->
+              name_str = Atom.to_string(name)
+              # Prioriser les fonctions waw_* (0) sur les autres (1)
+              if String.starts_with?(name_str, "waw_"), do: 0, else: 1
+            end)
+
+          components_from_functions =
+            all_functions
             |> Enum.map(fn {{:function, function_name, _arity}, _meta, _signature, doc, _metadata} ->
               function_doc_content = doc |> Map.values() |> List.first()
-              
+
               # Utiliser la fonction doc si elle existe, sinon le moduledoc
               doc_content = function_doc_content || moduledoc_content
 

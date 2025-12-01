@@ -29,13 +29,18 @@ defmodule WawShowcaseWeb.Live.ComponentInspector do
             Map.get(params, "phx-value-component") ||
             ""
 
+        # Pour les inputs, récupérer le type
+        input_type =
+          Map.get(params, "input_type") ||
+            Map.get(params, "phx-value-input-type")
+
         component =
           case String.trim(component_key) do
             "" ->
               nil
 
             key ->
-              WawShowcase.ComponentCache.find_by_tag(key)
+              WawShowcase.ComponentCache.find_by_tag(key, input_type: input_type)
           end
 
         # Retourner les informations du composant au client

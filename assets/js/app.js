@@ -443,12 +443,24 @@ function initComponentInspector() {
     // Trouver le LiveView actif et envoyer l'événement avec les coordonnées
     const liveViewEl = document.querySelector('[data-phx-main]')
     if (liveViewEl) {
+      // Pour les inputs, extraire le type depuis l'élément ou ses parents
+      let inputType = null
+      if (componentName === "input") {
+        // Chercher l'attribut type sur l'élément ou ses parents
+        let element = targetElement
+        while (element && !inputType) {
+          inputType = element.getAttribute("type") || element.getAttribute("data-type")
+          element = element.parentElement
+        }
+      }
+      
       // Préparer les données de l'événement (seulement ce qui est réellement utilisé côté serveur)
       const eventData = {
         tag: targetElement.tagName.toLowerCase(),
         x: clientX,
         y: clientY,
-        component: componentName
+        component: componentName,
+        input_type: inputType
       }
       
       // Stocker la référence à l'élément cible avec les coordonnées comme clé
@@ -464,6 +476,9 @@ function initComponentInspector() {
       tempElement.setAttribute("phx-value-y", String(eventData.y))
       if (eventData.component) {
         tempElement.setAttribute("phx-value-component", eventData.component)
+      }
+      if (eventData.input_type) {
+        tempElement.setAttribute("phx-value-input-type", eventData.input_type)
       }
       // eventData est envoyé via phx-value-* attributes
       liveViewEl.appendChild(tempElement)
