@@ -273,3 +273,11 @@ body {
 .component-inspector-button:active {
   background-color: #e2e2e2;
 }
+
+/* Harmoniser le padding vertical des liens de la navbar Waw avec le switch Demo/UI */
+header.navbar nav a {
+  display: inline-flex;
+  align-items: center;
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+}
