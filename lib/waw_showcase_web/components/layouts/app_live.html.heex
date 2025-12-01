@@ -52,8 +52,13 @@
     </div>
   </:main>
   <:footer>
-    <div class="relative">
-      <div class="md:hidden absolute left-4 top-1/2 -translate-y-1/2 z-10">
+    <div
+      id="app-footer"
+      phx-update="ignore"
+      data-component="waw_footer"
+      class="contents"
+    >
+      <div class="md:hidden px-4 pt-2 pb-1 flex justify-start">
         <button
           type="button"
           class="inline-flex items-center gap-2 rounded-full bg-white/90 border border-gray-200 shadow-sm px-3 py-1.5 text-xs font-medium text-gray-700"
@@ -67,14 +72,7 @@
         </button>
       </div>
 
-      <div
-        id="app-footer"
-        phx-update="ignore"
-        data-component="waw_footer"
-        class="contents"
-      >
-        <.waw_footer copyright_year={DateTime.utc_now().year} />
-      </div>
+      <.waw_footer copyright_year={DateTime.utc_now().year} />
     </div>
   </:footer>
 </.waw_fixed_header_footer>
