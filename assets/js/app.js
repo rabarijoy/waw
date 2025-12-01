@@ -143,12 +143,11 @@ function showComponentMenu(component, x, y, targetElement) {
   title.textContent = component.nom || component.module || "Composant inconnu"
   menu.appendChild(title)
   
-  // Sous-titre avec la description (première ligne du @doc)
-  if (component.nom && component.nom !== "Composant inconnu" && component.module) {
+  // Sous-titre avec le module (si différent du nom)
+  if (component.module && component.module !== component.nom) {
     const subtitle = document.createElement("div")
     subtitle.className = "component-inspector-subtitle"
-    // Afficher le module comme sous-titre si le nom est différent
-    subtitle.textContent = component.module && component.module !== component.nom ? component.module : ""
+    subtitle.textContent = component.module
     menu.appendChild(subtitle)
   }
   
