@@ -16,7 +16,9 @@ defmodule WawShowcase.ComponentCache do
   Gère aussi les composants Phoenix standards comme "input".
   Pour les inputs, accepte une option `input_type` pour personnaliser le nom.
   """
-  def find_by_tag(tag_name, opts \\ []) when is_binary(tag_name) do
+  def find_by_tag(tag_name, opts \\ [])
+
+  def find_by_tag(tag_name, opts) when is_binary(tag_name) do
     input_type = Keyword.get(opts, :input_type)
     
     # D'abord chercher dans les composants Waw
