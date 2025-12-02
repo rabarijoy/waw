@@ -101,6 +101,7 @@ defmodule WawShowcaseWeb do
       import Waw.Pagination
       import Waw.BlockTitle
       import Waw.BlockSeparator
+      import Waw.ButtonGroup
       import Waw.FuelCard
       import Waw.Text.Number
       import Waw.Text.Text
