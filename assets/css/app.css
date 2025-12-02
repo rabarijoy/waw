@@ -282,3 +282,13 @@ header.navbar nav a {
   padding-bottom: 0.5rem;
 }
 
+/* Désactiver tous les liens dans la page UI pour éviter les rechargements */
+#ui-library-panel a,
+#ui-library-panel [href],
+#ui-library-panel [navigate],
+#ui-library-panel [data-navigate] {
+  pointer-events: none;
+  cursor: default;
+  opacity: 0.7;
+}
+

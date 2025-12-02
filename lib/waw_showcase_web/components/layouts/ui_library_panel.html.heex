@@ -12,7 +12,7 @@
     %{nom: "Badge", module: "Waw.Badge", tag: "waw_badge", code_source: "<.waw_badge id=\"badge-single-default\" label=\"Texte du badge\" color=\"#12dba2\"/>", preview: :badge},
     %{nom: "Séparateur de bloc", module: "Waw.BlockSeparator", tag: "waw_block_separator", code_source: "<.waw_block_separator label=\"Texte du separateur\"/>", preview: :block_separator},
     %{nom: "Titre de bloc", module: "Waw.BlockTitle", tag: "waw_block_title", code_source: "<.waw_block_title label=\"Titre avec icone\" icon=\"car\"/>", preview: :block_title},
-    %{nom: "Bouton", module: "Waw.Button", tag: "waw_button", code_source: "<.waw_button label=\"Bouton par default\" size=\"md\" icon_position=\"right\"/>", preview: :button},
+    %{nom: "Bouton", module: "Waw.Button", tag: "waw_button", code_source: "<.waw_button label=\"Bouton\" size=\"md\" icon_position=\"right\"/>", preview: :button},
     %{nom: "Groupe de boutons", module: "Waw.Button", tag: "waw_button_group", code_source: "<.waw_button_group>\n    <.waw_button label=\"Organisation\" size=\"md\" icon=\"angle-small-down\" icon_position=\"right\" />\n    <.waw_button label=\"Flotte\" size=\"md\" icon=\"angle-small-down\" icon_position=\"right\" />\n</.waw_button_group>", preview: :button_group},
     %{nom: "Texte éditable", module: "Waw.Contenteditable", tag: "waw_contenteditable", code_source: "<.waw_contenteditable id=\"contenteditable-single-text\" label=\"Name\" value=\"Edit this name\">\n  <:status>\n    <.waw_icon name=\"checkmark-icloud\"/>\n  </:status>\n</.waw_contenteditable>", preview: :contenteditable},
     %{nom: "Liste de champs avec description", module: "Waw.DefinitionList", tag: "waw_dl", code_source: "<.waw_dl>\n  <.waw_definition text_align=\"left\" term=\"term\" description=\"description\">\n    <:actions>\n      <.waw_link_icon size=\"sm\" state=\"checked\" icon=\"square-and-pencil\"/>\n    </:actions>\n  </.waw_definition>\n  <.waw_definition text_align=\"left\" term=\"term\" description=\"description\" />\n</.waw_dl>", preview: :dl},
@@ -20,6 +20,19 @@
     %{nom: "Footer", module: "Waw.Footer", tag: "waw_footer", code_source: "<.waw_footer copyright_year={2025} utc_time={~U[2025-12-02 06:57:29.866762Z]}/>", preview: :footer},
     %{nom: "Header", module: "Waw.Header", tag: "waw_header", code_source: "<.waw_header title=\"Titre de la page\" current_user={%{id: 2, name: \"Bob\", email: \"bob@example.com\"}} logo=\"track\" subtitle=\"Sous-titre de la page\" header_id=\"all\" connected_user={%{id: 1, name: \"Alice\", email: \"alice@example.com\"}} is_dark notification_action={JS.toggle(to: \"#all_user_menu\")} user_home_url=\"https://auth.tag-ip.com\" has_i18n>\n  <:nav active>Actif</:nav>\n  <:nav navigate=\"/\" tooltip=\"Lien\">Autre lien</:nav>\n  <:nav disabled tooltip=\"OFF\">Desactive</:nav>\n</.waw_header>", preview: :header}
   ] %>
+  <% dates_heures_components = [
+    %{nom: "Date", module: "Waw.Text.Dates", tag: "waw_date", code_source: "<.waw_date value={~U[2025-12-02 08:20:13.057946Z]} format={:medium}/>", preview: :date},
+    %{nom: "Completes", module: "Waw.Text.Dates", tag: "waw_date_time", code_source: "<.waw_date_time value={~U[2025-12-02 08:20:37.611094Z]}/>", preview: :date_time},
+    %{nom: "Intervalles", module: "Waw.Text.Dates", tag: "waw_interval", code_source: "<.waw_interval from={~U[2025-12-02 08:20:49.388617Z]} to={~U[2025-12-02 09:36:58.388623Z]}/>", preview: :interval},
+    %{nom: "Relatives", module: "Waw.Text.Dates", tag: "waw_relative_time", code_source: "<.waw_relative_time unit={:minute} value={~U[2025-11-28 06:21:01.057002Z]} ref={~U[2025-12-02 08:21:01.057004Z]}/>", preview: :relative_time},
+    %{nom: "Heures", module: "Waw.Text.Dates", tag: "waw_time", code_source: "<.waw_time value={~U[2025-12-02 08:21:27.080945Z]} format={:medium}/>", preview: :time}
+  ] %>
+  <% icon_names =
+    if function_exported?(Waw.Icons, :icon_list, 0) do
+      Waw.Icons.icon_list()
+    else
+      []
+    end %>
   <!-- Header avec titre à gauche et recherche à droite -->
   <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
     <div>
@@ -114,7 +127,10 @@
             data-component-category="texte-nombres"
           >
             <!-- Aperçu du composant -->
-            <div class="rounded-lg border-2 border-gray-200 bg-white min-h-[10rem] flex items-center justify-center p-4 flex-1">
+            <div
+              class="ui-preview-trigger rounded-lg border-2 border-gray-200 bg-white min-h-[10rem] flex items-center justify-center p-4 flex-1 cursor-pointer hover:border-gray-300 transition-colors"
+              data-ui-preview="true"
+            >
               <%= case comp.preview do %>
                 <% :currency -> %>
                   <.currency value={10000} currency="USD" />
@@ -179,14 +195,17 @@
             data-component-category="basiques"
           >
             <!-- Aperçu du composant -->
-            <div class={[
-              "rounded-lg border-2 border-gray-200 bg-white flex items-center justify-center p-4 flex-1 overflow-auto",
-              if comp.preview in [:header, :footer, :filter_header] do
-                "min-h-[12rem]"
-              else
-                "min-h-[10rem]"
-              end
-            ]}>
+            <div
+              class={[
+                "ui-preview-trigger rounded-lg border-2 border-gray-200 bg-white flex items-center justify-center p-4 flex-1 overflow-auto cursor-pointer hover-border-gray-300 transition-colors",
+                if comp.preview in [:header, :footer, :filter_header] do
+                  "min-h-[12rem]"
+                else
+                  "min-h-[10rem]"
+                end
+              ]}
+              data-ui-preview="true"
+            >
               <%= case comp.preview do %>
                 <% :accordion -> %>
                   <.waw_accordion count={12} id="accordion-preview" has_group>
@@ -199,7 +218,7 @@
                 <% :block_title -> %>
                   <.waw_block_title label="Titre avec icone" icon="car" />
                 <% :button -> %>
-                  <.waw_button label="Bouton par default" size="md" icon_position="right" />
+                  <.waw_button label="Bouton" size="md" icon_position="right" />
                 <% :button_group -> %>
                   <.waw_button_group>
                     <.waw_button label="Organisation" size="md" icon="angle-small-down" icon_position="right" />
@@ -267,8 +286,161 @@
               </button>
             </div>
           </div>
+          <div
+            :for={comp <- dates_heures_components}
+            class="ui-component-card rounded-xl border border-gray-200 bg-white shadow-sm p-6 flex flex-col gap-3"
+            data-component-title={comp.nom}
+            data-component-module={comp.module}
+            data-component-category="dates-heures"
+          >
+            <!-- Aperçu du composant -->
+            <div
+              class="ui-preview-trigger rounded-lg border-2 border-gray-200 bg-white min-h-[10rem] flex items-center justify-center p-4 flex-1 cursor-pointer hover:border-gray-300 transition-colors"
+              data-ui-preview="true"
+            >
+              <%= case comp.preview do %>
+                <% :date -> %>
+                  <.waw_date value={~U[2025-12-02 08:20:13.057946Z]} format={:medium} />
+                <% :date_time -> %>
+                  <.waw_date_time value={~U[2025-12-02 08:20:37.611094Z]} />
+                <% :interval -> %>
+                  <.waw_interval from={~U[2025-12-02 08:20:49.388617Z]} to={~U[2025-12-02 09:36:58.388623Z]} />
+                <% :relative_time -> %>
+                  <.waw_relative_time unit={:minute} value={~U[2025-11-28 06:21:01.057002Z]} ref={~U[2025-12-02 08:21:01.057004Z]} />
+                <% :time -> %>
+                  <.waw_time value={~U[2025-12-02 08:21:27.080945Z]} format={:medium} />
+                <% _ -> %>
+                  <span class="text-xs text-gray-400">Prévisualisation non disponible</span>
+              <% end %>
+            </div>
+
+            <!-- Bloc titre -->
+            <div>
+              <h3 class="text-base font-semibold text-gray-900 truncate">
+                {comp.nom}
+              </h3>
+            </div>
+
+            <!-- Bloc sous-titre -->
+            <div>
+              <p class="text-sm text-gray-500">
+                {comp.module}
+              </p>
+            </div>
+
+            <!-- Bloc code source avec bouton Copier sur la même ligne (discret) -->
+            <% code = comp.code_source %>
+            <div class="flex gap-2 items-start border-t border-gray-100 pt-3">
+              <div class="flex-1 rounded-md bg-gray-50 border border-gray-200 px-2 py-1.5 max-h-[4rem] overflow-y-auto overflow-x-auto">
+                <pre class="text-xs text-gray-600 leading-relaxed whitespace-pre-wrap">
+{code}</pre>
+              </div>
+              <button
+                type="button"
+                class="px-3 py-1.5 text-xs font-medium text-white bg-gray-900 rounded-md hover:bg-gray-800 transition-colors focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 whitespace-nowrap shrink-0"
+                phx-click="copy_code"
+                phx-value-code={code}
+              >
+                Copier
+              </button>
+            </div>
+          </div>
+          <!-- Icônes -->
+          <div class="space-y-3">
+            <div class="flex items-baseline justify-between">
+              <div>
+                <h2 class="text-sm font-semibold text-gray-900">
+                  Icônes
+                </h2>
+                <p class="text-xs text-gray-500">
+                  Cliquez sur une icône pour copier le code source.
+                </p>
+              </div>
+            </div>
+
+            <div
+              class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 xl:grid-cols-10 gap-3"
+            >
+              <%= for name <- icon_names do %>
+                <% code = "<.waw_icon name=\\\"#{name}\\\" />" %>
+                <button
+                  type="button"
+                  class="ui-component-card group flex flex-col items-center justify-center rounded-lg border border-gray-200 bg-white p-3 text-gray-700 hover:border-gray-300 hover:bg-gray-50 hover:shadow-sm transition-colors text-xs"
+                  data-component-title={name}
+                  data-component-module="Waw.Icons"
+                  data-component-category="icones"
+                  phx-click="copy_code"
+                  phx-value-code={code}
+                >
+                  <.tooltip position="top" color="white" content={name} variant="arrow">
+                    <div class="flex items-center justify-center h-8 w-8 mb-2 text-gray-800 group-hover:text-gray-900">
+                      <.waw_icon name={name} size="4" />
+                    </div>
+                  </.tooltip>
+                  <span class="truncate max-w-[6rem] text-[0.7rem] text-gray-500 group-hover:text-gray-700">
+                    {name}
+                  </span>
+                </button>
+              <% end %>
+            </div>
+          </div>
         </div>
       </div>
     </section>
+  </div>
+
+  <!-- Popup minimaliste pour afficher le composant (gérée côté client en JS) -->
+  <div
+    id="ui-preview-modal"
+    class="fixed inset-0 z-50 hidden flex items-center justify-center bg-black/40 backdrop-blur-sm"
+  >
+    <div class="relative bg-white rounded-2xl shadow-2xl max-w-4xl w-full mx-4 max-h-[90vh] overflow-hidden flex flex-col">
+      <!-- Header de la popup -->
+      <div class="flex items-center justify-between px-6 py-4 border-b border-gray-200">
+        <div>
+          <h2 id="ui-preview-title" class="text-lg font-semibold text-gray-900">
+          </h2>
+          <p id="ui-preview-module" class="text-sm text-gray-500 mt-0.5">
+          </p>
+        </div>
+        <button
+          type="button"
+          class="p-2 rounded-lg text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition-colors"
+          data-ui-preview-close
+        >
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+
+      <!-- Contenu de la popup -->
+      <div class="flex-1 overflow-y-auto p-6">
+        <div
+          id="ui-preview-component"
+          class="rounded-lg border-2 border-gray-200 bg-white p-8 flex items-center justify-center min-h-[20rem]"
+        >
+        </div>
+      </div>
+
+      <!-- Footer avec code source -->
+      <div class="border-t border-gray-200 px-6 py-4 bg-gray-50">
+        <div class="flex items-center justify-between gap-4">
+          <div class="flex-1 rounded-md bg-white border border-gray-200 px-3 py-2 max-h-[6rem] overflow-y-auto">
+            <pre
+              id="ui-preview-code"
+              class="text-xs text-gray-700 leading-relaxed whitespace-pre-wrap"
+            ></pre>
+          </div>
+          <button
+            type="button"
+            class="px-4 py-2 text-sm font-medium text-white bg-gray-900 rounded-md hover:bg-gray-800 transition-colors focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 whitespace-nowrap shrink-0"
+            data-ui-preview-copy
+          >
+            Copier
+          </button>
+        </div>
+      </div>
+    </div>
   </div>
 </div>

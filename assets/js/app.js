@@ -398,6 +398,13 @@ function initComponentInspector() {
     
   // Écouter l'événement contextmenu sur document avec capture pour intercepter avant le navigateur
   const contextMenuHandler = (event) => {
+    // Vérifier si on est dans la page UI - désactiver le menu contextuel
+    const uiPanel = document.getElementById("ui-library-panel")
+    if (uiPanel && !uiPanel.classList.contains("hidden")) {
+      // On est dans la page UI, ne pas afficher le menu contextuel
+      return
+    }
+    
     // Empêcher le menu contextuel du navigateur IMMÉDIATEMENT
     event.preventDefault()
     event.stopPropagation()
@@ -538,10 +545,25 @@ if (document.readyState === "loading") {
 
 // --- Mode Demo / UI (switch global) ---
 
-let currentMode = "demo"
+// Persistance du mode Demo/UI entre les pages
+let currentMode = (function () {
+  try {
+    const stored = window.localStorage.getItem("waw-showcase-mode")
+    return stored === "ui" ? "ui" : "demo"
+  } catch (_e) {
+    return "demo"
+  }
+})()
 
 function applyMode(mode) {
   currentMode = mode
+
+  // Mémoriser le mode pour les prochains rechargements
+  try {
+    window.localStorage.setItem("waw-showcase-mode", mode)
+  } catch (_e) {
+    // Ignorer les erreurs de stockage (mode privé, etc.)
+  }
 
   const body = document.getElementById("app-body") || document.body
   body.dataset.appMode = mode
@@ -606,36 +628,189 @@ function applyMode(mode) {
 }
 
 function initModeSwitch() {
-  // Initialiser le mode par défaut
+  // Appliquer le mode courant sur le DOM actuel
   applyMode(currentMode)
 
-  // Boutons desktop
-  document.querySelectorAll("[data-mode-toggle=\"desktop\"]").forEach((btn) => {
-    btn.addEventListener("click", (event) => {
-      event.preventDefault()
-      const value = btn.getAttribute("data-mode-value")
-      if (value && value !== currentMode) {
-        applyMode(value)
-      }
+  // Délégation globale pour tous les boutons Demo/UI (desktop + mobile)
+  if (!window.wawModeSwitchInitialized) {
+    document.addEventListener(
+      "click",
+      (event) => {
+        const btn = event.target.closest("[data-mode-toggle]")
+        if (!btn) return
+        // Si le clic est déclenché depuis un élément à l'intérieur de la popup UI, l'ignorer
+        if (event.target.closest("#ui-preview-modal")) return
+        
+        event.preventDefault()
+
+        const explicitValue = btn.getAttribute("data-mode-value")
+        let nextMode = explicitValue
+
+        // Si aucun value explicite, on toggle simplement
+        if (!nextMode) {
+          nextMode = currentMode === "demo" ? "ui" : "demo"
+        }
+
+        if (nextMode && nextMode !== currentMode) {
+          applyMode(nextMode)
+        }
+      },
+      true
+    )
+
+    // À chaque fin de mise à jour LiveView (événements, formulaires, navigation),
+    // on réapplique le mode courant pour garder l'UI ou la Demo visible correctement.
+    window.addEventListener("phx:page-loading-stop", () => {
+      applyMode(currentMode)
     })
+
+    // Marquer l'initialisation globale pour éviter les doublons
+    window.wawModeSwitchInitialized = true
+  }
+}
+
+// --- Désactiver les liens dans la page UI ---
+
+function initUiLinkDisabler() {
+  const uiPanel = document.getElementById("ui-library-panel")
+  if (!uiPanel) return
+
+  // Intercepter tous les clics sur les liens dans la zone UI
+  uiPanel.addEventListener("click", (event) => {
+    // Trouver le lien le plus proche (a, ou élément avec href/navigate)
+    const link = event.target.closest("a, [href], [navigate], [data-navigate]")
+    if (!link) return
+
+    // Vérifier si c'est un vrai lien (pas juste un élément avec un attribut vide)
+    const href = link.getAttribute("href")
+    const navigate = link.getAttribute("navigate")
+    const dataNavigate = link.getAttribute("data-navigate")
+    
+    // Si c'est un lien vers #, une route, ou un navigate, bloquer
+    if (href || navigate || dataNavigate) {
+      event.preventDefault()
+      event.stopPropagation()
+      event.stopImmediatePropagation()
+      return false
+    }
+  }, true) // Utiliser capture pour intercepter avant que Phoenix ne gère le clic
+}
+
+// Initialiser le désactivateur de liens UI
+if (document.readyState === "loading") {
+  document.addEventListener("DOMContentLoaded", initUiLinkDisabler)
+} else {
+  initUiLinkDisabler()
+}
+
+// Réinitialiser après chaque mise à jour LiveView de la zone UI
+window.addEventListener("phx:page-loading-stop", () => {
+  initUiLinkDisabler()
+})
+
+// --- Popup UI pour la bibliothèque de composants ---
+
+function initUiPreviewModal() {
+  const modal = document.getElementById("ui-preview-modal")
+  if (!modal) return
+
+  const backdrop = modal
+  const titleEl = modal.querySelector("#ui-preview-title")
+  const moduleEl = modal.querySelector("#ui-preview-module")
+  const componentEl = modal.querySelector("#ui-preview-component")
+  const codeEl = modal.querySelector("#ui-preview-code")
+  const closeBtn = modal.querySelector("[data-ui-preview-close]")
+  const copyBtn = modal.querySelector("[data-ui-preview-copy]")
+
+  function closeModal() {
+    modal.classList.add("hidden")
+  }
+
+  function openFromCard(card, previewDiv) {
+    if (!card || !previewDiv) return
+
+    const title = card.getAttribute("data-component-title") || ""
+    const moduleName = card.getAttribute("data-component-module") || ""
+    const codeBlock = card.querySelector("pre")
+    const code = codeBlock ? codeBlock.textContent.trim() : ""
+
+    if (titleEl) titleEl.textContent = title
+    if (moduleEl) moduleEl.textContent = moduleName
+    if (componentEl) {
+      componentEl.innerHTML = ""
+      const clone = previewDiv.cloneNode(true)
+      clone.removeAttribute("data-ui-preview")
+      clone.classList.remove("cursor-pointer", "hover:border-gray-300")
+      componentEl.appendChild(clone)
+    }
+    if (codeEl) {
+      codeEl.textContent = code
+    }
+
+    modal.classList.remove("hidden")
+  }
+
+  // Ouverture au clic sur les triggers
+  document.addEventListener(
+    "click",
+    (event) => {
+      const trigger = event.target.closest("[data-ui-preview=\"true\"]")
+      if (!trigger) return
+      const card = trigger.closest(".ui-component-card")
+      if (!card) return
+      event.preventDefault()
+      openFromCard(card, trigger)
+    },
+    true
+  )
+
+  // Fermeture par clic sur le backdrop (hors contenu)
+  backdrop.addEventListener("click", (event) => {
+    if (event.target === backdrop) {
+      closeModal()
+    }
   })
 
-  // Bouton mobile
-  const mobileButton = document.querySelector("[data-mode-toggle=\"mobile\"]")
-  if (mobileButton) {
-    mobileButton.addEventListener("click", (event) => {
+  // Fermeture via bouton
+  if (closeBtn) {
+    closeBtn.addEventListener("click", (event) => {
       event.preventDefault()
-      const nextMode = currentMode === "demo" ? "ui" : "demo"
-      applyMode(nextMode)
+      closeModal()
+    })
+  }
+
+  // Copie du code source
+  if (copyBtn) {
+    copyBtn.addEventListener("click", (event) => {
+      event.preventDefault()
+      if (!codeEl) return
+      const code = codeEl.textContent || ""
+      if (!code.trim()) {
+        showFlash("danger", "Rien n'est copié car le code source n'est pas disponible")
+        return
+      }
+      navigator.clipboard
+        .writeText(code)
+        .then(() => {
+          showFlash("success", "Code source copié avec succès")
+        })
+        .catch(() => {
+          showFlash("danger", "Erreur lors de la copie")
+        })
     })
   }
 }
 
-// Initialiser le switch de mode une fois le DOM prêt
-if (document.readyState === "loading") {
-  document.addEventListener("DOMContentLoaded", initModeSwitch)
-} else {
+// Initialiser les comportements globaux une fois le DOM prêt
+function initGlobalUI() {
   initModeSwitch()
+  initUiPreviewModal()
+}
+
+if (document.readyState === "loading") {
+  document.addEventListener("DOMContentLoaded", initGlobalUI)
+} else {
+  initGlobalUI()
 }
 
 // Handler pour les événements component_inspected envoyés par le serveur
