@@ -745,10 +745,74 @@ if (document.body) {
 }
 
 
+// Hook pour la recherche dans la bibliothèque UI
+const UISearchHook = {
+  mounted() {
+    const searchInput = this.el
+    const grid = document.getElementById("ui-components-grid")
+    
+    if (!grid) return
+
+    const filterCards = (searchTerm) => {
+      const cards = grid.querySelectorAll(".ui-component-card")
+      const term = searchTerm.toLowerCase().trim()
+
+      cards.forEach((card) => {
+        const title = card.getAttribute("data-component-title") || ""
+        const module = card.getAttribute("data-component-module") || ""
+        
+        const matchesTitle = title.toLowerCase().includes(term)
+        const matchesModule = module.toLowerCase().includes(term)
+        
+        if (term === "" || matchesTitle || matchesModule) {
+          card.style.display = ""
+        } else {
+          card.style.display = "none"
+        }
+      })
+    }
+
+    searchInput.addEventListener("input", (e) => {
+      filterCards(e.target.value)
+    })
+
+    // Filtrer au montage si une valeur existe déjà
+    if (searchInput.value) {
+      filterCards(searchInput.value)
+    }
+  },
+
+  updated() {
+    // Re-filtrer après mise à jour du DOM
+    const searchInput = this.el
+    const grid = document.getElementById("ui-components-grid")
+    
+    if (grid && searchInput.value) {
+      const cards = grid.querySelectorAll(".ui-component-card")
+      const term = searchInput.value.toLowerCase().trim()
+
+      cards.forEach((card) => {
+        const title = card.getAttribute("data-component-title") || ""
+        const module = card.getAttribute("data-component-module") || ""
+        
+        const matchesTitle = title.toLowerCase().includes(term)
+        const matchesModule = module.toLowerCase().includes(term)
+        
+        if (term === "" || matchesTitle || matchesModule) {
+          card.style.display = ""
+        } else {
+          card.style.display = "none"
+        }
+      })
+    }
+  }
+}
+
 const hooks = {
   ...colocatedHooks,
   ThemeManager: ThemeManagerHook,
-  ContextMenuNotification: ContextMenuNotificationHook
+  ContextMenuNotification: ContextMenuNotificationHook,
+  UISearch: UISearchHook
 }
 
 const csrfToken = document.querySelector("meta[name='csrf-token']").getAttribute("content")

@@ -1,10 +1,12 @@
 <div class="py-6 px-4">
-  <% components = WawShowcase.ComponentCache.get_components() %>
-  <% text_components =
-    Enum.filter(components, fn c ->
-      String.starts_with?(c.module || "", "Waw.Text.")
-    end)
-  %>
+  <% text_components = [
+    %{nom: "Devise", module: "Waw.Text.Number", tag: "waw_currency", code_source: "<.currency value={10000} currency=\"USD\"/>", preview: :currency},
+    %{nom: "Distance", module: "Waw.Text.Number", tag: "waw_distance", code_source: "<.distance unit={:kilometer} value={10000}/>", preview: :distance},
+    %{nom: "Nombre", module: "Waw.Text.Number", tag: "waw_number", code_source: "<.number unit={nil} value={12000}/>", preview: :number},
+    %{nom: "Volume", module: "Waw.Text.Number", tag: "waw_number", code_source: "<.number unit={:liter} value={10000}/>", preview: :volume},
+    %{nom: "Valeur nil", module: "Waw.Text.Number", tag: "waw_number", code_source: "<.number unit={nil} value={nil}/>", preview: :nil},
+    %{nom: "Texte", module: "Waw.Text.Text", tag: "waw_text", code_source: "<.text value=\"Exemple de texte\"/>", preview: :text}
+  ] %>
   <!-- Header avec titre à gauche et recherche à droite -->
   <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
     <div>
@@ -15,7 +17,13 @@
     </div>
 
     <div class="w-full md:w-72 md:ml-auto">
-      <.waw_input id="ui-search" type="search" size="sm" placeholder="Rechercher un composant" />
+      <.waw_input
+        id="ui-search"
+        type="search"
+        size="sm"
+        placeholder="Rechercher un composant"
+        phx-hook="UISearch"
+      />
     </div>
   </div>
 
@@ -71,29 +79,38 @@
     <section class="flex-1 space-y-8">
       <!-- Section 1 -->
       <div class="space-y-4">
-        <div>
-          <h2 class="text-sm font-semibold text-gray-900">
-            Cartes de base
-          </h2>
-          <p class="text-xs text-gray-500">
-            Zone dédiée aux composants de type carte (layout uniquement).
-          </p>
-        </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 auto-rows-[minmax(0,_1fr)]">
+        <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 auto-rows-[minmax(0,_1fr)]" id="ui-components-grid">
           <div
             :for={comp <- text_components}
-            class="rounded-xl border border-gray-200 bg-white shadow-sm p-6 flex flex-col gap-4"
+            class="ui-component-card rounded-xl border border-gray-200 bg-white shadow-sm p-6 flex flex-col gap-4"
+            data-component-title={comp.nom}
+            data-component-module={comp.module}
           >
-            <!-- Cadre blanc vide pour le futur composant -->
-            <div class="rounded-lg border-2 border-gray-200 bg-white min-h-[8rem] flex items-center justify-center">
-              <span class="text-xs text-gray-400">Prévisualisation du composant</span>
+            <!-- Aperçu du composant -->
+            <div class="rounded-lg border-2 border-gray-200 bg-white min-h-[8rem] flex items-center justify-center p-4">
+              <%= case comp.preview do %>
+                <% :currency -> %>
+                  <.currency value={10000} currency="USD" />
+                <% :distance -> %>
+                  <.distance unit={:kilometer} value={10000} />
+                <% :number -> %>
+                  <.number unit={nil} value={12000} />
+                <% :volume -> %>
+                  <.number unit={:liter} value={10000} />
+                <% :nil -> %>
+                  <.number unit={nil} value={nil} />
+                <% :text -> %>
+                  <.text value="Exemple de texte" />
+                <% _ -> %>
+                  <span class="text-xs text-gray-400">Prévisualisation non disponible</span>
+              <% end %>
             </div>
 
             <!-- Bloc titre -->
             <div>
               <h3 class="text-base font-semibold text-gray-900 truncate">
-                {comp.nom || "Composant sans nom"}
+                {comp.nom}
               </h3>
             </div>
 
@@ -104,50 +121,25 @@
               </p>
             </div>
 
-            <!-- Bloc code source -->
-            <% code = comp.code_source || "" %>
-            <div class="rounded-md bg-gray-50 border border-gray-200 px-3 py-2">
-              <pre class="text-xs text-gray-600 leading-relaxed overflow-x-auto whitespace-pre-wrap">
-{code != "" && code || "Exemple d'utilisation à venir"}</pre>
+            <!-- Bloc code source avec bouton Copier sur la même ligne -->
+            <% code = comp.code_source %>
+            <div class="flex gap-2 items-start">
+              <div class="flex-1 rounded-md bg-gray-50 border border-gray-200 px-3 py-2">
+                <pre class="text-xs text-gray-600 leading-relaxed overflow-x-auto whitespace-pre-wrap">
+{code}</pre>
+              </div>
+              <button
+                type="button"
+                class="px-4 py-2 text-sm font-medium text-white bg-gray-900 rounded-md hover:bg-gray-800 transition-colors focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 whitespace-nowrap"
+                phx-click="copy_code"
+                phx-value-code={code}
+              >
+                Copier
+              </button>
             </div>
-
-            <!-- Bouton Copier -->
-            <button
-              type="button"
-              class="w-full px-4 py-2 text-sm font-medium text-white bg-gray-900 rounded-md hover:bg-gray-800 transition-colors focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2"
-              phx-click="copy_code"
-              phx-value-code={code}
-            >
-              Copier
-            </button>
           </div>
-        </div>
-      </div>
-
-      <!-- Section 2 -->
-      <div class="space-y-4">
-        <div>
-          <h2 class="text-sm font-semibold text-gray-900">
-            États & variations
-          </h2>
-          <p class="text-xs text-gray-500">
-            Layout pour visualiser les différents états d’un même composant.
-          </p>
-        </div>
-
-        <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 auto-rows-[minmax(0,_1fr)]">
-          <div class="rounded-xl border border-gray-200 bg-white/80 shadow-sm min-h-[8rem] md:col-span-2 xl:col-span-3"></div>
-          <div class="rounded-xl border border-gray-200 bg-white/80 shadow-sm min-h-[6rem]"></div>
-          <div class="rounded-xl border border-gray-200 bg-white/80 shadow-sm min-h-[6rem]"></div>
-        </div>
-
-        <div class="rounded-lg border border-dashed border-gray-300 bg-gray-50/80 px-3 py-2">
-          <pre class="text-[0.7rem] md:text-xs text-gray-400 leading-snug">
-Code d'exemple pour les différents états (placeholder, à remplir plus tard)</pre>
         </div>
       </div>
     </section>
   </div>
 </div>
-
-
