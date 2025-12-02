@@ -76,6 +76,19 @@ defmodule WawShowcaseWeb.Live.ComponentInspector do
 
         {:noreply, socket}
       end
+
+      @impl true
+      def handle_event("copy_code", %{"code" => code}, socket) do
+        # Le code sera copié côté client via JavaScript
+        # On envoie juste un événement pour confirmer
+        socket =
+          push_event(socket, "code_copied", %{
+            code: code,
+            success: code != nil && code != ""
+          })
+
+        {:noreply, socket}
+      end
     end
   end
 end

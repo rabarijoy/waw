@@ -750,26 +750,42 @@ const UISearchHook = {
   mounted() {
     const searchInput = this.el
     const grid = document.getElementById("ui-components-grid")
+    const noResults = document.getElementById("ui-no-results")
     
     if (!grid) return
 
     const filterCards = (searchTerm) => {
       const cards = grid.querySelectorAll(".ui-component-card")
       const term = searchTerm.toLowerCase().trim()
+      const activeCategory = window.getActiveCategory ? window.getActiveCategory() : "texte-nombres"
+      let visibleCount = 0
 
       cards.forEach((card) => {
+        const cardCategory = card.getAttribute("data-component-category")
         const title = card.getAttribute("data-component-title") || ""
         const module = card.getAttribute("data-component-module") || ""
         
+        const matchesCategory = cardCategory === activeCategory
         const matchesTitle = title.toLowerCase().includes(term)
         const matchesModule = module.toLowerCase().includes(term)
+        const matchesSearch = term === "" || matchesTitle || matchesModule
         
-        if (term === "" || matchesTitle || matchesModule) {
+        if (matchesCategory && matchesSearch) {
           card.style.display = ""
+          visibleCount++
         } else {
           card.style.display = "none"
         }
       })
+
+      // Afficher/masquer le message "Aucun résultat"
+      if (noResults) {
+        if (visibleCount === 0) {
+          noResults.classList.remove("hidden")
+        } else {
+          noResults.classList.add("hidden")
+        }
+      }
     }
 
     searchInput.addEventListener("input", (e) => {
@@ -786,33 +802,227 @@ const UISearchHook = {
     // Re-filtrer après mise à jour du DOM
     const searchInput = this.el
     const grid = document.getElementById("ui-components-grid")
+    const noResults = document.getElementById("ui-no-results")
     
     if (grid && searchInput.value) {
       const cards = grid.querySelectorAll(".ui-component-card")
       const term = searchInput.value.toLowerCase().trim()
+      let visibleCount = 0
+
+      const activeCategory = window.getActiveCategory ? window.getActiveCategory() : "texte-nombres"
 
       cards.forEach((card) => {
+        const cardCategory = card.getAttribute("data-component-category")
         const title = card.getAttribute("data-component-title") || ""
         const module = card.getAttribute("data-component-module") || ""
         
+        const matchesCategory = cardCategory === activeCategory
         const matchesTitle = title.toLowerCase().includes(term)
         const matchesModule = module.toLowerCase().includes(term)
+        const matchesSearch = term === "" || matchesTitle || matchesModule
         
-        if (term === "" || matchesTitle || matchesModule) {
+        if (matchesCategory && matchesSearch) {
           card.style.display = ""
+          visibleCount++
         } else {
           card.style.display = "none"
         }
       })
+
+      // Afficher/masquer le message "Aucun résultat"
+      if (noResults) {
+        if (visibleCount === 0) {
+          noResults.classList.remove("hidden")
+        } else {
+          noResults.classList.add("hidden")
+        }
+      }
     }
   }
 }
+
+// Fonction globale pour obtenir la catégorie active
+window.getActiveCategory = () => {
+  const nav = document.getElementById("ui-categories-nav")
+  if (!nav) return "texte-nombres"
+  
+  const activeBtn = nav.querySelector(".ui-category-btn.bg-gray-900")
+  return activeBtn ? activeBtn.getAttribute("data-category") : "texte-nombres"
+}
+
+// Hook pour gérer les catégories dans la bibliothèque UI
+const UICategoryHook = {
+  mounted() {
+    const nav = document.getElementById("ui-categories-nav")
+    if (!nav) return
+
+    let activeCategory = "texte-nombres" // Catégorie par défaut
+
+    const filterByCategory = (category, searchTerm = "") => {
+      const grid = document.getElementById("ui-components-grid")
+      if (!grid) return
+
+      const cards = grid.querySelectorAll(".ui-component-card")
+      const term = searchTerm.toLowerCase().trim()
+      let visibleCount = 0
+
+      cards.forEach((card) => {
+        const cardCategory = card.getAttribute("data-component-category")
+        const title = card.getAttribute("data-component-title") || ""
+        const module = card.getAttribute("data-component-module") || ""
+        
+        const matchesCategory = cardCategory === category
+        const matchesSearch = term === "" || 
+          title.toLowerCase().includes(term) || 
+          module.toLowerCase().includes(term)
+        
+        if (matchesCategory && matchesSearch) {
+          card.style.display = ""
+          visibleCount++
+        } else {
+          card.style.display = "none"
+        }
+      })
+
+      // Gérer le message "Aucun résultat"
+      const noResults = document.getElementById("ui-no-results")
+      if (noResults) {
+        if (visibleCount === 0) {
+          noResults.classList.remove("hidden")
+        } else {
+          noResults.classList.add("hidden")
+        }
+      }
+    }
+
+    const setActiveCategory = (category) => {
+      activeCategory = category
+      
+      // Mettre à jour le style des boutons
+      const buttons = nav.querySelectorAll(".ui-category-btn")
+      buttons.forEach((btn) => {
+        const btnCategory = btn.getAttribute("data-category")
+        if (btnCategory === category) {
+          btn.className = "ui-category-btn w-full text-left px-3 py-2 rounded-md bg-gray-900 text-white text-xs md:text-sm shadow-sm transition-colors"
+        } else {
+          btn.className = "ui-category-btn w-full text-left px-3 py-2 rounded-md text-xs md:text-sm text-gray-700 hover:bg-gray-100 transition-colors"
+        }
+      })
+
+      // Filtrer les cards selon la catégorie et la recherche active
+      const searchInput = document.getElementById("ui-search")
+      const searchTerm = searchInput ? searchInput.value : ""
+      filterByCategory(category, searchTerm)
+    }
+
+    // Ajouter les event listeners aux boutons
+    const buttons = nav.querySelectorAll(".ui-category-btn")
+    buttons.forEach((btn) => {
+      btn.addEventListener("click", (e) => {
+        e.preventDefault()
+        const category = btn.getAttribute("data-category")
+        setActiveCategory(category)
+      })
+    })
+
+    // Initialiser avec la catégorie par défaut
+    setActiveCategory(activeCategory)
+    
+    // Exposer la fonction pour le hook de recherche
+    this.setActiveCategory = setActiveCategory
+  }
+}
+
+// Hook pour gérer la grille Bento adaptative
+const BentoGrid = {
+  mounted() {
+    this.adjustBentoGrid()
+    // Réajuster après les changements de catégorie ou de recherche
+    const observer = new MutationObserver(() => {
+      this.adjustBentoGrid()
+    })
+    observer.observe(this.el, { childList: true, subtree: true, attributes: true, attributeFilter: ['style', 'class'] })
+  },
+  
+  updated() {
+    this.adjustBentoGrid()
+  },
+  
+  adjustBentoGrid() {
+    const grid = this.el
+    if (!grid) return
+    
+    // Attendre que le layout soit stabilisé
+    setTimeout(() => {
+      const wideCards = Array.from(grid.querySelectorAll('.bento-wide'))
+      if (wideCards.length === 0) return
+      
+      // Pour chaque carte large, vérifier si elle est seule sur sa ligne
+      wideCards.forEach((card) => {
+        const cardRect = card.getBoundingClientRect()
+        
+        // Trouver toutes les cartes visibles dans la grille
+        const allCards = Array.from(grid.querySelectorAll('.ui-component-card'))
+          .filter(c => window.getComputedStyle(c).display !== 'none')
+        
+        // Trouver les cartes sur la même ligne (même top avec une tolérance)
+        const sameLineCards = allCards.filter(c => {
+          if (c === card) return false
+          const cRect = c.getBoundingClientRect()
+          return Math.abs(cRect.top - cardRect.top) < 5
+        })
+        
+        // Si aucune carte n'est sur la même ligne OU si la carte est la dernière de sa ligne
+        // et qu'il n'y a qu'une colonne libre à droite, prendre toute la largeur
+        if (sameLineCards.length === 0) {
+          // Seule sur sa ligne, prendre toute la largeur
+          card.classList.remove('xl:col-span-2')
+          card.classList.add('xl:col-span-3')
+        } else {
+          // Vérifier si la carte est à la fin de sa ligne (pas de carte à droite)
+          const cardsToRight = sameLineCards.filter(c => {
+            const cRect = c.getBoundingClientRect()
+            return cRect.left > cardRect.right + 10 // Tolérance pour le gap
+          })
+          
+          if (cardsToRight.length === 0) {
+            // Pas de carte à droite, prendre toute la largeur
+            card.classList.remove('xl:col-span-2')
+            card.classList.add('xl:col-span-3')
+          } else {
+            // Il y a une carte à droite, garder col-span-2
+            card.classList.remove('xl:col-span-3')
+            if (!card.classList.contains('xl:col-span-2')) {
+              card.classList.add('xl:col-span-2')
+            }
+          }
+        }
+      })
+    }, 100)
+  }
+}
+
+// Handler pour copier le code dans le presse-papiers
+document.addEventListener("phx:code_copied", (event) => {
+  const { code, success } = event.detail
+  if (success && code) {
+    navigator.clipboard.writeText(code).then(() => {
+      showFlash("success", "Code source copié avec succès")
+    }).catch(() => {
+      showFlash("danger", "Erreur lors de la copie")
+    })
+  } else {
+    showFlash("danger", "Rien n'est copié car le code source n'est pas disponible")
+  }
+})
 
 const hooks = {
   ...colocatedHooks,
   ThemeManager: ThemeManagerHook,
   ContextMenuNotification: ContextMenuNotificationHook,
-  UISearch: UISearchHook
+  UISearch: UISearchHook,
+  UICategory: UICategoryHook,
+  BentoGrid: BentoGrid
 }
 
 const csrfToken = document.querySelector("meta[name='csrf-token']").getAttribute("content")

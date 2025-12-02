@@ -150,8 +150,8 @@
             <!-- Bloc code source avec bouton Copier sur la même ligne (discret) -->
             <% code = comp.code_source %>
             <div class="flex gap-2 items-start border-t border-gray-100 pt-3">
-              <div class="flex-1 rounded-md bg-gray-50 border border-gray-200 px-2 py-1.5 max-h-[4rem] overflow-hidden">
-                <pre class="text-[0.65rem] text-gray-500 leading-tight overflow-x-auto overflow-y-hidden whitespace-pre-wrap">
+              <div class="flex-1 rounded-md bg-gray-50 border border-gray-200 px-2 py-1.5 max-h-[4rem] overflow-y-auto overflow-x-auto">
+                <pre class="text-xs text-gray-600 leading-relaxed whitespace-pre-wrap">
 {code}</pre>
               </div>
               <button
@@ -169,7 +169,7 @@
             class={[
               "ui-component-card rounded-xl border border-gray-200 bg-white shadow-sm p-6 flex flex-col gap-3",
               if comp.preview in [:header, :footer, :filter_header, :accordion] do
-                "md:col-span-2 xl:col-span-2"
+                "md:col-span-2 xl:col-span-2 bento-wide"
               else
                 ""
               end
@@ -253,8 +253,8 @@
             <!-- Bloc code source avec bouton Copier sur la même ligne (discret) -->
             <% code = comp.code_source %>
             <div class="flex gap-2 items-start border-t border-gray-100 pt-3">
-              <div class="flex-1 rounded-md bg-gray-50 border border-gray-200 px-2 py-1.5 max-h-[4rem] overflow-hidden">
-                <pre class="text-[0.65rem] text-gray-500 leading-tight overflow-x-auto overflow-y-hidden whitespace-pre-wrap">
+              <div class="flex-1 rounded-md bg-gray-50 border border-gray-200 px-2 py-1.5 max-h-[4rem] overflow-y-auto overflow-x-auto">
+                <pre class="text-xs text-gray-600 leading-relaxed whitespace-pre-wrap">
 {code}</pre>
               </div>
               <button
