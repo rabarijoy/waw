@@ -1,0 +1,154 @@
+<div class="py-6 px-4">
+  <% components = WawShowcase.ComponentCache.get_components() %>
+  <% text_components =
+    Enum.filter(components, fn c ->
+      String.starts_with?(c.module || "", "Waw.Text.")
+    end)
+  %>
+  <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
+    <div>
+      <h1 class="text-lg md:text-xl font-semibold text-gray-900">Bibliothèque UI</h1>
+      <p class="text-xs md:text-sm text-gray-500">
+        Aperçu structuré des composants de la librairie (layout uniquement pour l’instant).
+      </p>
+    </div>
+
+    <div class="w-full md:w-72">
+      <.waw_input id="ui-search" type="search" size="sm" placeholder="Rechercher un composant" />
+    </div>
+  </div>
+
+  <div class="flex flex-col md:flex-row gap-6">
+    <!-- Sidecar catégories -->
+    <aside class="w-full md:w-64 flex-shrink-0">
+      <div class="bg-white rounded-lg border border-gray-200 shadow-sm p-4 space-y-3">
+        <h2 class="text-xs font-semibold text-gray-500 uppercase tracking-wide">
+          Catégories
+        </h2>
+        <nav class="space-y-1">
+          <button
+            type="button"
+            class="w-full text-left px-3 py-2 rounded-md bg-gray-900 text-white text-xs md:text-sm shadow-sm transition-colors"
+          >
+            Texte &amp; nombres
+          </button>
+          <button
+            type="button"
+            class="w-full text-left px-3 py-2 rounded-md text-xs md:text-sm text-gray-700 hover:bg-gray-100 transition-colors"
+          >
+            Basiques
+          </button>
+          <button
+            type="button"
+            class="w-full text-left px-3 py-2 rounded-md text-xs md:text-sm text-gray-700 hover:bg-gray-100 transition-colors"
+          >
+            Cartes
+          </button>
+          <button
+            type="button"
+            class="w-full text-left px-3 py-2 rounded-md text-xs md:text-sm text-gray-700 hover:bg-gray-100 transition-colors"
+          >
+            Dates &amp; heures
+          </button>
+          <button
+            type="button"
+            class="w-full text-left px-3 py-2 rounded-md text-xs md:text-sm text-gray-700 hover:bg-gray-100 transition-colors"
+          >
+            Formulaire
+          </button>
+          <button
+            type="button"
+            class="w-full text-left px-3 py-2 rounded-md text-xs md:text-sm text-gray-700 hover:bg-gray-100 transition-colors"
+          >
+            Icônes
+          </button>
+        </nav>
+      </div>
+    </aside>
+
+    <!-- Zone centrale : grille Bento -->
+    <section class="flex-1 space-y-8">
+      <!-- Section 1 -->
+      <div class="space-y-4">
+        <div>
+          <h2 class="text-sm font-semibold text-gray-900">
+            Cartes de base
+          </h2>
+          <p class="text-xs text-gray-500">
+            Zone dédiée aux composants de type carte (layout uniquement).
+          </p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 auto-rows-[minmax(0,_1fr)]">
+          <div
+            :for={comp <- text_components}
+            class="rounded-xl border border-gray-200 bg-white/80 shadow-sm min-h-[8rem] p-4 flex flex-col gap-3"
+          >
+            <div>
+              <h3 class="text-sm font-semibold text-gray-900 truncate">
+                {comp.nom || "Composant sans nom"}
+              </h3>
+              <p class="text-[0.7rem] text-gray-500 mt-1">
+                {comp.module}
+              </p>
+            </div>
+
+            <!-- Prévisualisation réelle du composant selon son tag -->
+            <div class="rounded-md bg-gray-50 border border-dashed border-gray-200 min-h-[3rem] flex items-center justify-center text-[0.75rem] text-gray-700 px-3">
+              <%= case comp.tag do %>
+                <% "waw_text" -> %>
+                  <.waw_text value="Exemple de texte formaté" />
+                <% "waw_distance" -> %>
+                  <.waw_distance value={12500} unit={:kilometer} />
+                <% "waw_number" -> %>
+                  <.waw_number value={1234} unit={:kilometer} />
+                <% "waw_date" -> %>
+                  <.waw_date value={~D[2024-01-01]} />
+                <% "waw_date_time" -> %>
+                  <.waw_date_time value={~U[2024-01-01 12:34:56Z]} />
+                <% "waw_relative_time" -> %>
+                  <.waw_relative_time value={DateTime.utc_now()} ref={DateTime.add(DateTime.utc_now(), -3600)} />
+                <% _ -> %>
+                  <span class="text-gray-400">
+                    Prévisualisation non disponible pour ce composant
+                  </span>
+              <% end %>
+            </div>
+
+            <% code = comp.code_source || "" %>
+
+            <div class="rounded-md bg-gray-50 border border-gray-100 px-2 py-1.5">
+              <pre class="text-[0.7rem] md:text-xs text-gray-500 leading-snug overflow-x-auto">
+{code != "" && code || "Exemple d'utilisation à venir"}</pre>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Section 2 -->
+      <div class="space-y-4">
+        <div>
+          <h2 class="text-sm font-semibold text-gray-900">
+            États & variations
+          </h2>
+          <p class="text-xs text-gray-500">
+            Layout pour visualiser les différents états d’un même composant.
+          </p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 auto-rows-[minmax(0,_1fr)]">
+          <div class="rounded-xl border border-gray-200 bg-white/80 shadow-sm min-h-[8rem] md:col-span-2 xl:col-span-3"></div>
+          <div class="rounded-xl border border-gray-200 bg-white/80 shadow-sm min-h-[6rem]"></div>
+          <div class="rounded-xl border border-gray-200 bg-white/80 shadow-sm min-h-[6rem]"></div>
+        </div>
+
+        <div class="rounded-lg border border-dashed border-gray-300 bg-gray-50/80 px-3 py-2">
+          <pre class="text-[0.7rem] md:text-xs text-gray-400 leading-snug">
+Code d'exemple pour les différents états (placeholder, à remplir plus tard)</pre>
+        </div>
+      </div>
+    </section>
+  </div>
+</div>
+
+

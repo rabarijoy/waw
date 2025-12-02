@@ -8,22 +8,24 @@
     >
       <.waw_header title="Waw Showcase" logout_url="" current_user_profile_url="">
         <:nav>
-          <div id="app-main-nav" class="flex items-center gap-4 transition-all duration-200">
-            <.waw_navbar navigate={~p"/"} theme="light">
-              Tableau de bord
-            </.waw_navbar>
-            <.waw_navbar navigate={~p"/vehicules"} theme="light">
-              Véhicules
-            </.waw_navbar>
-            <.waw_navbar navigate={~p"/carburant"} theme="light">
-              Carburant
-            </.waw_navbar>
-            <.waw_navbar navigate={~p"/rapports"} theme="light">
-              Rapports
-            </.waw_navbar>
-            <.waw_navbar navigate={~p"/reglages"} theme="light">
-              Réglages
-            </.waw_navbar>
+          <div class="flex items-center gap-4">
+            <div id="app-main-nav" class="flex items-center gap-4 transition-all duration-200">
+              <.waw_navbar navigate={~p"/"} theme="light">
+                Tableau de bord
+              </.waw_navbar>
+              <.waw_navbar navigate={~p"/vehicules"} theme="light">
+                Véhicules
+              </.waw_navbar>
+              <.waw_navbar navigate={~p"/carburant"} theme="light">
+                Carburant
+              </.waw_navbar>
+              <.waw_navbar navigate={~p"/rapports"} theme="light">
+                Rapports
+              </.waw_navbar>
+              <.waw_navbar navigate={~p"/reglages"} theme="light">
+                Réglages
+              </.waw_navbar>
+            </div>
 
             <div class="hidden md:inline-flex items-center ml-6">
               <div class="inline-flex h-8 items-center rounded-full bg-white/90 border border-gray-200 shadow-sm text-xs font-medium text-gray-600 px-1">
@@ -58,12 +60,7 @@
       id="ui-library-panel"
       class="hidden opacity-0 transition-opacity duration-200"
     >
-      <div class="max-w-5xl mx-auto py-8 px-4">
-        <h1 class="text-lg font-semibold text-gray-900 mb-2">Bibliothèque UI</h1>
-        <p class="text-sm text-gray-500">
-          La bibliothèque d’interfaces sera affichée ici.
-        </p>
-      </div>
+      <.ui_library_panel />
     </div>
   </:main>
   <:footer>
@@ -72,12 +69,12 @@
         <button
           type="button"
           data-mode-toggle="mobile"
-          class="inline-flex items-center gap-2 rounded-full bg-white border border-gray-200 shadow-sm px-3 py-1.5 text-xs font-medium text-gray-700"
+          class="inline-flex items-center gap-2 rounded-full bg-white px-3 py-1.5 text-[0.7rem] font-medium text-gray-700 whitespace-nowrap"
         >
           <span data-mode-active-label class="inline-flex h-6 items-center rounded-full bg-gray-900 text-white px-2 text-[0.7rem]">
             Demo
           </span>
-          <span data-mode-alt-label class="text-[0.7rem] text-gray-500">
+          <span data-mode-alt-label class="text-[0.65rem] leading-tight text-gray-500">
             Voir l’UI
           </span>
         </button>
