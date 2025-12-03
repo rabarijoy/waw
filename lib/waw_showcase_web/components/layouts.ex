@@ -309,7 +309,7 @@ defmodule WawShowcaseWeb.Layouts do
   end
 
   # Helper pour rendre un composant depuis son code_source
-  # Utilise EEx pour évaluer le HEEx avec Phoenix.HTML.Engine
+  # Compile et évalue le template HEEx dans le contexte du module
   def render_component_preview(assigns) do
     code_source = assigns[:code_source] || assigns.code_source
     sous_categorie = assigns[:sous_categorie] || assigns.sous_categorie
@@ -318,18 +318,27 @@ defmodule WawShowcaseWeb.Layouts do
       try do
         template_code = String.trim(code_source)
         
-        # Utiliser EEx.eval_string avec Phoenix.HTML.Engine
-        # Le binding est vide car les fonctions sont disponibles via les imports du module
-        # L'évaluation se fait dans le contexte de ce module grâce à __ENV__
-        result =
-          EEx.eval_string(template_code,
-            [],
+        # Compiler le template HEEx avec Phoenix.Template
+        # On utilise le contexte du module pour avoir accès aux imports
+        compiled =
+          EEx.compile_string(template_code,
+            engine: Phoenix.HTML.Engine,
             file: "component_preview_#{String.replace(sous_categorie, " ", "_")}",
-            line: 1,
-            engine: Phoenix.HTML.Engine
+            line: 1
           )
 
-        Phoenix.HTML.raw(result)
+        # Évaluer le template compilé dans le contexte du module
+        # Cela donne accès à tous les imports et fonctions du module
+        {result, _binding} = Code.eval_quoted(compiled, [], __ENV__)
+        
+        # Assigner le résultat aux assigns pour l'utiliser dans le template
+        assigns = assign(assigns, :rendered_result, result)
+        
+        # Le résultat est {:safe, ...}, on doit le wrapper dans un template HEEx
+        # pour retourner un %Phoenix.LiveView.Rendered{} struct
+        ~H"""
+        <%= Phoenix.HTML.raw(@rendered_result) %>
+        """
       rescue
         exception ->
           # Logger l'erreur pour debug
