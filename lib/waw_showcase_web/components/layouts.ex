@@ -311,13 +311,13 @@ defmodule WawShowcaseWeb.Layouts do
   # Helper pour rendre un composant depuis son code_source
   # Compile et évalue le template HEEx dans le contexte du module
   def render_component_preview(assigns) do
-    code_source = assigns[:code_source] || assigns.code_source
-    sous_categorie = assigns[:sous_categorie] || assigns.sous_categorie
+    code_source = Map.get(assigns, :code_source) || Map.get(assigns, "code_source")
+    sous_categorie = Map.get(assigns, :sous_categorie) || Map.get(assigns, "sous_categorie")
 
     if code_source do
       try do
         template_code = String.trim(code_source)
-        
+
         # Compiler le template HEEx avec Phoenix.Template
         # On utilise le contexte du module pour avoir accès aux imports
         compiled =
@@ -330,10 +330,10 @@ defmodule WawShowcaseWeb.Layouts do
         # Évaluer le template compilé dans le contexte du module
         # Cela donne accès à tous les imports et fonctions du module
         {result, _binding} = Code.eval_quoted(compiled, [], __ENV__)
-        
+
         # Assigner le résultat aux assigns pour l'utiliser dans le template
         assigns = assign(assigns, :rendered_result, result)
-        
+
         # Le résultat est {:safe, ...}, on doit le wrapper dans un template HEEx
         # pour retourner un %Phoenix.LiveView.Rendered{} struct
         ~H"""
