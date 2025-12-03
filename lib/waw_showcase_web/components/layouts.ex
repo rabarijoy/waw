@@ -309,7 +309,7 @@ defmodule WawShowcaseWeb.Layouts do
   end
 
   # Helper pour rendre un composant depuis son code_source
-  # Compile et évalue le template HEEx dans le contexte du module
+  # Crée un module dynamique qui hérite des imports pour évaluer le template HEEx
   def render_component_preview(assigns) do
     code_source = Map.get(assigns, :code_source) || Map.get(assigns, "code_source")
     sous_categorie = Map.get(assigns, :sous_categorie) || Map.get(assigns, "sous_categorie")
@@ -317,28 +317,32 @@ defmodule WawShowcaseWeb.Layouts do
     if code_source do
       try do
         template_code = String.trim(code_source)
-
-        # Compiler le template HEEx avec Phoenix.Template
-        # On utilise le contexte du module pour avoir accès aux imports
-        compiled =
-          EEx.compile_string(template_code,
-            engine: Phoenix.HTML.Engine,
-            file: "component_preview_#{String.replace(sous_categorie, " ", "_")}",
-            line: 1
-          )
-
-        # Évaluer le template compilé dans le contexte du module
-        # Cela donne accès à tous les imports et fonctions du module
-        {result, _binding} = Code.eval_quoted(compiled, [], __ENV__)
-
-        # Assigner le résultat aux assigns pour l'utiliser dans le template
-        assigns = assign(assigns, :rendered_result, result)
-
-        # Le résultat est {:safe, ...}, on doit le wrapper dans un template HEEx
-        # pour retourner un %Phoenix.LiveView.Rendered{} struct
-        ~H"""
-        <%= Phoenix.HTML.raw(@rendered_result) %>
+        
+        # Créer un module dynamique qui hérite des imports du module actuel
+        module_name = :"DynamicPreview_#{:erlang.phash2({sous_categorie, template_code})}"
+        
+        # Définir le module dynamique avec tous les imports nécessaires
+        module_code = """
+        defmodule #{module_name} do
+          use WawShowcaseWeb, :html
+          import Waw.Delegates
+          
+          def render(assigns) do
+            ~H\"\"\"
+            #{template_code}
+            \"\"\"
+          end
+        end
         """
+        
+        # Compiler et charger le module dynamique
+        Code.eval_string(module_code, [], file: "dynamic_preview.ex", line: 1)
+        
+        # Appeler la fonction render du module dynamique
+        result = apply(module_name, :render, [assigns])
+        
+        # Le résultat est déjà un %Phoenix.LiveView.Rendered{} struct
+        result
       rescue
         exception ->
           # Logger l'erreur pour debug

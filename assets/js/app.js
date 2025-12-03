@@ -917,6 +917,11 @@ if (document.readyState === "loading") {
   initGlobalUI()
 }
 
+// Réinitialiser la popup après chaque mise à jour LiveView
+window.addEventListener("phx:page-loading-stop", () => {
+  initUiPreviewModal()
+})
+
 // Handler pour les événements component_inspected envoyés par le serveur
 // Utiliser la délégation d'événement sur document pour capturer tous les événements
 function handleComponentInspected(event) {
