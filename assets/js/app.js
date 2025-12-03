@@ -732,12 +732,12 @@ function initUiPreviewModal() {
     currentVariantIndex = 0
   }
 
-  function renderVariantsNav(variants, container) {
+  function renderVariantsNav(variants, container, principalNom) {
     if (!container) return
     
-    // Créer le bouton "Principal" toujours présent
+    // Créer le bouton avec le nom réel du composant principal
     const allVariants = [
-      { nom: "Principal", code_source: null, isPrincipal: true },
+      { nom: principalNom || "Principal", code_source: null, isPrincipal: true },
       ...variants.map(v => ({ ...v, isPrincipal: false }))
     ]
 
@@ -760,7 +760,7 @@ function initUiPreviewModal() {
         : "px-3 py-1.5 rounded-full text-gray-500 hover:text-gray-900 hover:bg-gray-50 transition-colors duration-150 max-w-[200px] truncate"
       
       // Utiliser le texte complet mais avec truncate CSS pour gérer l'affichage
-      const displayText = variant.nom || "Principal"
+      const displayText = variant.nom || principalNom || "Principal"
       btn.textContent = displayText
       btn.title = displayText // Tooltip avec le nom complet pour voir le texte entier
       
@@ -788,6 +788,7 @@ function initUiPreviewModal() {
     if (!card) return
 
     const principalCode = card.getAttribute("data-component-principal-code") || ""
+    const principalNom = card.getAttribute("data-component-principal-nom") || card.getAttribute("data-component-title") || ""
     const code = variant.isPrincipal ? principalCode : (variant.code_source || "")
 
     if (codeEl) {
@@ -812,8 +813,8 @@ function initUiPreviewModal() {
       componentEl.innerHTML = `<pre class="text-xs text-gray-600 whitespace-pre-wrap p-4 bg-gray-50 rounded-lg">${code.trim() || "Code source non disponible"}</pre>`
     }
 
-    // Re-rendre la navigation avec le bon bouton actif
-    renderVariantsNav(currentVariants, variantsContainer)
+    // Re-rendre la navigation avec le bon bouton actif et le nom réel
+    renderVariantsNav(currentVariants, variantsContainer, principalNom)
   }
 
   function openFromCard(card, previewDiv) {
@@ -846,8 +847,8 @@ function initUiPreviewModal() {
     // Afficher la navigation des variantes
     renderVariantsNav(currentVariants, variantsContainer)
 
-    // Afficher le composant principal
-    const principalVariant = { nom: "Principal", code_source: principalCode, isPrincipal: true }
+    // Afficher le composant principal avec le nom réel
+    const principalVariant = { nom: principalNom, code_source: principalCode, isPrincipal: true }
     updateVariantDisplay(principalVariant, [principalVariant, ...currentVariants])
 
     modal.classList.remove("hidden")

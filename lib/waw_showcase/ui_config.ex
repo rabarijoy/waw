@@ -9,34 +9,10 @@ defmodule WawShowcase.UIConfig do
     "Basiques" => [
       %{
         sous_categorie: "Accordion",
+        module: "Waw.Accordion",
         principal: %{
           nom: "Accordion",
           code_source: """
-<.waw_accordion count={12} id="accordion-single-table" selected head_icon="car">
-<.waw_table without_border>
-<:thead>
-<.waw_th sort_key="desc"></.waw_th>
-<.waw_th sort_key="desc">Véhicules</.waw_th>
-<.waw_th sort_key="asc">Evenement</.waw_th>
-</:thead>
-<:tr state="selected">
-<.waw_td_icon><.waw_icon name="car" stroke="none" size="4" /></.waw_td_icon>
-<.waw_td title="6541 TBA">6541 TBA</.waw_td>
-<.waw_td title="Vitesse > 60km/h" is_link={true} href="https://www.tag-ip.com/">Vitesse > 60</.waw_td>
-</:tr>
-<:tr state="disabled">
-<.waw_td_icon><.waw_icon name="car" stroke="none" size="4" /></.waw_td_icon>
-<.waw_td title="3354 TBA">3354 TBA</.waw_td>
-<.waw_td title="Vitesse > 50km/h">Vitesse > 50</.waw_td>
-</:tr>
-</.waw_table>
-</.waw_accordion>
-"""
-        },
-        variantes: [
-          %{
-            nom: "Avec une liste réduite",
-            code_source: """
 <.waw_accordion count={12} id="accordion-single-normal" has_group>
 <.waw_accordion id="accordion-2" head_icon="truck" title="Truck" count={8}>
 <.waw_table without_border>
@@ -74,11 +50,37 @@ defmodule WawShowcase.UIConfig do
 <.waw_accordion id="accordion-3" head_icon="moto" title="moto" />
 </.waw_accordion>
 """
+        },
+        variantes: [
+          %{
+            nom: "Avec status sélectionné",
+            code_source: """
+<.waw_accordion count={12} id="accordion-single-table" selected head_icon="car">
+<.waw_table without_border>
+<:thead>
+<.waw_th sort_key="desc"></.waw_th>
+<.waw_th sort_key="desc">Véhicules</.waw_th>
+<.waw_th sort_key="asc">Evenement</.waw_th>
+</:thead>
+<:tr state="selected">
+<.waw_td_icon><.waw_icon name="car" stroke="none" size="4" /></.waw_td_icon>
+<.waw_td title="6541 TBA">6541 TBA</.waw_td>
+<.waw_td title="Vitesse > 60km/h" is_link={true} href="https://www.tag-ip.com/">Vitesse > 60</.waw_td>
+</:tr>
+<:tr state="disabled">
+<.waw_td_icon><.waw_icon name="car" stroke="none" size="4" /></.waw_td_icon>
+<.waw_td title="3354 TBA">3354 TBA</.waw_td>
+<.waw_td title="Vitesse > 50km/h">Vitesse > 50</.waw_td>
+</:tr>
+</.waw_table>
+</.waw_accordion>
+"""
           },
         ]
       },
       %{
         sous_categorie: "Badge",
+        module: "Waw.Badge",
         principal: %{
           nom: "Badge",
           code_source: """
@@ -116,6 +118,7 @@ defmodule WawShowcase.UIConfig do
       },
       %{
         sous_categorie: "Séparateur de blocs",
+        module: "Waw.BlockSeparator",
         principal: %{
           nom: "Séparateur de blocs",
           code_source: """
@@ -133,6 +136,7 @@ defmodule WawShowcase.UIConfig do
       },
       %{
         sous_categorie: "Titre de block",
+        module: "Waw.BlockTitle",
         principal: %{
           nom: "Titre de bloc",
           code_source: """
@@ -150,6 +154,7 @@ defmodule WawShowcase.UIConfig do
       },
       %{
         sous_categorie: "Boutons",
+        module: "Waw.Button",
         principal: %{
           nom: "Bouton",
           code_source: """
@@ -206,6 +211,7 @@ defmodule WawShowcase.UIConfig do
       },
       %{
         sous_categorie: "Texte éditable",
+        module: "Waw.ContentEditable",
         principal: %{
           nom: "Texte éditable",
           code_source: """
@@ -221,6 +227,7 @@ defmodule WawShowcase.UIConfig do
       },
       %{
         sous_categorie: "Liste des champs avec description",
+        module: "Waw.DefinitionList",
         principal: %{
           nom: "Liste de champs",
           code_source: """
@@ -287,6 +294,7 @@ defmodule WawShowcase.UIConfig do
       },
       %{
         sous_categorie: "Header des filtres",
+        module: "Waw.FilterHeader",
         principal: %{
           nom: "Header des filtres",
           code_source: """
@@ -338,6 +346,7 @@ defmodule WawShowcase.UIConfig do
       },
       %{
         sous_categorie: "Flash",
+        module: "Waw.Flash",
         principal: %{
           nom: "Flash",
           code_source: """
@@ -355,6 +364,7 @@ defmodule WawShowcase.UIConfig do
       },
       %{
         sous_categorie: "Groupe de flash",
+        module: "Waw.Flash",
         principal: %{
           nom: "Groupe de flashes",
           code_source: """
@@ -366,6 +376,7 @@ defmodule WawShowcase.UIConfig do
       },
       %{
         sous_categorie: "Footer",
+        module: "Waw.Footer",
         principal: %{
           nom: "Footer",
           code_source: """
@@ -377,6 +388,7 @@ defmodule WawShowcase.UIConfig do
       },
       %{
         sous_categorie: "Header",
+        module: "Waw.Header",
         principal: %{
           nom: "Header",
           code_source: """
@@ -391,6 +403,7 @@ defmodule WawShowcase.UIConfig do
       },
       %{
         sous_categorie: "Champs",
+        module: "WawShowcaseWeb.CoreComponents",
         principal: %{
           nom: "Champ",
           code_source: """
@@ -495,6 +508,7 @@ defmodule WawShowcase.UIConfig do
       },
       %{
         sous_categorie: "Lien icône",
+        module: "Waw.LinkIcon",
         principal: %{
           nom: "Lien icône",
           code_source: """
@@ -512,6 +526,7 @@ defmodule WawShowcase.UIConfig do
       },
       %{
         sous_categorie: "Lien texte",
+        module: "Waw.LinkText",
         principal: %{
           nom: "Lien texte",
           code_source: """
@@ -523,6 +538,7 @@ defmodule WawShowcase.UIConfig do
       },
       %{
         sous_categorie: "Element d'une liste",
+        module: "Waw.List",
         principal: %{
           nom: "Liste",
           code_source: """
@@ -572,6 +588,7 @@ defmodule WawShowcase.UIConfig do
       },
       %{
         sous_categorie: "Header de liste pour le tri",
+        module: "Waw.ListHeader",
         principal: %{
           nom: "Header de liste",
           code_source: """
@@ -595,6 +612,7 @@ defmodule WawShowcase.UIConfig do
       },
       %{
         sous_categorie: "Bouton collapse",
+        module: "Waw.LiveButton",
         principal: %{
           nom: "Bouton déroulant",
           code_source: """
@@ -635,6 +653,7 @@ defmodule WawShowcase.UIConfig do
       },
       %{
         sous_categorie: "Filtre de gauche à droite avec recherche",
+        module: "Waw.LiveFilter",
         principal: %{
           nom: "Filtre de liste",
           code_source: """
@@ -661,6 +680,7 @@ defmodule WawShowcase.UIConfig do
       },
       %{
         sous_categorie: "Recherche avec un resultat dans un popup",
+        module: "Waw.LiveSearch",
         principal: %{
           nom: "Recherche avec popup",
           code_source: """
@@ -707,6 +727,7 @@ defmodule WawShowcase.UIConfig do
       },
       %{
         sous_categorie: "Loading",
+        module: "Waw.Loading",
         principal: %{
           nom: "Loading",
           code_source: """
@@ -718,6 +739,7 @@ defmodule WawShowcase.UIConfig do
       },
       %{
         sous_categorie: "Logos",
+        module: "Waw.Logo",
         principal: %{
           nom: "Logo Tag-IP",
           code_source: """
@@ -729,6 +751,7 @@ defmodule WawShowcase.UIConfig do
       },
       %{
         sous_categorie: "Footer de carte",
+        module: "Waw.MapFooter",
         principal: %{
           nom: "Footer de la carte",
           code_source: """
@@ -760,6 +783,7 @@ defmodule WawShowcase.UIConfig do
       },
       %{
         sous_categorie: "Header de carte",
+        module: "Waw.MapHeader",
         principal: %{
           nom: "Header de la carte",
           code_source: """
@@ -781,6 +805,7 @@ defmodule WawShowcase.UIConfig do
       },
       %{
         sous_categorie: "Modal",
+        module: "Waw.Modal",
         principal: %{
           nom: "Modal",
           code_source: """
@@ -794,6 +819,7 @@ defmodule WawShowcase.UIConfig do
       },
       %{
         sous_categorie: "Popup de notification",
+        module: "Waw.NotificationPopup",
         principal: %{
           nom: "Popup de notification",
           code_source: """
@@ -812,6 +838,7 @@ defmodule WawShowcase.UIConfig do
       },
       %{
         sous_categorie: "Pagination",
+        module: "Waw.Pagination",
         principal: %{
           nom: "Pagination",
           code_source: """
@@ -836,6 +863,7 @@ defmodule WawShowcase.UIConfig do
       },
       %{
         sous_categorie: "Header d'un contenu",
+        module: "Waw.PanelHeader",
         principal: %{
           nom: "Header de contenu",
           code_source: """
@@ -883,6 +911,7 @@ defmodule WawShowcase.UIConfig do
       },
       %{
         sous_categorie: "Bloc de status",
+        module: "Waw.StatusBlock",
         principal: %{
           nom: "Bloc de status",
           code_source: """
@@ -964,6 +993,7 @@ defmodule WawShowcase.UIConfig do
       },
       %{
         sous_categorie: "Steps",
+        module: "Waw.Steps",
         principal: %{
           nom: "Steps",
           code_source: """
@@ -991,6 +1021,7 @@ Récapitulation
       },
       %{
         sous_categorie: "Sous header",
+        module: "WawShowcaseWeb.Components.Layout",
         principal: %{
           nom: "Sous header",
           code_source: """
@@ -1067,6 +1098,7 @@ from={~U[2023-09-22 06:13:14.707953Z]}
       },
       %{
         sous_categorie: "Tableau",
+        module: "Waw.Table",
         principal: %{
           nom: "Tableau",
           code_source: """
@@ -1165,6 +1197,7 @@ from={~U[2023-09-22 06:13:14.707953Z]}
       },
       %{
         sous_categorie: "Onglets",
+        module: "Waw.Tabs",
         principal: %{
           nom: "Onglets",
           code_source: """
@@ -1221,6 +1254,7 @@ Instances
       },
       %{
         sous_categorie: "Liste de tags",
+        module: "Waw.TagList",
         principal: %{
           nom: "Liste de tags",
           code_source: """
@@ -1256,6 +1290,7 @@ Instances
       },
       %{
         sous_categorie: "Info-bulle",
+        module: "Waw.Tooltip",
         principal: %{
           nom: "Info-bulle",
           code_source: """
@@ -1269,6 +1304,7 @@ contenu
       },
       %{
         sous_categorie: "Afficher un trackable",
+        module: "Waw.Name",
         principal: %{
           nom: "Trackable",
           code_source: """
@@ -1288,6 +1324,7 @@ contenu
     "Cartes" => [
       %{
         sous_categorie: "Compte-rendu",
+        module: "Waw.Card",
         principal: %{
           nom: "Compte-rendu",
           code_source: """
@@ -1317,6 +1354,7 @@ contenu
       },
       %{
         sous_categorie: "Dashboard",
+        module: "Waw.DashboardCard",
         principal: %{
           nom: "Dashboard",
           code_source: """
@@ -1342,6 +1380,7 @@ Content
       },
       %{
         sous_categorie: "Volume de carburant",
+        module: "Waw.FuelCard",
         principal: %{
           nom: "Volume de carburant",
           code_source: """
@@ -1353,6 +1392,7 @@ Content
       },
       %{
         sous_categorie: "Statistique",
+        module: "Waw.Stat",
         principal: %{
           nom: "Statistique",
           code_source: """
@@ -1444,6 +1484,7 @@ Content
     "Dates et heures" => [
       %{
         sous_categorie: "Dates",
+        module: "Waw.Text.Dates",
         principal: %{
           nom: "Date",
           code_source: """
@@ -1461,6 +1502,7 @@ Content
       },
       %{
         sous_categorie: "Intervalle de temps",
+        module: "Waw.Text.Dates",
         principal: %{
           nom: "Intervalle",
           code_source: """
@@ -1484,6 +1526,7 @@ Content
       },
       %{
         sous_categorie: "Relatives",
+        module: "Waw.Text.Dates",
         principal: %{
           nom: "Temps relatif",
           code_source: """
@@ -1495,6 +1538,7 @@ Content
       },
       %{
         sous_categorie: "Heures",
+        module: "Waw.Text.Dates",
         principal: %{
           nom: "Heure",
           code_source: """
@@ -1510,6 +1554,7 @@ Content
     "Mises en page" => [
       %{
         sous_categorie: "Mise en page des formulaires",
+        module: "WawShowcaseWeb.Components.Layout",
         principal: %{
           nom: "Formulaire",
           code_source: """
@@ -1579,6 +1624,7 @@ Titre
       },
       %{
         sous_categorie: "Mise en page avec 2 sections",
+        module: "WawShowcaseWeb.Components.Layout",
         principal: %{
           nom: "Layout 2 sections",
           code_source: """
@@ -1657,6 +1703,7 @@ Instances
       },
       %{
         sous_categorie: "Mise en page avec 3 sections",
+        module: "WawShowcaseWeb.Components.Layout",
         principal: %{
           nom: "Layout 3 sections",
           code_source: """
@@ -1783,6 +1830,7 @@ from={~U[2023-09-22 06:13:14.707953Z]}
     "Modals" => [
       %{
         sous_categorie: "Modal pour un filtre",
+        module: "Waw.Modal",
         principal: %{
           nom: "Modal filtre",
           code_source: """
@@ -1796,6 +1844,7 @@ from={~U[2023-09-22 06:13:14.707953Z]}
       },
       %{
         sous_categorie: "Modal pour un formulaire",
+        module: "Waw.Modal",
         principal: %{
           nom: "Modal formulaire",
           code_source: """
@@ -1811,6 +1860,7 @@ from={~U[2023-09-22 06:13:14.707953Z]}
     "Modèles" => [
       %{
         sous_categorie: "Conteneur de liste de blocs",
+        module: "Waw.BlockListContainer",
         principal: %{
           nom: "Conteneur de blocs",
           code_source: """
@@ -1872,6 +1922,7 @@ from={~U[2023-09-22 06:13:14.707953Z]}
       },
       %{
         sous_categorie: "Header et Footer fixes",
+        module: "WawShowcaseWeb.Components.Layout",
         principal: %{
           nom: "Header et Footer",
           code_source: """
@@ -1938,6 +1989,7 @@ col={2}
       },
       %{
         sous_categorie: "Element structuré",
+        module: "Waw.IconTitleAction",
         principal: %{
           nom: "Élément structuré",
           code_source: """
@@ -1988,6 +2040,7 @@ label
     "Pages" => [
       %{
         sous_categorie: "Page 404",
+        module: "Waw.PageError",
         principal: %{
           nom: "Page 404",
           code_source: """
@@ -2011,6 +2064,7 @@ Revenez à la base
     "Texte et Nombres" => [
       %{
         sous_categorie: "Devises",
+        module: "Waw.Text.Currency",
         principal: %{
           nom: "Devise",
           code_source: """
@@ -2022,6 +2076,7 @@ Revenez à la base
       },
       %{
         sous_categorie: "Distance",
+        module: "Waw.Text.Distance",
         principal: %{
           nom: "Distance",
           code_source: """
@@ -2045,6 +2100,7 @@ Revenez à la base
       },
       %{
         sous_categorie: "Nombres",
+        module: "Waw.Text.Number",
         principal: %{
           nom: "Valeur nil",
           code_source: """
@@ -2068,6 +2124,7 @@ Revenez à la base
       },
       %{
         sous_categorie: "Texte",
+        module: "Waw.Text.Text",
         principal: %{
           nom: "Texte",
           code_source: """
@@ -2097,31 +2154,5 @@ Revenez à la base
     @ui_components
     |> Map.get(category, [])
     |> Enum.find(&(&1.sous_categorie == sous_categorie))
-  end
-
-  @doc """
-  Retourne le module Elixir correspondant à une sous-catégorie.
-  """
-  def get_module_for_sous_categorie(sous_categorie) do
-    case sous_categorie do
-      "Devises" -> "Waw.Text.Currency"
-      "Distance" -> "Waw.Text.Distance"
-      "Nombres" -> "Waw.Text.Number"
-      "Texte" -> "Waw.Text"
-      "Dates" -> "Waw.Text.Dates"
-      "Intervalle de temps" -> "Waw.Text.Dates"
-      "Relatives" -> "Waw.Text.Dates"
-      "Heures" -> "Waw.Text.Dates"
-      "Accordion" -> "Waw.Accordion"
-      "Badge" -> "Waw.Badge"
-      "Boutons" -> "Waw.Button"
-      "Champs" -> "Waw.Input"
-      "Tableau" -> "Waw.Table"
-      "Onglets" -> "Waw.Tabs"
-      "Modal" -> "Waw.Modal"
-      "Header" -> "Waw.Header"
-      "Footer" -> "Waw.Footer"
-      _ -> "Waw"
-    end
   end
 end

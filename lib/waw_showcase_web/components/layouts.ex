@@ -309,51 +309,39 @@ defmodule WawShowcaseWeb.Layouts do
   end
 
   # Helper pour rendre un composant depuis son code_source
-  # Le code_source est déjà du HEEx valide
-  # On utilise une approche simple : créer un template HEEx qui injecte le code_source directement
-  # Le code_source sera compilé et exécuté par Phoenix lors de la compilation du template parent
-  # Pour cela, on utilise une macro HEEx qui évalue le code_source comme du HEEx
+  # Utilise EEx pour évaluer le HEEx avec Phoenix.HTML.Engine
   def render_component_preview(assigns) do
     code_source = assigns[:code_source] || assigns.code_source
     sous_categorie = assigns[:sous_categorie] || assigns.sous_categorie
 
     if code_source do
       try do
-        trimmed_code = String.trim(code_source)
+        template_code = String.trim(code_source)
         
-        # Le code_source est du HEEx valide
-        # Pour l'exécuter, on doit créer un template HEEx qui l'injecte directement
-        # Phoenix compilera et exécutera le HEEx automatiquement lors de la compilation
-        # On utilise une approche de macro : créer un template HEEx dynamique qui évalue le code_source
-        
-        # Créer un template HEEx qui exécute le code_source
-        # On utilise Code.eval_quoted pour compiler et exécuter le code HEEx
-        # Mais d'abord, on doit convertir le HEEx en code Elixir exécutable via une macro
-        
-        # Pour l'instant, on utilise une approche simple : injecter le code dans un template
-        # qui sera compilé par Phoenix. Le code_source sera traité comme du HEEx valide.
-        
-        # Note: Cette approche nécessite que le code_source soit compilé au moment de la compilation
-        # Pour une exécution dynamique complète, il faudrait utiliser une approche plus complexe
-        # avec compilation de templates au runtime via Phoenix.Template ou Code.eval_quoted
-        
-        # Pour l'instant, on affiche le code tel quel avec phx-no-curly-interpolation
-        # pour éviter l'interpolation des accolades et permettre l'affichage du code source
-        # TODO: Implémenter l'exécution dynamique complète du HEEx via compilation de templates au runtime
-        ~H"""
-        <div phx-no-curly-interpolation class="component-preview-content">
-          {trimmed_code}
-        </div>
-        """
+        # Utiliser EEx.eval_string avec Phoenix.HTML.Engine
+        # Le binding est vide car les fonctions sont disponibles via les imports du module
+        # L'évaluation se fait dans le contexte de ce module grâce à __ENV__
+        result =
+          EEx.eval_string(template_code,
+            [],
+            file: "component_preview_#{String.replace(sous_categorie, " ", "_")}",
+            line: 1,
+            engine: Phoenix.HTML.Engine
+          )
+
+        Phoenix.HTML.raw(result)
       rescue
-        error ->
-          # Logger l'erreur et afficher un message d'erreur
+        exception ->
+          # Logger l'erreur pour debug
           require Logger
-          Logger.error("Erreur de rendu pour #{sous_categorie}: #{inspect(error)}")
-          error_msg = Exception.message(error)
+          error_msg = Exception.message(exception)
+          Logger.error("Erreur de rendu pour #{sous_categorie}: #{error_msg}")
+          Logger.error("Stacktrace: #{inspect(__STACKTRACE__)}")
+          Logger.error("Code source (200 premiers chars): #{String.slice(code_source, 0..200)}")
+          assigns = assign(assigns, :error_msg, error_msg)
           ~H"""
           <div class="text-xs text-red-400 text-center p-2">
-            Erreur: {error_msg}
+            Erreur: {@error_msg}
           </div>
           """
       end
