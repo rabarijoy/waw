@@ -732,14 +732,18 @@ function initUiPreviewModal() {
     currentVariantIndex = 0
   }
 
-  function renderVariantsNav(variants, container, principalNom) {
+  function renderVariantsNav(variants, container, principalNom, hidePrincipal = false) {
     if (!container) return
     
-    // Créer le bouton avec le nom réel du composant principal
-    const allVariants = [
-      { nom: principalNom || "Principal", code_source: null, isPrincipal: true },
-      ...variants.map(v => ({ ...v, isPrincipal: false }))
-    ]
+    // Construire la liste des variantes pour la nav
+    // Pour la plupart des composants : bouton pour le principal + variantes
+    // Pour certains (comme Distance), on peut masquer le principal
+    const allVariants = hidePrincipal
+      ? variants.map(v => ({ ...v, isPrincipal: false }))
+      : [
+          { nom: principalNom || "Principal", code_source: null, isPrincipal: true },
+          ...variants.map(v => ({ ...v, isPrincipal: false }))
+        ]
 
     container.innerHTML = ""
     
@@ -823,7 +827,9 @@ function initUiPreviewModal() {
     }
 
     // Re-rendre la navigation avec le bon bouton actif et le nom réel
-    renderVariantsNav(currentVariants, variantsContainer, principalNom)
+    const sousCategorie = card.getAttribute("data-component-title") || ""
+    const hidePrincipal = sousCategorie === "Distance"
+    renderVariantsNav(currentVariants, variantsContainer, principalNom, hidePrincipal)
   }
 
   function openFromCard(card, previewDiv) {
@@ -831,21 +837,13 @@ function initUiPreviewModal() {
 
     const title = card.getAttribute("data-component-title") || ""
     const moduleName = card.getAttribute("data-component-module") || ""
+    const sousCategorie = card.getAttribute("data-component-title") || ""
     const principalCode = card.getAttribute("data-component-principal-code") || ""
     const principalNom = card.getAttribute("data-component-principal-nom") || title || ""
-    const category = card.getAttribute("data-component-category") || ""
     const variantsJson = card.getAttribute("data-component-variantes") || "[]"
 
     try {
-      currentVariants = JSON.parse(variantsJson) || []
-
-      // Règle spécifique pour Distance : ne garder que En mètre / En kilomètre
-      if (category === "texte-nombres" && title === "Distance") {
-        currentVariants = currentVariants.filter(
-          (v) => v.nom === "En mètre" || v.nom === "En kilomètre"
-        )
-      }
-
+      currentVariants = JSON.parse(variantsJson)
       // Ajouter un index interne pour retrouver la preview côté DOM
       currentVariants = currentVariants.map((v, idx) => ({ ...v, _index: idx }))
     } catch (e) {
@@ -866,11 +864,19 @@ function initUiPreviewModal() {
     if (moduleEl) moduleEl.textContent = moduleName
 
     // Afficher la navigation des variantes
-    renderVariantsNav(currentVariants, variantsContainer, principalNom)
+    const hidePrincipal = sousCategorie === "Distance"
+    renderVariantsNav(currentVariants, variantsContainer, principalNom, hidePrincipal)
 
-    // Afficher le composant principal avec le nom réel
-    const principalVariant = { nom: principalNom, code_source: principalCode, isPrincipal: true }
-    updateVariantDisplay(principalVariant, [principalVariant, ...currentVariants])
+    // Afficher le bon contenu initial dans la popup
+    if (sousCategorie === "Distance" && currentVariants.length > 0) {
+      // Pour Distance, on démarre directement sur la première variante ("En mètre")
+      currentVariantIndex = 0
+      updateVariantDisplay(currentVariants[0], currentVariants)
+    } else {
+      // Par défaut, on démarre sur le composant principal
+      const principalVariant = { nom: principalNom, code_source: principalCode, isPrincipal: true }
+      updateVariantDisplay(principalVariant, [principalVariant, ...currentVariants])
+    }
 
     modal.classList.remove("hidden")
   }

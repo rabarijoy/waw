@@ -330,9 +330,19 @@ defmodule WawShowcaseWeb.Layouts do
         <.distance unit={:meter} value={10000} />
         """
 
-      "Nombres" ->
+      "Valeur nil" ->
         ~H"""
         <.number unit={nil} value={nil} />
+        """
+
+      "Nombre" ->
+        ~H"""
+        <.number unit={nil} value={12000} />
+        """
+
+      "Volume" ->
+        ~H"""
+        <.number unit={:liter} value={10000} />
         """
 
       "Texte" ->
@@ -412,17 +422,6 @@ defmodule WawShowcaseWeb.Layouts do
       {"Distance", "En kilomètre"} ->
         ~H"""
         <.distance unit={:kilometer} value={10000} />
-        """
-
-      ## Texte et Nombres – Nombres
-      {"Nombres", "Nombre"} ->
-        ~H"""
-        <.number unit={nil} value={12000} />
-        """
-
-      {"Nombres", "Volume"} ->
-        ~H"""
-        <.number unit={:liter} value={10000} />
         """
 
       ## Cartes – Compte-rendu
@@ -556,6 +555,16 @@ defmodule WawShowcaseWeb.Layouts do
       {"Statistique", "Status sélectionné"} ->
         ~H"""
         <.waw_status_card label="Cinématique" state="selected" icon="steering-wheel" />
+        """
+
+      {"Statistique", "Status désactivé"} ->
+        ~H"""
+        <.waw_status_card label="Balise GPS" state="disabled" icon="tracker" />
+        """
+
+      {"Statistique", "Status pour CR"} ->
+        ~H"""
+        <.waw_status_card label="CR véhicule" state="exception" icon="sign-out" />
         """
 
       # Fallback : aucune variante mappée en dur

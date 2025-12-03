@@ -8,7 +8,7 @@ defmodule WawShowcase.UIConfig do
   @ui_components %{
     "Basiques" => [
       %{
-        sous_categorie: "Accordion",
+  sous_categorie: "Accordion",
         module: "Waw.Accordion",
         principal: %{
           nom: "Accordion",
@@ -75,11 +75,11 @@ defmodule WawShowcase.UIConfig do
 </.waw_table>
 </.waw_accordion>
 """
-          },
+},
         ]
       },
       %{
-        sous_categorie: "Badge",
+  sous_categorie: "Badge",
         module: "Waw.Badge",
         principal: %{
           nom: "Badge",
@@ -113,7 +113,7 @@ defmodule WawShowcase.UIConfig do
   </:action>
 </.waw_badge>
 """
-          },
+},
         ]
       },
       %{
@@ -131,7 +131,7 @@ defmodule WawShowcase.UIConfig do
             code_source: """
 <.waw_block_separator label="4512 WWT"/>
 """
-          },
+},
         ]
       },
       %{
@@ -149,11 +149,11 @@ defmodule WawShowcase.UIConfig do
             code_source: """
 <.waw_block_title label="Trackable sélectionné" icon="car"/>
 """
-          },
+},
         ]
       },
       %{
-        sous_categorie: "Boutons",
+  sous_categorie: "Boutons",
         module: "Waw.Button",
         principal: %{
           nom: "Bouton",
@@ -206,7 +206,7 @@ defmodule WawShowcase.UIConfig do
 <.waw_button label="Flotte" size="md" icon="angle-small-down" icon_position="right" />
 </.waw_button_group>
 """
-          },
+},
         ]
       },
       %{
@@ -341,7 +341,7 @@ defmodule WawShowcase.UIConfig do
 </:right>
 </.waw_filter_header>
 """
-          },
+},
         ]
       },
       %{
@@ -359,7 +359,7 @@ defmodule WawShowcase.UIConfig do
             code_source: """
 <.waw_button type="button" phx-click={show("#:variation_id")} label="Ouvrir Flash" />
 """
-          },
+},
         ]
       },
       %{
@@ -375,7 +375,7 @@ defmodule WawShowcase.UIConfig do
         ]
       },
       %{
-        sous_categorie: "Footer",
+  sous_categorie: "Footer",
         module: "Waw.Footer",
         principal: %{
           nom: "Footer",
@@ -521,7 +521,7 @@ defmodule WawShowcase.UIConfig do
             code_source: """
 <.waw_link_icon size="sm" state="unchecked" icon="home"/>
 """
-          },
+},
         ]
       },
       %{
@@ -583,7 +583,7 @@ defmodule WawShowcase.UIConfig do
 <.li icon="world-fill" total={10}>Géographique</.li>
 </.ul>
 """
-          },
+},
         ]
       },
       %{
@@ -722,14 +722,14 @@ defmodule WawShowcase.UIConfig do
 </:filters>
 </.live_search>
 """
-          },
+},
         ]
       },
       %{
         sous_categorie: "Loading",
         module: "Waw.Loading",
         principal: %{
-          nom: "Loading",
+  nom: "Loading",
           code_source: """
 <.loading/>
 """
@@ -741,7 +741,7 @@ defmodule WawShowcase.UIConfig do
         sous_categorie: "Logos",
         module: "Waw.Logo",
         principal: %{
-          nom: "Logo Tag-IP",
+  nom: "Logo Tag-IP",
           code_source: """
 <.logo name="tag-ip"/>
 """
@@ -837,7 +837,7 @@ defmodule WawShowcase.UIConfig do
         ]
       },
       %{
-        sous_categorie: "Pagination",
+  sous_categorie: "Pagination",
         module: "Waw.Pagination",
         principal: %{
           nom: "Pagination",
@@ -858,7 +858,7 @@ defmodule WawShowcase.UIConfig do
 </:right>
 </.waw_pagination>
 """
-          },
+},
         ]
       },
       %{
@@ -906,7 +906,7 @@ defmodule WawShowcase.UIConfig do
 </:actions>
 </.waw_panel_header>
 """
-          },
+},
         ]
       },
       %{
@@ -988,14 +988,14 @@ defmodule WawShowcase.UIConfig do
 </:table>
 </.waw_status_block>
 """
-          },
+},
         ]
       },
       %{
         sous_categorie: "Steps",
         module: "Waw.Steps",
         principal: %{
-          nom: "Steps",
+  nom: "Steps",
           code_source: """
 <.waw_steps>
 <:step status={:valid}>
@@ -1093,11 +1093,11 @@ from={~U[2023-09-22 06:13:14.707953Z]}
 </:right>
 </.subheader>
 """
-          },
+},
         ]
       },
       %{
-        sous_categorie: "Tableau",
+  sous_categorie: "Tableau",
         module: "Waw.Table",
         principal: %{
           nom: "Tableau",
@@ -1192,7 +1192,7 @@ from={~U[2023-09-22 06:13:14.707953Z]}
 </.waw_tr>
 </.waw_table>
 """
-          },
+},
         ]
       },
       %{
@@ -1317,7 +1317,7 @@ contenu
             code_source: """
 <.waw_name size="sm" value={%{label: "TGP0012", name: "4212TBA", tracker_label: "MD0014", custom_name: "ix35", trackable_symbol: "moto"}} with_symbol/>
 """
-          },
+},
         ]
       },
     ],
@@ -1349,7 +1349,7 @@ contenu
 </:section>
 </.waw_card>
 """
-          },
+},
         ]
       },
       %{
@@ -1391,7 +1391,7 @@ Content
         ]
       },
       %{
-        sous_categorie: "Statistique",
+  sous_categorie: "Statistique",
         module: "Waw.Stat",
         principal: %{
           nom: "Statistique",
@@ -1483,7 +1483,7 @@ Content
     ],
     "Dates et heures" => [
       %{
-        sous_categorie: "Dates",
+  sous_categorie: "Dates",
         module: "Waw.Text.Dates",
         principal: %{
           nom: "Date",
@@ -1497,7 +1497,7 @@ Content
             code_source: """
 <.date_time value={~U[2025-11-20 08:21:11.635563Z]} format={:medium}/>
 """
-          },
+},
         ]
       },
       %{
@@ -1521,11 +1521,11 @@ Content
             code_source: """
 <.interval format={:medium} from={~T[08:21:47.231023]} to={~T[09:24:56.231024]}/>
 """
-          },
+},
         ]
       },
       %{
-        sous_categorie: "Relatives",
+  sous_categorie: "Relatives",
         module: "Waw.Text.Dates",
         principal: %{
           nom: "Temps relatif",
@@ -1988,7 +1988,7 @@ col={2}
         ]
       },
       %{
-        sous_categorie: "Element structuré",
+  sous_categorie: "Element structuré",
         module: "Waw.IconTitleAction",
         principal: %{
           nom: "Élément structuré",
@@ -2033,7 +2033,7 @@ label
 </:action>
 </.waw_icon_title_action>
 """
-          },
+},
         ]
       },
     ],
@@ -2042,7 +2042,7 @@ label
         sous_categorie: "Page 404",
         module: "Waw.PageError",
         principal: %{
-          nom: "Page 404",
+  nom: "Page 404",
           code_source: """
 <.waw_page_error url="https://tag-ip.com/">
 <:background_image>
@@ -2066,7 +2066,7 @@ Revenez à la base
         sous_categorie: "Devises",
         module: "Waw.Text.Currency",
         principal: %{
-          nom: "Devise",
+  nom: "Devise",
           code_source: """
 <.currency value={123} currency="USD"/>
 """
@@ -2075,7 +2075,7 @@ Revenez à la base
         ]
       },
       %{
-        sous_categorie: "Distance",
+  sous_categorie: "Distance",
         module: "Waw.Text.Distance",
         principal: %{
           nom: "Distance",
@@ -2095,7 +2095,7 @@ Revenez à la base
             code_source: """
 <.distance unit={:kilometer} value={10000}/>
 """
-          },
+},
         ]
       },
       %{
@@ -2138,7 +2138,7 @@ Revenez à la base
         sous_categorie: "Texte",
         module: "Waw.Text.Text",
         principal: %{
-          nom: "Texte",
+  nom: "Texte",
           code_source: """
 <.text value="Exemple de texte"/>
 """
