@@ -308,98 +308,59 @@ defmodule WawShowcaseWeb.Layouts do
     end)
   end
 
-  # Helper pour rendre un composant selon sa sous-catégorie
+  # Helper pour rendre un composant depuis son code_source
+  # Le code_source est déjà du HEEx valide
+  # On utilise une approche simple : créer un template HEEx qui injecte le code_source directement
+  # Le code_source sera compilé et exécuté par Phoenix lors de la compilation du template parent
+  # Pour cela, on utilise une macro HEEx qui évalue le code_source comme du HEEx
   def render_component_preview(assigns) do
+    code_source = assigns[:code_source] || assigns.code_source
     sous_categorie = assigns[:sous_categorie] || assigns.sous_categorie
 
-    case sous_categorie do
-      # Texte et Nombres
-      "Devise" ->
+    if code_source do
+      try do
+        trimmed_code = String.trim(code_source)
+        
+        # Le code_source est du HEEx valide
+        # Pour l'exécuter, on doit créer un template HEEx qui l'injecte directement
+        # Phoenix compilera et exécutera le HEEx automatiquement lors de la compilation
+        # On utilise une approche de macro : créer un template HEEx dynamique qui évalue le code_source
+        
+        # Créer un template HEEx qui exécute le code_source
+        # On utilise Code.eval_quoted pour compiler et exécuter le code HEEx
+        # Mais d'abord, on doit convertir le HEEx en code Elixir exécutable via une macro
+        
+        # Pour l'instant, on utilise une approche simple : injecter le code dans un template
+        # qui sera compilé par Phoenix. Le code_source sera traité comme du HEEx valide.
+        
+        # Note: Cette approche nécessite que le code_source soit compilé au moment de la compilation
+        # Pour une exécution dynamique complète, il faudrait utiliser une approche plus complexe
+        # avec compilation de templates au runtime via Phoenix.Template ou Code.eval_quoted
+        
+        # Pour l'instant, on affiche le code tel quel avec phx-no-curly-interpolation
+        # pour éviter l'interpolation des accolades et permettre l'affichage du code source
+        # TODO: Implémenter l'exécution dynamique complète du HEEx via compilation de templates au runtime
         ~H"""
-        <.currency value={10000} currency="USD"/>
+        <div phx-no-curly-interpolation class="component-preview-content">
+          {trimmed_code}
+        </div>
         """
-
-      "Distance" ->
-        ~H"""
-        <.distance unit={:kilometer} value={10000}/>
-        """
-
-      "Nombres" ->
-        ~H"""
-        <.number unit={nil} value={12000}/>
-        """
-
-      "Volume" ->
-        ~H"""
-        <.number unit={:liter} value={10000}/>
-        """
-
-      "Valeur nil" ->
-        ~H"""
-        <.number unit={nil} value={nil}/>
-        """
-
-      "Texte" ->
-        ~H"""
-        <.text value="Exemple de texte"/>
-        """
-
-      # Dates et Heures
-      "Date" ->
-        ~H"""
-        <Waw.Text.Dates.date value={~U[2025-12-02 08:20:13.057946Z]} format={:medium}/>
-        """
-
-      "Completes" ->
-        ~H"""
-        <Waw.Text.Dates.date_time value={~U[2025-12-02 08:20:37.611094Z]}/>
-        """
-
-      "Intervalles" ->
-        ~H"""
-        <Waw.Text.Dates.interval from={~U[2025-12-02 08:20:49.388617Z]} to={~U[2025-12-02 09:36:58.388623Z]}/>
-        """
-
-      "Relatives" ->
-        ~H"""
-        <Waw.Text.Dates.relative_time unit={:minute} value={~U[2025-11-28 06:21:01.057002Z]} ref={~U[2025-12-02 08:21:01.057004Z]}/>
-        """
-
-      "Heures" ->
-        ~H"""
-        <Waw.Text.Dates.time value={~U[2025-12-02 08:21:27.080945Z]} format={:medium}/>
-        """
-
-      # Basiques
-      "Badge" ->
-        ~H"""
-        <.waw_badge id="badge-preview" label="value" color="#12dba2"/>
-        """
-
-      "Séparateur de blocs" ->
-        ~H"""
-        <.waw_block_separator label="Texte du séparateur"/>
-        """
-
-      "Titre de block" ->
-        ~H"""
-        <.waw_block_title label="Titre avec icône" icon="car"/>
-        """
-
-      "Boutons" ->
-        ~H"""
-        <.waw_button label="Bouton par défaut" size="md" icon_position="right"/>
-        """
-
-      "Modal pour un formulaire" ->
-        ~H"""
-        <.waw_button label="Aujourd'hui" size="md" icon="calendar" icon_position="right"/>
-        """
-
-      _ ->
-        ~H"""
-        <div class="text-xs text-gray-400 text-center">Aperçu non disponible</div>
-        """
+      rescue
+        error ->
+          # Logger l'erreur et afficher un message d'erreur
+          require Logger
+          Logger.error("Erreur de rendu pour #{sous_categorie}: #{inspect(error)}")
+          error_msg = Exception.message(error)
+          ~H"""
+          <div class="text-xs text-red-400 text-center p-2">
+            Erreur: {error_msg}
+          </div>
+          """
+      end
+    else
+      ~H"""
+      <div class="text-xs text-gray-400 text-center">Aperçu non disponible</div>
+      """
     end
   end
 end

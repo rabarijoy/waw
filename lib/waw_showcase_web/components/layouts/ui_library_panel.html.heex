@@ -113,7 +113,7 @@
               data-ui-preview="true"
             >
               <div class="component-preview">
-                <.render_component_preview sous_categorie={item.sous_categorie} />
+                <.render_component_preview code_source={item.principal.code_source} sous_categorie={item.sous_categorie} />
               </div>
             </div>
 
@@ -127,7 +127,7 @@
             <!-- Bloc sous-titre -->
             <div>
               <p class="text-sm text-gray-500">
-                {item.principal.nom}
+                {WawShowcase.UIConfig.get_module_for_sous_categorie(item.sous_categorie)}
               </p>
             </div>
 
@@ -179,7 +179,7 @@
               data-ui-preview="true"
             >
               <div class="component-preview">
-                <.render_component_preview sous_categorie={item.sous_categorie} />
+                <.render_component_preview code_source={item.principal.code_source} sous_categorie={item.sous_categorie} />
               </div>
             </div>
 
@@ -193,7 +193,7 @@
             <!-- Bloc sous-titre -->
             <div>
               <p class="text-sm text-gray-500">
-                {item.principal.nom}
+                {WawShowcase.UIConfig.get_module_for_sous_categorie(item.sous_categorie)}
               </p>
             </div>
 
@@ -231,7 +231,7 @@
               data-ui-preview="true"
             >
               <div class="component-preview">
-                <.render_component_preview sous_categorie={item.sous_categorie} />
+                <.render_component_preview code_source={item.principal.code_source} sous_categorie={item.sous_categorie} />
               </div>
             </div>
 
@@ -283,7 +283,7 @@
               data-ui-preview="true"
             >
               <div class="component-preview">
-                <.render_component_preview sous_categorie={item.sous_categorie} />
+                <.render_component_preview code_source={item.principal.code_source} sous_categorie={item.sous_categorie} />
               </div>
             </div>
 
@@ -335,7 +335,7 @@
               data-ui-preview="true"
             >
               <div class="component-preview">
-                <.render_component_preview sous_categorie={item.sous_categorie} />
+                <.render_component_preview code_source={item.principal.code_source} sous_categorie={item.sous_categorie} />
               </div>
             </div>
 

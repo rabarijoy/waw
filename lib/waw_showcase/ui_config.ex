@@ -2014,7 +2014,7 @@ Revenez à la base
         principal: %{
           nom: "Devise",
           code_source: """
-<.currency value={…} currency="USD"/>
+<.currency value={123} currency="USD"/>
 """
         },
         variantes: [
@@ -2023,14 +2023,20 @@ Revenez à la base
       %{
         sous_categorie: "Distance",
         principal: %{
-          nom: "Distance en m",
+          nom: "Distance",
           code_source: """
 <.distance unit={:meter} value={10000}/>
 """
         },
         variantes: [
           %{
-            nom: "Distance en km",
+            nom: "En mètre",
+            code_source: """
+<.distance unit={:meter} value={10000}/>
+"""
+          },
+          %{
+            nom: "En kilomètre",
             code_source: """
 <.distance unit={:kilometer} value={10000}/>
 """
@@ -2091,5 +2097,31 @@ Revenez à la base
     @ui_components
     |> Map.get(category, [])
     |> Enum.find(&(&1.sous_categorie == sous_categorie))
+  end
+
+  @doc """
+  Retourne le module Elixir correspondant à une sous-catégorie.
+  """
+  def get_module_for_sous_categorie(sous_categorie) do
+    case sous_categorie do
+      "Devises" -> "Waw.Text.Currency"
+      "Distance" -> "Waw.Text.Distance"
+      "Nombres" -> "Waw.Text.Number"
+      "Texte" -> "Waw.Text"
+      "Dates" -> "Waw.Text.Dates"
+      "Intervalle de temps" -> "Waw.Text.Dates"
+      "Relatives" -> "Waw.Text.Dates"
+      "Heures" -> "Waw.Text.Dates"
+      "Accordion" -> "Waw.Accordion"
+      "Badge" -> "Waw.Badge"
+      "Boutons" -> "Waw.Button"
+      "Champs" -> "Waw.Input"
+      "Tableau" -> "Waw.Table"
+      "Onglets" -> "Waw.Tabs"
+      "Modal" -> "Waw.Modal"
+      "Header" -> "Waw.Header"
+      "Footer" -> "Waw.Footer"
+      _ -> "Waw"
+    end
   end
 end
