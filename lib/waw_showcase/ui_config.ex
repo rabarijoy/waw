@@ -149,17 +149,6 @@ defmodule WawShowcase.UIConfig do
         ]
       },
       %{
-        sous_categorie: "Modal pour un formulaire",
-        principal: %{
-          nom: "Bouton",
-          code_source: """
-<.waw_button label="Aujourd'hui" size="md" icon="calendar" icon_position="right"/>
-"""
-        },
-        variantes: [
-        ]
-      },
-      %{
         sous_categorie: "Boutons",
         principal: %{
           nom: "Bouton",
@@ -1517,17 +1506,6 @@ Content
       },
     ],
     "Formulaire" => [
-      %{
-        sous_categorie: "Champs",
-        principal: %{
-          nom: "Champ",
-          code_source: """
-<.input type="search"/>
-"""
-        },
-        variantes: [
-        ]
-      },
     ],
     "Mises en page" => [
       %{

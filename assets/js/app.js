@@ -721,31 +721,134 @@ function initUiPreviewModal() {
   const codeEl = modal.querySelector("#ui-preview-code")
   const closeBtn = modal.querySelector("[data-ui-preview-close]")
   const copyBtn = modal.querySelector("[data-ui-preview-copy]")
+  const variantsContainer = modal.querySelector("#ui-preview-variants-nav")
+
+  let currentVariants = []
+  let currentVariantIndex = 0
 
   function closeModal() {
     modal.classList.add("hidden")
+    currentVariants = []
+    currentVariantIndex = 0
+  }
+
+  function renderVariantsNav(variants, container) {
+    if (!container) return
+    
+    // Créer le bouton "Principal" toujours présent
+    const allVariants = [
+      { nom: "Principal", code_source: null, isPrincipal: true },
+      ...variants.map(v => ({ ...v, isPrincipal: false }))
+    ]
+
+    container.innerHTML = ""
+    
+    if (allVariants.length <= 1) {
+      container.style.display = "none"
+      return
+    }
+
+    container.style.display = "flex"
+    const navWrapper = document.createElement("div")
+    navWrapper.className = "flex flex-wrap justify-center gap-1 rounded-full bg-gray-100 p-1 text-xs font-medium text-gray-600 max-w-full"
+
+    allVariants.forEach((variant, index) => {
+      const btn = document.createElement("button")
+      btn.type = "button"
+      btn.className = index === currentVariantIndex
+        ? "px-3 py-1.5 rounded-full bg-white text-gray-900 shadow-sm transition-colors duration-150 max-w-[200px] truncate"
+        : "px-3 py-1.5 rounded-full text-gray-500 hover:text-gray-900 hover:bg-gray-50 transition-colors duration-150 max-w-[200px] truncate"
+      
+      // Utiliser le texte complet mais avec truncate CSS pour gérer l'affichage
+      const displayText = variant.nom || "Principal"
+      btn.textContent = displayText
+      btn.title = displayText // Tooltip avec le nom complet pour voir le texte entier
+      
+      // Ajouter un style pour s'assurer que le texte est tronqué avec ellipsis
+      btn.style.textOverflow = "ellipsis"
+      btn.style.overflow = "hidden"
+      btn.style.whiteSpace = "nowrap"
+      
+      btn.addEventListener("click", () => {
+        currentVariantIndex = index
+        updateVariantDisplay(allVariants[index], allVariants)
+      })
+      
+      navWrapper.appendChild(btn)
+    })
+
+    container.appendChild(navWrapper)
+  }
+
+  function updateVariantDisplay(variant, allVariants) {
+    const cardId = modal.getAttribute("data-current-card-id")
+    if (!cardId) return
+    
+    const card = document.getElementById(cardId)
+    if (!card) return
+
+    const principalCode = card.getAttribute("data-component-principal-code") || ""
+    const code = variant.isPrincipal ? principalCode : (variant.code_source || "")
+
+    if (codeEl) {
+      codeEl.textContent = code.trim()
+    }
+
+    // Pour le composant principal, cloner le HTML rendu depuis la card
+    if (variant.isPrincipal && componentEl) {
+      const previewDiv = card.querySelector(".component-preview")
+      if (previewDiv) {
+        componentEl.innerHTML = ""
+        const clone = previewDiv.cloneNode(true)
+        // Retirer les classes de cursor-pointer et hover pour la popup
+        clone.classList.remove("cursor-pointer", "hover:border-gray-300")
+        componentEl.appendChild(clone)
+      } else {
+        componentEl.innerHTML = `<div class="text-xs text-gray-400 p-4">Aperçu non disponible</div>`
+      }
+    } else if (componentEl) {
+      // Pour les variantes, afficher le code source pour l'instant
+      // TODO: Plus tard, rendre les variantes aussi
+      componentEl.innerHTML = `<pre class="text-xs text-gray-600 whitespace-pre-wrap p-4 bg-gray-50 rounded-lg">${code.trim() || "Code source non disponible"}</pre>`
+    }
+
+    // Re-rendre la navigation avec le bon bouton actif
+    renderVariantsNav(currentVariants, variantsContainer)
   }
 
   function openFromCard(card, previewDiv) {
-    if (!card || !previewDiv) return
+    if (!card) return
 
     const title = card.getAttribute("data-component-title") || ""
     const moduleName = card.getAttribute("data-component-module") || ""
-    const codeBlock = card.querySelector("pre")
-    const code = codeBlock ? codeBlock.textContent.trim() : ""
+    const principalCode = card.getAttribute("data-component-principal-code") || ""
+    const variantsJson = card.getAttribute("data-component-variantes") || "[]"
+
+    try {
+      currentVariants = JSON.parse(variantsJson)
+    } catch (e) {
+      console.warn("Failed to parse variants:", e)
+      currentVariants = []
+    }
+
+    currentVariantIndex = 0 // Toujours commencer par le principal
+
+    // S'assurer que la card a un ID unique pour les mises à jour
+    if (!card.id) {
+      const tempId = "card-" + Math.random().toString(36).substr(2, 9)
+      card.id = tempId
+    }
+    modal.setAttribute("data-current-card-id", card.id)
 
     if (titleEl) titleEl.textContent = title
     if (moduleEl) moduleEl.textContent = moduleName
-    if (componentEl) {
-      componentEl.innerHTML = ""
-      const clone = previewDiv.cloneNode(true)
-      clone.removeAttribute("data-ui-preview")
-      clone.classList.remove("cursor-pointer", "hover:border-gray-300")
-      componentEl.appendChild(clone)
-    }
-    if (codeEl) {
-      codeEl.textContent = code
-    }
+
+    // Afficher la navigation des variantes
+    renderVariantsNav(currentVariants, variantsContainer)
+
+    // Afficher le composant principal
+    const principalVariant = { nom: "Principal", code_source: principalCode, isPrincipal: true }
+    updateVariantDisplay(principalVariant, [principalVariant, ...currentVariants])
 
     modal.classList.remove("hidden")
   }

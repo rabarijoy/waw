@@ -109,6 +109,7 @@ defmodule WawShowcaseWeb do
       # Common modules used in templates
       alias Phoenix.LiveView.JS
       alias WawShowcaseWeb.Layouts
+      alias Jason
 
       # Routes generation with the ~p sigil
       unquote(verified_routes())

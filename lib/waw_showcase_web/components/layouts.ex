@@ -5,6 +5,8 @@ defmodule WawShowcaseWeb.Layouts do
   """
   use WawShowcaseWeb, :html
 
+  import Waw.Delegates
+
   # Embed all files in layouts/* within this module.
   # The default root.html.heex file contains the HTML
   # skeleton of your application, namely HTML headers
@@ -284,83 +286,120 @@ defmodule WawShowcaseWeb.Layouts do
           <.waw_footer copyright_year={DateTime.utc_now().year} />
         </div>
       </:footer>
-      </.waw_fixed_header_footer>
+    </.waw_fixed_header_footer>
     """
   end
 
-  @doc """
-  Transforme la structure UIConfig en liste de composants pour le template.
-  Pour chaque sous-catégorie, crée un élément avec le principal et les variantes.
-  """
-  def prepare_ui_components(category) do
-    category_data = WawShowcase.UIConfig.get_by_category(category)
-    
-    category_data
-    |> Enum.map(fn {subcategory, data} ->
-      principal = data.principal
-      variants = data.variants
-      
+  # Helper pour préparer les composants depuis UIConfig pour l'affichage
+  def prepare_components_for_display(category) do
+    alias WawShowcase.UIConfig
+
+    UIConfig.get_components_by_category(category)
+    |> Enum.map(fn item ->
+      # Créer une structure plate avec principal + variantes pour faciliter l'affichage
       %{
-        # Titre = sous-catégorie, Sous-titre = nom du composant principal
-        titre: subcategory,
-        sous_titre: principal.nom,
-        code_source: principal.code_source,
-        categorie: category,
-        sous_categorie: subcategory,
-        variants: variants,
-        # Pour la recherche et le filtrage
-        nom: principal.nom,
-        module: extract_module_from_code(principal.code_source)
+        sous_categorie: item.sous_categorie,
+        nom: item.principal.nom,
+        code_source: item.principal.code_source,
+        variantes: item.variantes,
+        # Pour la recherche et l'affichage
+        search_key: String.downcase("#{item.sous_categorie} #{item.principal.nom}")
       }
     end)
-    |> Enum.sort_by(& &1.titre)
   end
 
-  defp extract_module_from_code(code_source) do
-    # Essayer d'extraire le module depuis le code source
-    cond do
-      String.contains?(code_source, "waw_currency") or String.contains?(code_source, ".currency") ->
-        "Waw.Text.Number"
-      String.contains?(code_source, "waw_distance") or String.contains?(code_source, ".distance") ->
-        "Waw.Text.Number"
-      String.contains?(code_source, "waw_number") or String.contains?(code_source, ".number") ->
-        "Waw.Text.Number"
-      String.contains?(code_source, "waw_text") or String.contains?(code_source, ".text") ->
-        "Waw.Text.Text"
-      String.contains?(code_source, "waw_date") or String.contains?(code_source, ".date") ->
-        "Waw.Text.Dates"
-      String.contains?(code_source, "waw_date_time") or String.contains?(code_source, ".date_time") ->
-        "Waw.Text.Dates"
-      String.contains?(code_source, "waw_interval") or String.contains?(code_source, ".interval") ->
-        "Waw.Text.Dates"
-      String.contains?(code_source, "waw_relative_time") or String.contains?(code_source, ".relative_time") ->
-        "Waw.Text.Dates"
-      String.contains?(code_source, "waw_time") or String.contains?(code_source, ".time") ->
-        "Waw.Text.Dates"
-      String.contains?(code_source, "waw_accordion") ->
-        "Waw.Accordion"
-      String.contains?(code_source, "waw_badge") ->
-        "Waw.Badge"
-      String.contains?(code_source, "waw_block_separator") ->
-        "Waw.BlockSeparator"
-      String.contains?(code_source, "waw_block_title") ->
-        "Waw.BlockTitle"
-      String.contains?(code_source, "waw_button") ->
-        "Waw.Button"
-      String.contains?(code_source, "waw_contenteditable") ->
-        "Waw.Contenteditable"
-      String.contains?(code_source, "waw_dl") ->
-        "Waw.DefinitionList"
-      String.contains?(code_source, "waw_filter_header") ->
-        "Waw.FilterHeader"
-      String.contains?(code_source, "waw_footer") or String.contains?(code_source, ".footer") ->
-        "Waw.Footer"
-      String.contains?(code_source, "waw_header") ->
-        "Waw.Header"
-      String.contains?(code_source, ".input") ->
-        "Phoenix.Component"
-      true ->
-        "Waw"
+  # Helper pour rendre un composant selon sa sous-catégorie
+  def render_component_preview(assigns) do
+    sous_categorie = assigns[:sous_categorie] || assigns.sous_categorie
+
+    case sous_categorie do
+      # Texte et Nombres
+      "Devise" ->
+        ~H"""
+        <.currency value={10000} currency="USD"/>
+        """
+
+      "Distance" ->
+        ~H"""
+        <.distance unit={:kilometer} value={10000}/>
+        """
+
+      "Nombres" ->
+        ~H"""
+        <.number unit={nil} value={12000}/>
+        """
+
+      "Volume" ->
+        ~H"""
+        <.number unit={:liter} value={10000}/>
+        """
+
+      "Valeur nil" ->
+        ~H"""
+        <.number unit={nil} value={nil}/>
+        """
+
+      "Texte" ->
+        ~H"""
+        <.text value="Exemple de texte"/>
+        """
+
+      # Dates et Heures
+      "Date" ->
+        ~H"""
+        <Waw.Text.Dates.date value={~U[2025-12-02 08:20:13.057946Z]} format={:medium}/>
+        """
+
+      "Completes" ->
+        ~H"""
+        <Waw.Text.Dates.date_time value={~U[2025-12-02 08:20:37.611094Z]}/>
+        """
+
+      "Intervalles" ->
+        ~H"""
+        <Waw.Text.Dates.interval from={~U[2025-12-02 08:20:49.388617Z]} to={~U[2025-12-02 09:36:58.388623Z]}/>
+        """
+
+      "Relatives" ->
+        ~H"""
+        <Waw.Text.Dates.relative_time unit={:minute} value={~U[2025-11-28 06:21:01.057002Z]} ref={~U[2025-12-02 08:21:01.057004Z]}/>
+        """
+
+      "Heures" ->
+        ~H"""
+        <Waw.Text.Dates.time value={~U[2025-12-02 08:21:27.080945Z]} format={:medium}/>
+        """
+
+      # Basiques
+      "Badge" ->
+        ~H"""
+        <.waw_badge id="badge-preview" label="value" color="#12dba2"/>
+        """
+
+      "Séparateur de blocs" ->
+        ~H"""
+        <.waw_block_separator label="Texte du séparateur"/>
+        """
+
+      "Titre de block" ->
+        ~H"""
+        <.waw_block_title label="Titre avec icône" icon="car"/>
+        """
+
+      "Boutons" ->
+        ~H"""
+        <.waw_button label="Bouton par défaut" size="md" icon_position="right"/>
+        """
+
+      "Modal pour un formulaire" ->
+        ~H"""
+        <.waw_button label="Aujourd'hui" size="md" icon="calendar" icon_position="right"/>
+        """
+
+      _ ->
+        ~H"""
+        <div class="text-xs text-gray-400 text-center">Aperçu non disponible</div>
+        """
     end
   end
 end

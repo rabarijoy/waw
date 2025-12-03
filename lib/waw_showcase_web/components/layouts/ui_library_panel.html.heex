@@ -1,20 +1,9 @@
 <div class="py-6 px-4">
-  <% # Utiliser WawShowcase.UIConfig pour charger les composants dynamiquement
-     text_components = WawShowcaseWeb.Layouts.prepare_ui_components("Texte et Nombres")
-     basiques_components = WawShowcaseWeb.Layouts.prepare_ui_components("Basiques")
-     dates_heures_components = WawShowcaseWeb.Layouts.prepare_ui_components("Dates et heures")
-     _cartes_components = WawShowcaseWeb.Layouts.prepare_ui_components("Cartes")
-     _formulaire_components = WawShowcaseWeb.Layouts.prepare_ui_components("Formulaire")
-     
-     # Mapping catégorie -> data-category pour le filtrage JS
-     category_map = %{
-       "Texte et Nombres" => "texte-nombres",
-       "Basiques" => "basiques",
-       "Cartes" => "cartes",
-       "Dates et heures" => "dates-heures",
-       "Formulaire" => "formulaire"
-     }
-  %>
+  <% text_items = WawShowcase.UIConfig.get_components_by_category("Texte et Nombres") %>
+  <% basiques_items = WawShowcase.UIConfig.get_components_by_category("Basiques") %>
+  <% dates_heures_items = WawShowcase.UIConfig.get_components_by_category("Dates et heures") %>
+  <% cartes_items = WawShowcase.UIConfig.get_components_by_category("Cartes") %>
+  <% formulaire_items = WawShowcase.UIConfig.get_components_by_category("Formulaire") %>
   <% icon_names =
     if function_exported?(Waw.Icons, :icon_list, 0) do
       Waw.Icons.icon_list()
@@ -107,39 +96,43 @@
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 auto-rows-[minmax(0,_auto)]" id="ui-components-grid">
+          <!-- Texte et Nombres -->
           <div
-            :for={comp <- text_components}
+            :for={item <- text_items}
             class="ui-component-card rounded-xl border border-gray-200 bg-white shadow-sm p-6 flex flex-col gap-3"
-            data-component-title={comp.titre}
-            data-component-module={comp.module}
+            data-component-title={item.sous_categorie}
+            data-component-module={item.sous_categorie}
             data-component-category="texte-nombres"
+            data-component-variantes={Jason.encode!(item.variantes)}
+            data-component-principal-code={item.principal.code_source}
+            data-component-principal-nom={item.principal.nom}
           >
             <!-- Aperçu du composant -->
             <div
               class="ui-preview-trigger rounded-lg border-2 border-gray-200 bg-white min-h-[10rem] flex items-center justify-center p-4 flex-1 cursor-pointer hover:border-gray-300 transition-colors"
               data-ui-preview="true"
             >
-              <span class="text-xs text-gray-400 text-center">
-                Cliquez pour voir la prévisualisation
-              </span>
+              <div class="component-preview">
+                <.render_component_preview sous_categorie={item.sous_categorie} />
+              </div>
             </div>
 
             <!-- Bloc titre -->
             <div>
               <h3 class="text-base font-semibold text-gray-900 truncate">
-                {comp.titre}
+                {item.sous_categorie}
               </h3>
             </div>
 
             <!-- Bloc sous-titre -->
             <div>
               <p class="text-sm text-gray-500">
-                {comp.sous_titre}
+                {item.principal.nom}
               </p>
             </div>
 
             <!-- Bloc code source avec bouton Copier sur la même ligne (discret) -->
-            <% code = comp.code_source %>
+            <% code = item.principal.code_source %>
             <div class="flex gap-2 items-start border-t border-gray-100 pt-3">
               <div class="flex-1 rounded-md bg-gray-50 border border-gray-200 px-2 py-1.5 max-h-[4rem] overflow-y-auto overflow-x-auto">
                 <pre class="text-xs text-gray-600 leading-relaxed whitespace-pre-wrap">
@@ -155,25 +148,29 @@
               </button>
             </div>
           </div>
+          <!-- Basiques -->
           <div
-            :for={comp <- basiques_components}
+            :for={item <- basiques_items}
             class={[
               "ui-component-card rounded-xl border border-gray-200 bg-white shadow-sm p-6 flex flex-col gap-3",
-              if comp.sous_categorie in ["Header", "Footer", "Header des filtres", "Accordion"] do
+              if item.sous_categorie in ["Header", "Footer", "Header des filtres", "Accordion"] do
                 "md:col-span-2 xl:col-span-2 bento-wide"
               else
                 ""
               end
             ]}
-            data-component-title={comp.titre}
-            data-component-module={comp.module}
+            data-component-title={item.sous_categorie}
+            data-component-module={item.sous_categorie}
             data-component-category="basiques"
+            data-component-variantes={Jason.encode!(item.variantes)}
+            data-component-principal-code={item.principal.code_source}
+            data-component-principal-nom={item.principal.nom}
           >
             <!-- Aperçu du composant -->
             <div
               class={[
                 "ui-preview-trigger rounded-lg border-2 border-gray-200 bg-white flex items-center justify-center p-4 flex-1 overflow-auto cursor-pointer hover-border-gray-300 transition-colors",
-                if comp.sous_categorie in ["Header", "Footer", "Header des filtres"] do
+                if item.sous_categorie in ["Header", "Footer", "Header des filtres"] do
                   "min-h-[12rem]"
                 else
                   "min-h-[10rem]"
@@ -181,27 +178,27 @@
               ]}
               data-ui-preview="true"
             >
-              <span class="text-xs text-gray-400 text-center">
-                Cliquez pour voir la prévisualisation
-              </span>
+              <div class="component-preview">
+                <.render_component_preview sous_categorie={item.sous_categorie} />
+              </div>
             </div>
 
             <!-- Bloc titre -->
             <div>
               <h3 class="text-base font-semibold text-gray-900 truncate">
-                {comp.titre}
+                {item.sous_categorie}
               </h3>
             </div>
 
             <!-- Bloc sous-titre -->
             <div>
               <p class="text-sm text-gray-500">
-                {comp.sous_titre}
+                {item.principal.nom}
               </p>
             </div>
 
             <!-- Bloc code source avec bouton Copier sur la même ligne (discret) -->
-            <% code = comp.code_source %>
+            <% code = item.principal.code_source %>
             <div class="flex gap-2 items-start border-t border-gray-100 pt-3">
               <div class="flex-1 rounded-md bg-gray-50 border border-gray-200 px-2 py-1.5 max-h-[4rem] overflow-y-auto overflow-x-auto">
                 <pre class="text-xs text-gray-600 leading-relaxed whitespace-pre-wrap">
@@ -217,39 +214,147 @@
               </button>
             </div>
           </div>
+          <!-- Dates et Heures -->
           <div
-            :for={comp <- dates_heures_components}
+            :for={item <- dates_heures_items}
             class="ui-component-card rounded-xl border border-gray-200 bg-white shadow-sm p-6 flex flex-col gap-3"
-            data-component-title={comp.titre}
-            data-component-module={comp.module}
+            data-component-title={item.sous_categorie}
+            data-component-module={item.sous_categorie}
             data-component-category="dates-heures"
+            data-component-variantes={Jason.encode!(item.variantes)}
+            data-component-principal-code={item.principal.code_source}
+            data-component-principal-nom={item.principal.nom}
           >
             <!-- Aperçu du composant -->
             <div
               class="ui-preview-trigger rounded-lg border-2 border-gray-200 bg-white min-h-[10rem] flex items-center justify-center p-4 flex-1 cursor-pointer hover:border-gray-300 transition-colors"
               data-ui-preview="true"
             >
-              <span class="text-xs text-gray-400 text-center">
-                Cliquez pour voir la prévisualisation
-              </span>
+              <div class="component-preview">
+                <.render_component_preview sous_categorie={item.sous_categorie} />
+              </div>
             </div>
 
             <!-- Bloc titre -->
             <div>
               <h3 class="text-base font-semibold text-gray-900 truncate">
-                {comp.titre}
+                {item.principal.nom}
               </h3>
             </div>
 
             <!-- Bloc sous-titre -->
             <div>
               <p class="text-sm text-gray-500">
-                {comp.sous_titre}
+                {item.sous_categorie}
               </p>
             </div>
 
             <!-- Bloc code source avec bouton Copier sur la même ligne (discret) -->
-            <% code = comp.code_source %>
+            <% code = item.principal.code_source %>
+            <div class="flex gap-2 items-start border-t border-gray-100 pt-3">
+              <div class="flex-1 rounded-md bg-gray-50 border border-gray-200 px-2 py-1.5 max-h-[4rem] overflow-y-auto overflow-x-auto">
+                <pre class="text-xs text-gray-600 leading-relaxed whitespace-pre-wrap">
+{code}</pre>
+              </div>
+              <button
+                type="button"
+                class="px-3 py-1.5 text-xs font-medium text-white bg-gray-900 rounded-md hover:bg-gray-800 transition-colors focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 whitespace-nowrap shrink-0"
+                phx-click="copy_code"
+                phx-value-code={code}
+              >
+                Copier
+              </button>
+            </div>
+          </div>
+          <!-- Cartes -->
+          <div
+            :for={item <- cartes_items}
+            class="ui-component-card rounded-xl border border-gray-200 bg-white shadow-sm p-6 flex flex-col gap-3"
+            data-component-title={item.sous_categorie}
+            data-component-module={item.sous_categorie}
+            data-component-category="cartes"
+            data-component-variantes={Jason.encode!(item.variantes)}
+            data-component-principal-code={item.principal.code_source}
+            data-component-principal-nom={item.principal.nom}
+          >
+            <!-- Aperçu du composant -->
+            <div
+              class="ui-preview-trigger rounded-lg border-2 border-gray-200 bg-white min-h-[10rem] flex items-center justify-center p-4 flex-1 cursor-pointer hover:border-gray-300 transition-colors"
+              data-ui-preview="true"
+            >
+              <div class="component-preview">
+                <.render_component_preview sous_categorie={item.sous_categorie} />
+              </div>
+            </div>
+
+            <!-- Bloc titre -->
+            <div>
+              <h3 class="text-base font-semibold text-gray-900 truncate">
+                {item.principal.nom}
+              </h3>
+            </div>
+
+            <!-- Bloc sous-titre -->
+            <div>
+              <p class="text-sm text-gray-500">
+                {item.sous_categorie}
+              </p>
+            </div>
+
+            <!-- Bloc code source avec bouton Copier sur la même ligne (discret) -->
+            <% code = item.principal.code_source %>
+            <div class="flex gap-2 items-start border-t border-gray-100 pt-3">
+              <div class="flex-1 rounded-md bg-gray-50 border border-gray-200 px-2 py-1.5 max-h-[4rem] overflow-y-auto overflow-x-auto">
+                <pre class="text-xs text-gray-600 leading-relaxed whitespace-pre-wrap">
+{code}</pre>
+              </div>
+              <button
+                type="button"
+                class="px-3 py-1.5 text-xs font-medium text-white bg-gray-900 rounded-md hover:bg-gray-800 transition-colors focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 whitespace-nowrap shrink-0"
+                phx-click="copy_code"
+                phx-value-code={code}
+              >
+                Copier
+              </button>
+            </div>
+          </div>
+          <!-- Formulaire -->
+          <div
+            :for={item <- formulaire_items}
+            class="ui-component-card rounded-xl border border-gray-200 bg-white shadow-sm p-6 flex flex-col gap-3"
+            data-component-title={item.sous_categorie}
+            data-component-module={item.sous_categorie}
+            data-component-category="formulaire"
+            data-component-variantes={Jason.encode!(item.variantes)}
+            data-component-principal-code={item.principal.code_source}
+            data-component-principal-nom={item.principal.nom}
+          >
+            <!-- Aperçu du composant -->
+            <div
+              class="ui-preview-trigger rounded-lg border-2 border-gray-200 bg-white min-h-[10rem] flex items-center justify-center p-4 flex-1 cursor-pointer hover:border-gray-300 transition-colors"
+              data-ui-preview="true"
+            >
+              <div class="component-preview">
+                <.render_component_preview sous_categorie={item.sous_categorie} />
+              </div>
+            </div>
+
+            <!-- Bloc titre -->
+            <div>
+              <h3 class="text-base font-semibold text-gray-900 truncate">
+                {item.principal.nom}
+              </h3>
+            </div>
+
+            <!-- Bloc sous-titre -->
+            <div>
+              <p class="text-sm text-gray-500">
+                {item.sous_categorie}
+              </p>
+            </div>
+
+            <!-- Bloc code source avec bouton Copier sur la même ligne (discret) -->
+            <% code = item.principal.code_source %>
             <div class="flex gap-2 items-start border-t border-gray-100 pt-3">
               <div class="flex-1 rounded-md bg-gray-50 border border-gray-200 px-2 py-1.5 max-h-[4rem] overflow-y-auto overflow-x-auto">
                 <pre class="text-xs text-gray-600 leading-relaxed whitespace-pre-wrap">
@@ -334,28 +439,8 @@
 
       <!-- Contenu de la popup -->
       <div class="flex-1 overflow-y-auto p-6 space-y-4">
-        <!-- Navigation entre variantes (statique pour l’instant) -->
-        <div class="flex justify-center">
-          <div class="inline-flex rounded-full bg-gray-100 p-1 text-xs font-medium text-gray-600">
-            <button
-              type="button"
-              class="px-3 py-1 rounded-full bg-white text-gray-900 shadow-sm"
-            >
-              Variante A
-            </button>
-            <button
-              type="button"
-              class="px-3 py-1 rounded-full text-gray-500 hover:text-gray-900 hover:bg-gray-50"
-            >
-              Variante B
-            </button>
-            <button
-              type="button"
-              class="px-3 py-1 rounded-full text-gray-500 hover:text-gray-900 hover:bg-gray-50"
-            >
-              Variante C
-            </button>
-          </div>
+        <!-- Navigation entre variantes (dynamique) -->
+        <div id="ui-preview-variants-nav" class="flex justify-center hidden w-full overflow-x-auto">
         </div>
 
         <!-- Zone d’aperçu centrée -->
