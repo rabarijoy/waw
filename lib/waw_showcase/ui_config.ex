@@ -2099,7 +2099,7 @@ Revenez à la base
         ]
       },
       %{
-        sous_categorie: "Nombres",
+        sous_categorie: "Valeur nil",
         module: "Waw.Text.Number",
         principal: %{
           nom: "Valeur nil",
@@ -2108,18 +2108,30 @@ Revenez à la base
 """
         },
         variantes: [
-          %{
-            nom: "Nombre",
-            code_source: """
+        ]
+      },
+      %{
+        sous_categorie: "Nombre",
+        module: "Waw.Text.Number",
+        principal: %{
+          nom: "Nombre",
+          code_source: """
 <.number unit={nil} value={12000}/>
 """
-          },
-          %{
-            nom: "Volume",
-            code_source: """
+        },
+        variantes: [
+        ]
+      },
+      %{
+        sous_categorie: "Volume",
+        module: "Waw.Text.Number",
+        principal: %{
+          nom: "Volume",
+          code_source: """
 <.number unit={:liter} value={10000}/>
 """
-          },
+        },
+        variantes: [
         ]
       },
       %{

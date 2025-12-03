@@ -107,13 +107,31 @@
             data-component-principal-code={item.principal.code_source}
             data-component-principal-nom={item.principal.nom}
           >
-            <!-- Aperçu du composant -->
+            <!-- Aperçu du composant principal -->
             <div
               class="ui-preview-trigger rounded-lg border-2 border-gray-200 bg-white min-h-[10rem] flex items-center justify-center p-4 flex-1 cursor-pointer hover:border-gray-300 transition-colors"
               data-ui-preview="true"
             >
               <div class="component-preview">
-                <.render_component_preview code_source={item.principal.code_source} sous_categorie={item.sous_categorie} />
+                <.render_component_preview
+                  code_source={item.principal.code_source}
+                  sous_categorie={item.sous_categorie}
+                />
+              </div>
+            </div>
+
+            <!-- Préviews des variantes (cachées, utilisées par la popup) -->
+            <div class="hidden variant-previews">
+              <div
+                :for={{variant, idx} <- Enum.with_index(item.variantes)}
+                data-variant-index={idx}
+              >
+                <div class="component-preview-variant">
+                  <.render_variant_preview
+                    sous_categorie={item.sous_categorie}
+                    variant_nom={variant.nom}
+                  />
+                </div>
               </div>
             </div>
 
@@ -277,13 +295,31 @@
             data-component-principal-code={item.principal.code_source}
             data-component-principal-nom={item.principal.nom}
           >
-            <!-- Aperçu du composant -->
+            <!-- Aperçu du composant principal -->
             <div
               class="ui-preview-trigger rounded-lg border-2 border-gray-200 bg-white min-h-[10rem] flex items-center justify-center p-4 flex-1 cursor-pointer hover:border-gray-300 transition-colors"
               data-ui-preview="true"
             >
               <div class="component-preview">
-                <.render_component_preview code_source={item.principal.code_source} sous_categorie={item.sous_categorie} />
+                <.render_component_preview
+                  code_source={item.principal.code_source}
+                  sous_categorie={item.sous_categorie}
+                />
+              </div>
+            </div>
+
+            <!-- Préviews des variantes (cachées, utilisées par la popup) -->
+            <div class="hidden variant-previews">
+              <div
+                :for={{variant, idx} <- Enum.with_index(item.variantes)}
+                data-variant-index={idx}
+              >
+                <div class="component-preview-variant">
+                  <.render_variant_preview
+                    sous_categorie={item.sous_categorie}
+                    variant_nom={variant.nom}
+                  />
+                </div>
               </div>
             </div>
 

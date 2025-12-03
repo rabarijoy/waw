@@ -808,9 +808,18 @@ function initUiPreviewModal() {
         componentEl.innerHTML = `<div class="text-xs text-gray-400 p-4">Aperçu non disponible</div>`
       }
     } else if (componentEl) {
-      // Pour les variantes, afficher le code source pour l'instant
-      // TODO: Plus tard, rendre les variantes aussi
-      componentEl.innerHTML = `<pre class="text-xs text-gray-600 whitespace-pre-wrap p-4 bg-gray-50 rounded-lg">${code.trim() || "Code source non disponible"}</pre>`
+      // Pour les variantes, cloner le HTML pré-rendu caché dans la carte
+      const variantIndex = typeof variant._index === "number" ? variant._index : allVariants.indexOf(variant) - 1
+      const variantContainer = card.querySelector(`.variant-previews [data-variant-index="${variantIndex}"] .component-preview-variant`)
+
+      if (variantContainer) {
+        componentEl.innerHTML = ""
+        const clone = variantContainer.cloneNode(true)
+        componentEl.appendChild(clone)
+      } else {
+        // Fallback: afficher le code source si aucun preview n'est disponible
+        componentEl.innerHTML = `<pre class="text-xs text-gray-600 whitespace-pre-wrap p-4 bg-gray-50 rounded-lg">${code.trim() || "Code source non disponible"}</pre>`
+      }
     }
 
     // Re-rendre la navigation avec le bon bouton actif et le nom réel
@@ -823,10 +832,22 @@ function initUiPreviewModal() {
     const title = card.getAttribute("data-component-title") || ""
     const moduleName = card.getAttribute("data-component-module") || ""
     const principalCode = card.getAttribute("data-component-principal-code") || ""
+    const principalNom = card.getAttribute("data-component-principal-nom") || title || ""
+    const category = card.getAttribute("data-component-category") || ""
     const variantsJson = card.getAttribute("data-component-variantes") || "[]"
 
     try {
-      currentVariants = JSON.parse(variantsJson)
+      currentVariants = JSON.parse(variantsJson) || []
+
+      // Règle spécifique pour Distance : ne garder que En mètre / En kilomètre
+      if (category === "texte-nombres" && title === "Distance") {
+        currentVariants = currentVariants.filter(
+          (v) => v.nom === "En mètre" || v.nom === "En kilomètre"
+        )
+      }
+
+      // Ajouter un index interne pour retrouver la preview côté DOM
+      currentVariants = currentVariants.map((v, idx) => ({ ...v, _index: idx }))
     } catch (e) {
       console.warn("Failed to parse variants:", e)
       currentVariants = []
@@ -845,7 +866,7 @@ function initUiPreviewModal() {
     if (moduleEl) moduleEl.textContent = moduleName
 
     // Afficher la navigation des variantes
-    renderVariantsNav(currentVariants, variantsContainer)
+    renderVariantsNav(currentVariants, variantsContainer, principalNom)
 
     // Afficher le composant principal avec le nom réel
     const principalVariant = { nom: principalNom, code_source: principalCode, isPrincipal: true }

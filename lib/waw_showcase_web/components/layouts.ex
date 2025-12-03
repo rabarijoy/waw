@@ -308,60 +308,263 @@ defmodule WawShowcaseWeb.Layouts do
     end)
   end
 
-  # Helper pour rendre un composant depuis son code_source
-  # Crée un module dynamique qui hérite des imports pour évaluer le template HEEx
+  # Helper pour rendre un composant de preview.
+  #
+  # IMPORTANT :
+  # ----------
+  # On évite toute compilation dynamique (Code.compile_string, etc.).
+  # On rend en dur, avec ~H, les principaux composants de la librairie
+  # pour garantir un comportement stable et prévisible.
   def render_component_preview(assigns) do
-    code_source = Map.get(assigns, :code_source) || Map.get(assigns, "code_source")
     sous_categorie = Map.get(assigns, :sous_categorie) || Map.get(assigns, "sous_categorie")
 
-    if code_source do
-      try do
-        template_code = String.trim(code_source)
-        
-        # Créer un module dynamique qui hérite des imports du module actuel
-        module_name = :"DynamicPreview_#{:erlang.phash2({sous_categorie, template_code})}"
-        
-        # Définir le module dynamique avec tous les imports nécessaires
-        module_code = """
-        defmodule #{module_name} do
-          use WawShowcaseWeb, :html
-          import Waw.Delegates
-          
-          def render(assigns) do
-            ~H\"\"\"
-            #{template_code}
-            \"\"\"
-          end
-        end
+    case sous_categorie do
+      ## Texte et Nombres
+      "Devises" ->
+        ~H"""
+        <.currency value={123} currency="USD" />
         """
-        
-        # Compiler et charger le module dynamique
-        Code.eval_string(module_code, [], file: "dynamic_preview.ex", line: 1)
-        
-        # Appeler la fonction render du module dynamique
-        result = apply(module_name, :render, [assigns])
-        
-        # Le résultat est déjà un %Phoenix.LiveView.Rendered{} struct
-        result
-      rescue
-        exception ->
-          # Logger l'erreur pour debug
-          require Logger
-          error_msg = Exception.message(exception)
-          Logger.error("Erreur de rendu pour #{sous_categorie}: #{error_msg}")
-          Logger.error("Stacktrace: #{inspect(__STACKTRACE__)}")
-          Logger.error("Code source (200 premiers chars): #{String.slice(code_source, 0..200)}")
-          assigns = assign(assigns, :error_msg, error_msg)
-          ~H"""
-          <div class="text-xs text-red-400 text-center p-2">
-            Erreur: {@error_msg}
+
+      "Distance" ->
+        ~H"""
+        <.distance unit={:meter} value={10000} />
+        """
+
+      "Nombres" ->
+        ~H"""
+        <.number unit={nil} value={nil} />
+        """
+
+      "Texte" ->
+        ~H"""
+        <.text value="Exemple de texte" />
+        """
+
+      ## Cartes
+      "Compte-rendu" ->
+        ~H"""
+        <.waw_card
+          title="Driver Score Card Synthesis"
+          tooltip_description="Sous forme d'une carte, présente une présentation graphique des trajectoires des véhicules."
+        >
+          <:section>
+            <.waw_time_section label="Dernier Maj" value="12:30:05" />
+            <.waw_date_section label="Dernier CR disponible" value="Aujourd'hui" />
+            <.waw_date_section label="1er CR disponible" value="Aujourd'hui" />
+          </:section>
+        </.waw_card>
+        """
+
+      "Dashboard" ->
+        ~H"""
+        <.waw_dashboard_card
+          title="Véhicules géolocalisés"
+          description="Information concernant les véhicules géolocalisés"
+        >
+          <div class="grid place-content-center p-4 h-full">
+            Content
           </div>
-          """
-      end
-    else
-      ~H"""
-      <div class="text-xs text-gray-400 text-center">Aperçu non disponible</div>
-      """
+        </.waw_dashboard_card>
+        """
+
+      "Volume de carburant" ->
+        ~H"""
+        <.waw_fuel_card
+          value="35"
+          number="1510"
+          title="Consommation totale de carburant de la flotte"
+        />
+        """
+
+      "Statistique" ->
+        # Choix d'un état simple et parlant pour le preview
+        ~H"""
+        <.waw_stat
+          value={100}
+          total={251}
+          title="Véhicules géolocalisés"
+          description="Information concernant les véhicules géolocalisés"
+        />
+        """
+
+      # Pour toutes les autres sous‑catégories, pas d'exécution dynamique :
+      _ ->
+        ~H"""
+        <div class="text-xs text-gray-400 text-center py-4">
+          Aperçu non disponible pour ce composant.
+        </div>
+        """
+    end
+  end
+
+  # Helper pour rendre les variantes en dur (utilisé par la popup)
+  def render_variant_preview(assigns) do
+    sous_categorie = Map.get(assigns, :sous_categorie) || Map.get(assigns, "sous_categorie")
+    variant_nom = Map.get(assigns, :variant_nom) || Map.get(assigns, "variant_nom")
+
+    case {sous_categorie, variant_nom} do
+      ## Texte et Nombres – Distance
+      {"Distance", "En mètre"} ->
+        ~H"""
+        <.distance unit={:meter} value={10000} />
+        """
+
+      {"Distance", "En kilomètre"} ->
+        ~H"""
+        <.distance unit={:kilometer} value={10000} />
+        """
+
+      ## Texte et Nombres – Nombres
+      {"Nombres", "Nombre"} ->
+        ~H"""
+        <.number unit={nil} value={12000} />
+        """
+
+      {"Nombres", "Volume"} ->
+        ~H"""
+        <.number unit={:liter} value={10000} />
+        """
+
+      ## Cartes – Compte-rendu
+      {"Compte-rendu", "Sélectionnée"} ->
+        ~H"""
+        <.waw_card
+          state="selected"
+          title="Compte-rendu kilométrage journalier"
+          title_icon="file-xls"
+          tooltip_description="Sous forme d'une carte, présente une présentation graphique des trajectoires des véhicules."
+        >
+          <:section>
+            <.waw_time_section label="Dernier Maj" value="10:00:19" />
+            <.waw_date_section label="Dernier CR disponible" value="Aujourd'hui" />
+            <.waw_date_section label="1er CR disponible" value="Aujourd'hui" />
+          </:section>
+        </.waw_card>
+        """
+
+      ## Cartes – Dashboard
+      {"Dashboard", "Avec icône"} ->
+        ~H"""
+        <.waw_dashboard_card
+          description="Information concernant la distance parcourue moyenne, journalière, par véhicule"
+          title="Distance parcourue moyenne, journalière, par véhicule"
+          icon="car"
+        >
+          <div class="grid place-content-start p-4 h-full">
+            Content
+          </div>
+        </.waw_dashboard_card>
+        """
+
+      ## Cartes – Statistique
+      {"Statistique", "Loading"} ->
+        ~H"""
+        <.waw_stat loading title="Véhicules géolocalisés" />
+        """
+
+      {"Statistique", "Par défaut"} ->
+        ~H"""
+        <.waw_stat
+          value={100}
+          description="Information concernant les véhicules géolocalisés"
+          title="Véhicules géolocalisés"
+        />
+        """
+
+      {"Statistique", "Avec unité"} ->
+        ~H"""
+        <.waw_stat
+          unit={:kilometer}
+          value={100}
+          description="Information concernant la distance parcourue moyenne, journalière, par véhicule"
+          title="Distance parcourue moyenne, journalière, par véhicule"
+        />
+        """
+
+      {"Statistique", "Avec total"} ->
+        ~H"""
+        <.waw_stat total={251} value={100} title="véhicules géolocalisés" />
+        """
+
+      {"Statistique", "Avec ratio"} ->
+        ~H"""
+        <.waw_stat
+          total={251}
+          value={100}
+          title="véhicules géolocalisés"
+          ratio={:percentage}
+        />
+        """
+
+      {"Statistique", "Avec total et état"} ->
+        ~H"""
+        <.waw_stat
+          status={:success}
+          total={251}
+          value={100}
+          description="Information concernant les véhicules actuellement en mouvement"
+          title="véhicules actuellement en mouvement"
+        />
+        """
+
+      {"Statistique", "Avec intervalle de temps"} ->
+        ~H"""
+        <.waw_stat
+          title="Heure de pointe d'utilisation des véhicules"
+          icon="clock"
+          start_value={~U[2020-05-30 13:52:56Z]}
+          end_value={~U[2020-05-30 14:52:56Z]}
+        />
+        """
+
+      {"Statistique", "Avec durée"} ->
+        ~H"""
+        <.waw_stat
+          unit={:second}
+          value={4210}
+          title="Durée de roulage total des véhicules sur le mois"
+          icon="clock"
+        />
+        """
+
+      {"Statistique", "Complète"} ->
+        ~H"""
+        <.waw_stat
+          unit={:kilometer}
+          value={4210}
+          title="Distance parcourue moyenne, journalière, par véhicule"
+          col={2}
+          icon="circuit"
+          previous_value={90}
+          previous_at={~U[2025-11-20 07:59:45.682352Z]}
+        />
+        """
+
+      {"Statistique", "Complète non-cliquable"} ->
+        ~H"""
+        <.waw_stat
+          status={:danger}
+          value={210}
+          title="véhicules stationnés"
+          icon="truck"
+          variation_symbol={:math}
+          previous_value={90}
+          previous_at={~U[2025-11-20 07:59:45.682356Z]}
+        />
+        """
+
+      {"Statistique", "Status sélectionné"} ->
+        ~H"""
+        <.waw_status_card label="Cinématique" state="selected" icon="steering-wheel" />
+        """
+
+      # Fallback : aucune variante mappée en dur
+      _ ->
+        ~H"""
+        <div class="text-xs text-gray-400 text-center py-4">
+          Aperçu de variante non disponible pour ce composant.
+        </div>
+        """
     end
   end
 end
