@@ -2208,7 +2208,32 @@ document.addEventListener("phx:code_copied", (event) => {
 // Hook pour gérer les boutons mode-toggle dans le header
 const ModeSwitchHook = {
   mounted() {
-    this.attachListeners()
+    this.handleClick = (event) => {
+      // Vérifier si le clic vient d'un bouton mode-toggle
+      let btn = event.target.closest("[data-mode-toggle]")
+      
+      if (!btn) return
+      
+      event.preventDefault()
+      event.stopPropagation()
+      event.stopImmediatePropagation()
+      
+      const explicitValue = btn.getAttribute("data-mode-value")
+      let nextMode = explicitValue
+
+      if (!nextMode) {
+        nextMode = currentMode === "demo" ? "ui" : "demo"
+      }
+
+      if (nextMode && nextMode !== currentMode) {
+        applyMode(nextMode)
+      }
+      
+      return false
+    }
+    
+    // Utiliser la délégation d'événements sur l'élément parent
+    this.el.addEventListener("click", this.handleClick, true)
     
     // Réappliquer le mode après le montage
     setTimeout(() => {
@@ -2217,48 +2242,17 @@ const ModeSwitchHook = {
   },
   
   updated() {
-    // Réattacher les listeners après mise à jour
-    this.attachListeners()
-    
     // Réappliquer le mode après la mise à jour
     setTimeout(() => {
       applyMode(currentMode)
     }, 100)
   },
   
-  attachListeners() {
-    // Chercher les boutons dans l'élément et dans tout le document au cas où
-    const buttons = this.el.querySelectorAll("[data-mode-toggle]")
-    const allButtons = document.querySelectorAll("[data-mode-toggle]")
-    
-    // Utiliser un Set pour éviter les doublons
-    const uniqueButtons = new Set([...buttons, ...allButtons])
-    
-    uniqueButtons.forEach((btn) => {
-      // Retirer les anciens listeners en clonant le bouton
-      const newBtn = btn.cloneNode(true)
-      btn.parentNode?.replaceChild(newBtn, btn)
-      
-      // Ajouter le nouveau listener
-      newBtn.addEventListener("click", (event) => {
-        event.preventDefault()
-        event.stopPropagation()
-        event.stopImmediatePropagation()
-        
-        const explicitValue = newBtn.getAttribute("data-mode-value")
-        let nextMode = explicitValue
-
-        if (!nextMode) {
-          nextMode = currentMode === "demo" ? "ui" : "demo"
-        }
-
-        if (nextMode && nextMode !== currentMode) {
-          applyMode(nextMode)
-        }
-        
-        return false
-      }, true) // Utiliser la phase de capture
-    })
+  destroyed() {
+    // Nettoyer le listener
+    if (this.handleClick) {
+      this.el.removeEventListener("click", this.handleClick, true)
+    }
   }
 }
 
