@@ -981,9 +981,32 @@ defmodule WawShowcaseWeb.Layouts do
         """
 
       "Modal" ->
+        assigns = assign(assigns, :modal_preview_id, "modal-preview-#{System.unique_integer([:positive, :monotonic])}")
         ~H"""
-        <div>
-        <.waw_button type="button" label="Ouvrir Modal" />
+        <div class="flex flex-col items-center gap-4">
+          <.waw_button
+            type="button"
+            phx-click={JS.show(to: "##{@modal_preview_id}", transition: {"transition-all ease-out duration-300", "opacity-0 scale-95", "opacity-100 scale-100"})}
+            label="Ouvrir Modal"
+            size="md"
+          />
+          <div id={@modal_preview_id} class="hidden">
+            <.waw_modal id={"#{@modal_preview_id}-modal"} show={true}>
+              <:title>
+                Titre du Modal
+              </:title>
+              <:cancel>
+                <.waw_button_icon icon="cancel" icon_size={5} stroke="none" phx-click={JS.hide(to: "##{@modal_preview_id}", transition: {"transition-all ease-out duration-300", "opacity-100 scale-100", "opacity-0 scale-95"})} />
+              </:cancel>
+              <div class="p-6">
+                <p class="text-gray-700">Contenu du modal de démonstration.</p>
+                <div class="mt-4 flex justify-end gap-2">
+                  <.waw_button label="Annuler" size="sm" phx-click={JS.hide(to: "##{@modal_preview_id}", transition: {"transition-all ease-out duration-300", "opacity-100 scale-100", "opacity-0 scale-95"})} />
+                  <.waw_button label="Confirmer" size="sm" type="submit" />
+                </div>
+              </div>
+            </.waw_modal>
+          </div>
         </div>
         """
 
