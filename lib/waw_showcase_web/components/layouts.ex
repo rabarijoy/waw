@@ -1035,6 +1035,37 @@ defmodule WawShowcaseWeb.Layouts do
         </.waw_status_block>
         """
 
+      "Popup de notification" ->
+        assigns = assign(assigns, :notification_popup_preview_id, "notification-popup-preview-#{System.unique_integer([:positive, :monotonic])}")
+        ~H"""
+        <div class="flex flex-col items-center gap-4">
+          <.waw_button
+            type="button"
+            phx-click={JS.show(to: "##{@notification_popup_preview_id}", transition: {"transition-all ease-out duration-300", "opacity-0 translate-y-4", "opacity-100 translate-y-0"})}
+            label="Afficher Popup"
+            size="md"
+          />
+          <div id={@notification_popup_preview_id} class="hidden fixed bottom-4 right-4 z-50">
+            <.waw_notification_popup
+              time="09:03:45"
+              description="RENAULT MIDLUM 210 - 4785 TAG (Poids-lourds secondaires)"
+              title="Survitesse en ville"
+              icon="speedometer-1-right"
+            >
+              <:show>
+                <.waw_button_text label="Afficher" />
+              </:show>
+              <:closed>
+                <.waw_button_text
+                  label="Fermer"
+                  phx-click={JS.hide(to: "##{@notification_popup_preview_id}", transition: {"transition-all ease-out duration-300", "opacity-100 translate-y-0", "opacity-0 translate-y-4"})}
+                />
+              </:closed>
+            </.waw_notification_popup>
+          </div>
+        </div>
+        """
+
       # Pour toutes les autres sous‑catégories, pas d'exécution dynamique :
       _ ->
         ~H"""
