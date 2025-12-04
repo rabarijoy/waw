@@ -1007,10 +1007,30 @@ function initUiPreviewModal() {
 
   function updateVariantDisplay(variant, allVariants) {
     const cardId = modal.getAttribute("data-current-card-id")
-    if (!cardId) return
+    if (!cardId) {
+      console.error("No card ID found in modal")
+      return
+    }
     
     const card = document.getElementById(cardId)
-    if (!card) return
+    if (!card) {
+      console.error(`Card with ID "${cardId}" not found in DOM`)
+      // Essayer de trouver la carte par data-component-title
+      const sousCategorie = variant.sousCategorie || ""
+      const cards = document.querySelectorAll(`[data-component-title="${sousCategorie}"]`)
+      if (cards.length > 0) {
+        console.log(`Found ${cards.length} card(s) with sous_categorie "${sousCategorie}", using first one`)
+        const card = cards[0]
+        // Mettre à jour l'ID de la carte et de la modal
+        if (!card.id) {
+          card.id = cardId
+        }
+        modal.setAttribute("data-current-card-id", card.id)
+      } else {
+        console.error(`No card found with sous_categorie "${sousCategorie}"`)
+        return
+      }
+    }
 
     const principalCode = card.getAttribute("data-component-principal-code") || ""
     const principalNom = card.getAttribute("data-component-principal-nom") || card.getAttribute("data-component-title") || ""
@@ -1041,18 +1061,27 @@ function initUiPreviewModal() {
       
       if (variant.nom) {
         // Méthode 1: Chercher directement par nom de variante (le plus fiable)
-        variantContainer = card.querySelector(`.variant-previews [data-variant-nom="${variant.nom}"] .component-preview-variant`)
+        // Échapper les caractères spéciaux dans le nom pour le sélecteur CSS
+        const escapedNom = variant.nom.replace(/[!"#$%&'()*+,.\/:;<=>?@[\\\]^`{|}~]/g, '\\$&')
+        variantContainer = card.querySelector(`.variant-previews [data-variant-nom="${escapedNom}"] .component-preview-variant`)
         
-        // Méthode 2: Si pas trouvé, chercher dans tous les conteneurs par nom
+        // Méthode 2: Si pas trouvé, chercher dans tous les conteneurs par nom (comparaison directe)
         if (!variantContainer) {
           const allContainers = card.querySelectorAll('.variant-previews [data-variant-index]')
+          console.log(`Searching in ${allContainers.length} containers for variant "${variant.nom}"`)
           for (const container of allContainers) {
             const containerNom = container.getAttribute('data-variant-nom')
+            console.log(`  Container nom: "${containerNom}", looking for: "${variant.nom}", match: ${containerNom === variant.nom}`)
             if (containerNom === variant.nom) {
               variantContainer = container.querySelector('.component-preview-variant')
-              if (variantContainer) break
+              if (variantContainer) {
+                console.log(`Found variant container by name!`)
+                break
+              }
             }
           }
+        } else {
+          console.log(`Found variant container by CSS selector!`)
         }
       }
       
