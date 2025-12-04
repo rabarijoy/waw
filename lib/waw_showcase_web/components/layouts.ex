@@ -768,12 +768,12 @@ defmodule WawShowcaseWeb.Layouts do
 
       "Champ" ->
         ~H"""
-        <.input name="search" type="search"/>
+        <.input name="search" type="search" value=""/>
         """
 
       "Champs" ->
         ~H"""
-        <.input name="search" type="search"/>
+        <.input name="search" type="search" value=""/>
         """
 
       "Lien icône" ->
@@ -1445,7 +1445,7 @@ defmodule WawShowcaseWeb.Layouts do
       ## Basiques – Champ
       {"Champ", "Texte"} ->
         ~H"""
-        <.input name="text" label="label" type="text" placeholder="Placeholder">
+        <.input name="text" label="label" type="text" placeholder="Placeholder" value="">
         <:tooltip_block>
         <.tooltip position="top" color="white" content="Information du tooltip" variant="arrow" margin="top">
         (**)
@@ -1456,7 +1456,7 @@ defmodule WawShowcaseWeb.Layouts do
 
       {"Champ", "Création flotte"} ->
         ~H"""
-        <.input name="flotte" label="label" type="text" placeholder="Placeholder">
+        <.input name="flotte" label="label" type="text" placeholder="Placeholder" value="">
         <:tooltip_block>
         <.tooltip position="top" color="white" content="Information du tooltip" variant="arrow" margin="top">
         (**)
@@ -1467,37 +1467,37 @@ defmodule WawShowcaseWeb.Layouts do
 
       {"Champ", "Description ou note"} ->
         ~H"""
-        <.input name="description" label="label" type="textarea" placeholder="Placeholder"/>
+        <.input name="description" label="label" type="textarea" placeholder="Placeholder" value=""/>
         """
 
       {"Champ", "E-mail"} ->
         ~H"""
-        <.input name="email" label="label" type="email" placeholder="name@tag_ip.com"/>
+        <.input name="email" label="label" type="email" placeholder="name@tag_ip.com" value=""/>
         """
 
       {"Champ", "Téléphone"} ->
         ~H"""
-        <.input name="phone" label="label" type="tel" placeholder="Number"/>
+        <.input name="phone" label="label" type="tel" placeholder="Number" value=""/>
         """
 
       {"Champ", "Checkbox"} ->
         ~H"""
-        <.input name="checkbox" label="label" type="checkbox"/>
+        <.input name="checkbox" label="label" type="checkbox" value=""/>
         """
 
       {"Champ", "Heure"} ->
         ~H"""
-        <.input name="time" label="label" type="time"/>
+        <.input name="time" label="label" type="time" value=""/>
         """
 
       {"Champ", "Date et heure"} ->
         ~H"""
-        <.input name="datetime" label="label" type="datetime-local"/>
+        <.input name="datetime" label="label" type="datetime-local" value=""/>
         """
 
       {"Champ", "Recherche petite taille"} ->
         ~H"""
-        <.input name="search-small" type="search"/>
+        <.input name="search-small" type="search" value=""/>
         """
 
       {"Champ", "Recherche avec popup"} ->
@@ -1510,12 +1510,12 @@ defmodule WawShowcaseWeb.Layouts do
 
       {"Champ", "Sélection"} ->
         ~H"""
-        <.input name="select" label="Label" type="select" options={[{"option 1", "option 1"}, {"option 2", "option 2"}]} />
+        <.input name="select" label="Label" type="select" options={[{"option 1", "option 1"}, {"option 2", "option 2"}]} value="" />
         """
 
       {"Champ", "Sélection multiple"} ->
         ~H"""
-        <.input name="select-multiple" label="Label" type="select" multiple={true} options={[{"option 1", "option 1"}, {"option 2", "option 2"}]} />
+        <.input name="select-multiple" label="Label" type="select" multiple={true} options={[{"option 1", "option 1"}, {"option 2", "option 2"}]} value="" />
         """
 
       ## Basiques – Lien icône
