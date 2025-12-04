@@ -1043,10 +1043,10 @@ defmodule WawShowcaseWeb.Layouts do
       "Info-bulle" ->
         ~H"""
         <div class="relative inline-block group">
-          <span class="cursor-pointer">contenu</span>
+          <span class="cursor-pointer">Survolez pour voir le tooltip</span>
           <div class="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 opacity-100 !visible !block pointer-events-auto z-50" style="display: block !important; visibility: visible !important; opacity: 1 !important;">
             <.tooltip position="top" color="white" content="Information du tooltip" variant="simple" margin="top">
-            contenu
+            Survolez pour voir le tooltip
             </.tooltip>
           </div>
         </div>
