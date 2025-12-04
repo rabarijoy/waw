@@ -1999,3 +1999,169 @@ if (process.env.NODE_ENV === "development") {
   })
 }
 
+// Hook pour ajuster automatiquement la taille des cards en fonction du débordement
+const AutoResizeCardHook = {
+  mounted() {
+    this.checkOverflowDebounced = this.debounce(() => this.checkOverflow(), 100)
+    this.checkOverflow()
+    
+    // Observer les changements de taille du contenu
+    this.observer = new MutationObserver(() => {
+      this.checkOverflowDebounced()
+    })
+    this.observer.observe(this.el, {
+      childList: true,
+      subtree: true,
+      attributes: true,
+      attributeFilter: ['class', 'style']
+    })
+    
+    // Observer aussi les changements de taille de la fenêtre
+    this.resizeHandler = () => {
+      setTimeout(() => this.checkOverflow(), 100)
+    }
+    window.addEventListener('resize', this.resizeHandler)
+  },
+
+  updated() {
+    this.checkOverflowDebounced()
+  },
+
+  destroyed() {
+    if (this.observer) {
+      this.observer.disconnect()
+    }
+    if (this.resizeHandler) {
+      window.removeEventListener('resize', this.resizeHandler)
+    }
+  },
+
+  debounce(func, wait) {
+    let timeout
+    return function executedFunction(...args) {
+      const later = () => {
+        clearTimeout(timeout)
+        func(...args)
+      }
+      clearTimeout(timeout)
+      timeout = setTimeout(later, wait)
+    }
+  },
+
+  checkOverflow() {
+    const card = this.el
+    const previewTrigger = card.querySelector('.ui-preview-trigger')
+    if (!previewTrigger) return
+
+    // Attendre que le DOM soit stabilisé
+    requestAnimationFrame(() => {
+      const cardRect = card.getBoundingClientRect()
+      const previewRect = previewTrigger.getBoundingClientRect()
+      
+      // Vérifier le débordement horizontal (avec une petite marge pour éviter les problèmes de rendu)
+      const horizontalOverflow = previewRect.width > (cardRect.width - 10)
+      // Vérifier le débordement vertical
+      const verticalOverflow = previewRect.height > (cardRect.height - 10)
+
+      if (horizontalOverflow) {
+        this.expandCardHorizontally()
+      }
+      
+      if (verticalOverflow) {
+        this.expandCardVertically()
+      }
+    })
+  },
+
+  expandCardHorizontally() {
+    const card = this.el
+    const previewTrigger = card.querySelector('.ui-preview-trigger')
+    if (!previewTrigger) return
+
+    let currentColSpan = this.getCurrentColSpan(card)
+    const maxColSpan = 12 // Maximum de colonnes dans une grille Tailwind standard
+    const grid = card.closest('#ui-components-grid')
+    if (!grid) return
+
+    // Expansion progressive jusqu'à résolution du débordement
+    const tryExpand = () => {
+      const cardRect = card.getBoundingClientRect()
+      const previewRect = previewTrigger.getBoundingClientRect()
+      const overflow = previewRect.width > (cardRect.width - 10)
+
+      if (overflow && currentColSpan < maxColSpan) {
+        currentColSpan++
+        this.setColSpan(card, currentColSpan)
+        
+        // Vérifier à nouveau après un court délai pour laisser le DOM se mettre à jour
+        setTimeout(() => {
+          const newCardRect = card.getBoundingClientRect()
+          const newPreviewRect = previewTrigger.getBoundingClientRect()
+          const stillOverflowing = newPreviewRect.width > (newCardRect.width - 10)
+          
+          if (stillOverflowing && currentColSpan < maxColSpan) {
+            tryExpand()
+          }
+        }, 50)
+      }
+    }
+
+    tryExpand()
+  },
+
+  expandCardVertically() {
+    const card = this.el
+    const previewTrigger = card.querySelector('.ui-preview-trigger')
+    if (!previewTrigger) return
+
+    const cardRect = card.getBoundingClientRect()
+    const previewRect = previewTrigger.getBoundingClientRect()
+    const neededHeight = previewRect.height + 40 // Ajouter un peu de padding (p-6 = 24px de chaque côté)
+    
+    // Ne définir minHeight que si nécessaire
+    const currentMinHeight = parseInt(card.style.minHeight) || 0
+    if (neededHeight > currentMinHeight) {
+      card.style.minHeight = `${neededHeight}px`
+    }
+  },
+
+  getCurrentColSpan(card) {
+    const classes = card.className.split(' ')
+    let maxSpan = 1
+    
+    // Chercher les classes col-span (prendre la plus grande valeur)
+    for (const cls of classes) {
+      // Chercher dans les classes responsive (md: et xl:)
+      const mdMatch = cls.match(/md:col-span-(\d+)/)
+      if (mdMatch) {
+        maxSpan = Math.max(maxSpan, parseInt(mdMatch[1], 10))
+      }
+      const xlMatch = cls.match(/xl:col-span-(\d+)/)
+      if (xlMatch) {
+        maxSpan = Math.max(maxSpan, parseInt(xlMatch[1], 10))
+      }
+      // Chercher aussi les classes non-responsive
+      const spanMatch = cls.match(/col-span-(\d+)/)
+      if (spanMatch && !cls.includes('md:') && !cls.includes('xl:')) {
+        maxSpan = Math.max(maxSpan, parseInt(spanMatch[1], 10))
+      }
+    }
+    
+    return maxSpan
+  },
+
+  setColSpan(card, colSpan) {
+    // Retirer les anciennes classes col-span
+    card.className = card.className
+      .replace(/\b(col-span-\d+|md:col-span-\d+|xl:col-span-\d+)\b/g, '')
+      .trim()
+    
+    // Ajouter la nouvelle classe
+    if (colSpan > 1) {
+      card.classList.add(`md:col-span-${colSpan}`, `xl:col-span-${colSpan}`)
+    }
+  }
+}
+
+Hooks.AutoResizeCard = AutoResizeCardHook
+

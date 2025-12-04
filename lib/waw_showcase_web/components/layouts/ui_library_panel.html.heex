@@ -113,6 +113,7 @@
           <div
             :for={item <- text_items}
             id={"ui-component-card-#{String.replace(item.sous_categorie, " ", "-") |> String.downcase()}"}
+            phx-hook="AutoResizeCard"
             class="ui-component-card rounded-xl border border-gray-200 bg-white shadow-sm p-6 flex flex-col gap-3"
             data-component-title={item.sous_categorie}
             data-component-module={item[:module] || item.module || ""}
@@ -187,6 +188,7 @@
           <!-- Basiques -->
           <div
             :for={item <- basiques_items}
+            phx-hook="AutoResizeCard"
             class={[
               "ui-component-card rounded-xl border border-gray-200 bg-white shadow-sm p-6 flex flex-col gap-3",
               cond do
@@ -278,6 +280,7 @@
           <!-- Dates et Heures -->
           <div
             :for={item <- dates_heures_items}
+            phx-hook="AutoResizeCard"
             class="ui-component-card rounded-xl border border-gray-200 bg-white shadow-sm p-6 flex flex-col gap-3"
             data-component-title={item.sous_categorie}
             data-component-module={item[:module] || item.module || ""}
@@ -352,6 +355,7 @@
           <!-- Cartes -->
           <div
             :for={item <- cartes_items}
+            phx-hook="AutoResizeCard"
             class={[
               "ui-component-card rounded-xl border border-gray-200 bg-white shadow-sm p-6 flex flex-col gap-3",
               if item.sous_categorie in ["Header de carte"] do
