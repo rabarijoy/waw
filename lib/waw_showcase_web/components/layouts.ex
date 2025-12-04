@@ -1053,14 +1053,11 @@ defmodule WawShowcaseWeb.Layouts do
               icon="speedometer-1-right"
             >
               <:show>
-                <.waw_button_text label="Afficher" />
-              </:show>
-              <:closed>
                 <.waw_button_text
                   label="Fermer"
                   phx-click={JS.hide(to: "##{@notification_popup_preview_id}", transition: {"transition-all ease-out duration-300", "opacity-100 translate-y-0", "opacity-0 translate-y-4"})}
                 />
-              </:closed>
+              </:show>
             </.waw_notification_popup>
           </div>
         </div>
