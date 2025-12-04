@@ -1219,6 +1219,7 @@ function initUiPreviewModal() {
       card.id = tempId
     }
     modal.setAttribute("data-current-card-id", card.id)
+    modal.setAttribute("data-current-sous-categorie", sousCategorie)
 
     if (titleEl) titleEl.textContent = title
     if (moduleEl) moduleEl.textContent = moduleName
