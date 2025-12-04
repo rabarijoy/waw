@@ -568,7 +568,7 @@ function applyMode(mode) {
   const body = document.getElementById("app-body") || document.body
   body.dataset.appMode = mode
 
-  const navWrapper = document.getElementById("app-main-nav")
+  const navWrapper = document.querySelector(".app-main-nav") || document.querySelector("[id^='app-main-nav-']")
   const mainContent = document.getElementById("app-main-content")
   const uiPanel = document.getElementById("ui-library-panel")
 
@@ -725,6 +725,7 @@ function initUiPreviewModal() {
 
   let currentVariants = []
   let currentVariantIndex = 0
+  let currentGroupIndex = 0 // Index du groupe principal sélectionné (pour navigation hiérarchique)
 
   function closeModal() {
     modal.classList.add("hidden")
@@ -735,9 +736,196 @@ function initUiPreviewModal() {
   function renderVariantsNav(variants, container, principalNom, hidePrincipal = false) {
     if (!container) return
     
+    // Vérifier si les variantes ont des sous-variantes (structure hiérarchique)
+    const hasSubVariants = variants.some(v => v.sous_variantes && Array.isArray(v.sous_variantes))
+    
+    if (hasSubVariants) {
+      // Structure hiérarchique : groupes avec sous-variantes
+      renderHierarchicalNav(variants, container, principalNom, hidePrincipal)
+    } else {
+      // Structure plate : variantes simples
+      renderFlatNav(variants, container, principalNom, hidePrincipal)
+    }
+  }
+
+  function renderHierarchicalNav(variants, container, principalNom, hidePrincipal) {
+    container.innerHTML = ""
+    
+    // Construire la liste plate pour le rendu
+    const allVariants = hidePrincipal
+      ? []
+      : [{ nom: principalNom || "Principal", code_source: null, isPrincipal: true }]
+    
+    // Aplatir les variantes avec sous-variantes
+    let flatIndex = allVariants.length
+    const groupsWithSubVariants = []
+    
+    variants.forEach((variant) => {
+      if (variant.sous_variantes && Array.isArray(variant.sous_variantes)) {
+        const groupSubVariants = []
+        variant.sous_variantes.forEach((subVariant) => {
+          const flatVariant = {
+            nom: `${variant.nom} - ${subVariant.nom}`,
+            code_source: subVariant.code_source,
+            isPrincipal: false,
+            groupNom: variant.nom,
+            subNom: subVariant.nom,
+            _index: flatIndex++
+          }
+          allVariants.push(flatVariant)
+          groupSubVariants.push(flatVariant)
+        })
+        groupsWithSubVariants.push({
+          nom: variant.nom,
+          subVariants: groupSubVariants
+        })
+      } else {
+        // Variante simple sans sous-variantes
+        const flatVariant = {
+          nom: variant.nom,
+          code_source: variant.code_source,
+          isPrincipal: false,
+          groupNom: null,
+          _index: flatIndex++
+        }
+        allVariants.push(flatVariant)
+      }
+    })
+    
+    if (allVariants.length <= 1) {
+      container.style.display = "none"
+      return
+    }
+
+    container.style.display = "flex"
+    const navWrapper = document.createElement("div")
+    navWrapper.className = "flex flex-col gap-3 w-full"
+    
+    // Stocker les données pour les fonctions de callback
+    navWrapper.setAttribute("data-all-variants", JSON.stringify(allVariants))
+    navWrapper.setAttribute("data-groups", JSON.stringify(groupsWithSubVariants))
+    
+    // Première ligne : Navigation des grandes variantes (groupes)
+    const groupsNavWrapper = document.createElement("div")
+    groupsNavWrapper.className = "flex flex-wrap justify-center gap-1 rounded-full bg-gray-100 p-1 text-xs font-medium text-gray-600"
+    groupsNavWrapper.id = "groups-nav"
+    
+    groupsWithSubVariants.forEach((group, groupIdx) => {
+      const btn = document.createElement("button")
+      btn.type = "button"
+      btn.className = groupIdx === currentGroupIndex
+        ? "px-3 py-1.5 rounded-full bg-white text-gray-900 shadow-sm transition-colors duration-150 max-w-[200px] truncate"
+        : "px-3 py-1.5 rounded-full text-gray-500 hover:text-gray-900 hover:bg-gray-50 transition-colors duration-150 max-w-[200px] truncate"
+      
+      btn.textContent = group.nom
+      btn.title = group.nom
+      btn.style.textOverflow = "ellipsis"
+      btn.style.overflow = "hidden"
+      btn.style.whiteSpace = "nowrap"
+      
+      btn.addEventListener("click", () => {
+        currentGroupIndex = groupIdx
+        // Mettre à jour l'affichage des boutons de groupes
+        updateGroupsNavButtons(groupsNavWrapper, groupsWithSubVariants)
+        // Mettre à jour la navigation des sous-variantes
+        updateSubVariantsNav(group.subVariants, navWrapper, allVariants)
+        // Sélectionner automatiquement la première sous-variante du groupe
+        if (group.subVariants.length > 0) {
+          currentVariantIndex = group.subVariants[0]._index
+          updateVariantDisplay(group.subVariants[0], allVariants)
+        }
+      })
+      
+      groupsNavWrapper.appendChild(btn)
+    })
+    
+    navWrapper.appendChild(groupsNavWrapper)
+    
+    // Deuxième ligne : Navigation des sous-variantes (dynamique selon le groupe sélectionné)
+    const subVariantsNavWrapper = document.createElement("div")
+    subVariantsNavWrapper.className = "flex flex-wrap justify-center gap-1 rounded-full bg-gray-100 p-1 text-xs font-medium text-gray-600"
+    subVariantsNavWrapper.id = "sub-variants-nav"
+    
+    // Ajouter d'abord le conteneur au DOM avant de le remplir
+    navWrapper.appendChild(subVariantsNavWrapper)
+    
+    // Afficher les sous-variantes du premier groupe par défaut
+    if (groupsWithSubVariants.length > 0 && currentGroupIndex < groupsWithSubVariants.length) {
+      const selectedGroup = groupsWithSubVariants[currentGroupIndex]
+      updateSubVariantsNav(selectedGroup.subVariants, navWrapper, allVariants)
+      // Sélectionner la première sous-variante par défaut
+      if (selectedGroup.subVariants.length > 0) {
+        currentVariantIndex = selectedGroup.subVariants[0]._index
+        updateVariantDisplay(selectedGroup.subVariants[0], allVariants)
+      }
+    }
+    
+    container.appendChild(navWrapper)
+  }
+  
+  function updateGroupsNavButtons(container, groups) {
+    const buttons = container.querySelectorAll("button")
+    buttons.forEach((btn, idx) => {
+      btn.className = idx === currentGroupIndex
+        ? "px-3 py-1.5 rounded-full bg-white text-gray-900 shadow-sm transition-colors duration-150 max-w-[200px] truncate"
+        : "px-3 py-1.5 rounded-full text-gray-500 hover:text-gray-900 hover:bg-gray-50 transition-colors duration-150 max-w-[200px] truncate"
+    })
+  }
+  
+  function updateSubVariantsNav(subVariants, navWrapper, allVariants) {
+    const subVariantsNavWrapper = navWrapper.querySelector("#sub-variants-nav")
+    if (!subVariantsNavWrapper) return
+    
+    subVariantsNavWrapper.innerHTML = ""
+    
+    if (subVariants.length === 0) {
+      subVariantsNavWrapper.style.display = "none"
+      return
+    }
+    
+    subVariantsNavWrapper.style.display = "flex"
+    
+    subVariants.forEach((variant) => {
+      const btn = document.createElement("button")
+      btn.type = "button"
+      const isActive = variant._index === currentVariantIndex
+      btn.className = isActive
+        ? "px-3 py-1.5 rounded-full bg-white text-gray-900 shadow-sm transition-colors duration-150 max-w-[200px] truncate"
+        : "px-3 py-1.5 rounded-full text-gray-500 hover:text-gray-900 hover:bg-gray-50 transition-colors duration-150 max-w-[200px] truncate"
+      
+      // Afficher seulement le nom de la sous-variante (sans le nom du groupe)
+      const displayText = variant.subNom || variant.nom.replace(`${variant.groupNom} - `, "")
+      btn.textContent = displayText
+      btn.title = variant.nom
+      
+      btn.style.textOverflow = "ellipsis"
+      btn.style.overflow = "hidden"
+      btn.style.whiteSpace = "nowrap"
+      
+      btn.addEventListener("click", () => {
+        currentVariantIndex = variant._index
+        updateVariantDisplay(variant, allVariants)
+        // Mettre à jour l'affichage des boutons de sous-variantes
+        updateSubVariantsNavButtons(subVariantsNavWrapper, subVariants)
+      })
+      
+      subVariantsNavWrapper.appendChild(btn)
+    })
+  }
+  
+  function updateSubVariantsNavButtons(container, subVariants) {
+    const buttons = container.querySelectorAll("button")
+    buttons.forEach((btn, idx) => {
+      const variant = subVariants[idx]
+      const isActive = variant && variant._index === currentVariantIndex
+      btn.className = isActive
+        ? "px-3 py-1.5 rounded-full bg-white text-gray-900 shadow-sm transition-colors duration-150 max-w-[200px] truncate"
+        : "px-3 py-1.5 rounded-full text-gray-500 hover:text-gray-900 hover:bg-gray-50 transition-colors duration-150 max-w-[200px] truncate"
+    })
+  }
+
+  function renderFlatNav(variants, container, principalNom, hidePrincipal) {
     // Construire la liste des variantes pour la nav
-    // Pour la plupart des composants : bouton pour le principal + variantes
-    // Pour certains (comme Distance), on peut masquer le principal
     const allVariants = hidePrincipal
       ? variants.map(v => ({ ...v, isPrincipal: false }))
       : [
@@ -763,12 +951,10 @@ function initUiPreviewModal() {
         ? "px-3 py-1.5 rounded-full bg-white text-gray-900 shadow-sm transition-colors duration-150 max-w-[200px] truncate"
         : "px-3 py-1.5 rounded-full text-gray-500 hover:text-gray-900 hover:bg-gray-50 transition-colors duration-150 max-w-[200px] truncate"
       
-      // Utiliser le texte complet mais avec truncate CSS pour gérer l'affichage
       const displayText = variant.nom || principalNom || "Principal"
       btn.textContent = displayText
-      btn.title = displayText // Tooltip avec le nom complet pour voir le texte entier
+      btn.title = displayText
       
-      // Ajouter un style pour s'assurer que le texte est tronqué avec ellipsis
       btn.style.textOverflow = "ellipsis"
       btn.style.overflow = "hidden"
       btn.style.whiteSpace = "nowrap"
@@ -813,7 +999,13 @@ function initUiPreviewModal() {
       }
     } else if (componentEl) {
       // Pour les variantes, cloner le HTML pré-rendu caché dans la carte
-      const variantIndex = typeof variant._index === "number" ? variant._index : allVariants.indexOf(variant) - 1
+      // Utiliser _flatIndex si disponible, sinon calculer l'index
+      const variantIndex = typeof variant._flatIndex === "number" 
+        ? variant._flatIndex 
+        : (typeof variant._index === "number" 
+          ? variant._index 
+          : allVariants.indexOf(variant) - 1)
+      
       const variantContainer = card.querySelector(`.variant-previews [data-variant-index="${variantIndex}"] .component-preview-variant`)
 
       if (variantContainer) {
@@ -829,7 +1021,30 @@ function initUiPreviewModal() {
     // Re-rendre la navigation avec le bon bouton actif et le nom réel
     const sousCategorie = card.getAttribute("data-component-title") || ""
     const hidePrincipal = sousCategorie === "Distance"
-    renderVariantsNav(currentVariants, variantsContainer, principalNom, hidePrincipal)
+    const hasSubVariants = currentVariants.some(v => v.sous_variantes && Array.isArray(v.sous_variantes))
+    
+    if (hasSubVariants) {
+      // Pour la navigation hiérarchique, mettre à jour seulement les boutons de sous-variantes
+      const navWrapper = variantsContainer.querySelector("div[data-all-variants]")
+      if (navWrapper) {
+        const subVariantsNavWrapper = navWrapper.querySelector("#sub-variants-nav")
+        if (subVariantsNavWrapper) {
+          const groupsJson = navWrapper.getAttribute("data-groups")
+          if (groupsJson) {
+            const groups = JSON.parse(groupsJson)
+            if (groups.length > 0 && currentGroupIndex < groups.length) {
+              const selectedGroup = groups[currentGroupIndex]
+              const allVariantsJson = navWrapper.getAttribute("data-all-variants")
+              const allVariants = allVariantsJson ? JSON.parse(allVariantsJson) : []
+              updateSubVariantsNavButtons(subVariantsNavWrapper, selectedGroup.subVariants)
+            }
+          }
+        }
+      }
+    } else {
+      // Pour la navigation plate, re-rendre complètement
+      renderVariantsNav(currentVariants, variantsContainer, principalNom, hidePrincipal)
+    }
   }
 
   function openFromCard(card, previewDiv) {
@@ -844,8 +1059,7 @@ function initUiPreviewModal() {
 
     try {
       currentVariants = JSON.parse(variantsJson)
-      // Ajouter un index interne pour retrouver la preview côté DOM
-      currentVariants = currentVariants.map((v, idx) => ({ ...v, _index: idx }))
+      // Ne pas ajouter d'index ici, car renderVariantsNav va créer la structure plate
     } catch (e) {
       console.warn("Failed to parse variants:", e)
       currentVariants = []
@@ -865,6 +1079,13 @@ function initUiPreviewModal() {
 
     // Afficher la navigation des variantes
     const hidePrincipal = sousCategorie === "Distance"
+    const hasSubVariants = currentVariants.some(v => v.sous_variantes && Array.isArray(v.sous_variantes))
+    
+    // Réinitialiser l'index du groupe pour la navigation hiérarchique
+    if (hasSubVariants) {
+      currentGroupIndex = 0
+    }
+    
     renderVariantsNav(currentVariants, variantsContainer, principalNom, hidePrincipal)
 
     // Afficher le bon contenu initial dans la popup
@@ -872,6 +1093,9 @@ function initUiPreviewModal() {
       // Pour Distance, on démarre directement sur la première variante ("En mètre")
       currentVariantIndex = 0
       updateVariantDisplay(currentVariants[0], currentVariants)
+    } else if (hasSubVariants && currentVariants.length > 0) {
+      // Pour les variantes avec sous-variantes, la navigation hiérarchique gère déjà l'affichage initial
+      // Ne rien faire ici, renderHierarchicalNav s'en charge
     } else {
       // Par défaut, on démarre sur le composant principal
       const principalVariant = { nom: principalNom, code_source: principalCode, isPrincipal: true }

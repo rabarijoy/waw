@@ -1512,16 +1512,91 @@ Content
         variantes: [
           %{
             nom: "Dates et heures",
-            code_source: """
-<.interval from={~U[2025-11-20 08:21:47.230963Z]} to={~U[2025-11-20 09:37:56.230967Z]}/>
+            sous_variantes: [
+              %{
+                nom: "Medium",
+                code_source: """
+<.interval from={~U[2025-12-03 10:26:07.956246Z]} to={~U[2025-12-03 11:42:16.956251Z]}/>
 """
+              },
+              %{
+                nom: "Short",
+                code_source: """
+<.interval format={:short} from={~U[2025-12-03 10:26:07.956258Z]} to={~U[2025-12-03 11:42:16.956260Z]}/>
+"""
+              },
+              %{
+                nom: "Long",
+                code_source: """
+<.interval format={:long} from={~U[2025-12-03 10:26:07.956263Z]} to={~U[2025-12-03 11:42:16.956264Z]}/>
+"""
+              },
+            ]
+          },
+          %{
+            nom: "Dates",
+            sous_variantes: [
+              %{
+                nom: "Par défaut",
+                code_source: """
+<.interval from={~D[2025-12-03]} to={~D[2025-12-06]}/>
+"""
+              },
+              %{
+                nom: "Par mois",
+                code_source: """
+<.interval from={~D[2025-12-03]} to={~D[2026-01-02]} style={:month}/>
+"""
+              },
+              %{
+                nom: "Par mois et jours",
+                code_source: """
+<.interval from={~D[2025-12-03]} to={~D[2025-12-31]} style={:month_and_day}/>
+"""
+              },
+              %{
+                nom: "Par an et mois",
+                code_source: """
+<.interval from={~D[2025-12-03]} to={~D[2026-12-26]} style={:year_and_month}/>
+"""
+              },
+            ]
           },
           %{
             nom: "Heures",
-            code_source: """
-<.interval format={:medium} from={~T[08:21:47.231023]} to={~T[09:24:56.231024]}/>
+            sous_variantes: [
+              %{
+                nom: "Par défaut",
+                code_source: """
+<.interval from={~T[10:26:07.956275]} to={~T[11:29:16.956277]}/>
 """
-},
+              },
+              %{
+                nom: "Short",
+                code_source: """
+<.interval format={:short} from={~T[10:26:07.956288]} to={~T[11:29:16.956289]}/>
+"""
+              },
+              %{
+                nom: "Flex",
+                code_source: """
+<.interval format={:short} from={~T[10:26:07.956291]} to={~T[11:29:16.956292]} style={:flex}/>
+"""
+              },
+              %{
+                nom: "Time",
+                code_source: """
+<.interval format={:short} from={~T[10:26:07.956294]} to={~T[11:29:16.956295]} style={:time}/>
+"""
+              },
+              %{
+                nom: "Zone",
+                code_source: """
+<.interval from={~T[10:26:07.956296]} to={~T[11:29:16.956297]}/>
+"""
+              },
+            ]
+          },
         ]
       },
       %{

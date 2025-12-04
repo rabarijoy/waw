@@ -5,13 +5,16 @@ defmodule WawShowcaseWeb.Layouts do
   """
   use WawShowcaseWeb, :html
 
+  # Import des helpers Waw (waw_date, waw_time, etc.)
   import Waw.Delegates
+  # Import direct des helpers de dates pour <.date>, <.date_time>, <.interval>, <.time>, <.relative_time>
+  import Waw.Text.Dates, only: [date: 1, date_time: 1, interval: 1, time: 1, relative_time: 1]
 
   # Embed all files in layouts/* within this module.
   # The default root.html.heex file contains the HTML
   # skeleton of your application, namely HTML headers
   # and other static content.
-  embed_templates "layouts/*"
+  embed_templates "layouts/*", except: [app_live: 1]
 
   @doc """
   Renders your app layout.
@@ -290,6 +293,101 @@ defmodule WawShowcaseWeb.Layouts do
     """
   end
 
+  # Layout app_live sans ID sur la nav pour éviter les duplications
+  def app_live(assigns) do
+    # Ne pas utiliser d'ID sur la nav car cela peut causer des duplications lors du montage initial
+    # Le parent app-header avec phx-update="ignore" protège déjà tous les enfants
+    # Utiliser uniquement la classe pour la sélection JavaScript
+    ~H"""
+    <.waw_fixed_header_footer>
+      <:header>
+        <div
+          id="app-header"
+          phx-update="ignore"
+          data-component="waw_header"
+          class="contents"
+        >
+          <.waw_header title="Waw Showcase" logout_url="" current_user_profile_url="">
+            <:nav>
+              <div class="flex items-center gap-4">
+                <div class="app-main-nav flex items-center gap-4 transition-all duration-200">
+                  <.waw_navbar navigate={~p"/"} theme="light">
+                Tableau de bord
+              </.waw_navbar>
+                  <.waw_navbar navigate={~p"/vehicules"} theme="light">
+                Véhicules
+              </.waw_navbar>
+                  <.waw_navbar navigate={~p"/carburant"} theme="light">
+                Carburant
+              </.waw_navbar>
+                  <.waw_navbar navigate={~p"/rapports"} theme="light">
+                Rapports
+              </.waw_navbar>
+                  <.waw_navbar navigate={~p"/reglages"} theme="light">
+                Réglages
+              </.waw_navbar>
+                </div>
+
+                <div class="hidden md:inline-flex items-center ml-6">
+                  <div class="inline-flex h-8 items-center rounded-full bg-white/90 border border-gray-200 shadow-sm text-xs font-medium text-gray-600 px-1">
+                    <button
+                      type="button"
+                      data-mode-toggle="desktop"
+                      data-mode-value="demo"
+                      class="inline-flex h-7 items-center px-3 rounded-full bg-gray-900 text-white shadow-sm transition-colors duration-150 hover:bg-gray-800"
+                    >
+                      Demo
+                    </button>
+                    <button
+                      type="button"
+                      data-mode-toggle="desktop"
+                      data-mode-value="ui"
+                      class="inline-flex h-7 items-center px-3 rounded-full text-gray-500 hover:text-gray-900 hover:bg-gray-50 transition-colors duration-150"
+                    >
+                      UI
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </:nav>
+          </.waw_header>
+        </div>
+      </:header>
+      <:main>
+        <div id="app-main-content" phx-update="replace">
+          {@inner_content}
+        </div>
+        <div
+          id="ui-library-panel"
+          class="hidden opacity-0 transition-opacity duration-200"
+        >
+          <.ui_library_panel />
+        </div>
+      </:main>
+      <:footer>
+        <div id="app-footer" phx-update="ignore" data-component="waw_footer" class="contents">
+          <div class="md:hidden px-4 pt-2 pb-1 flex justify-start bg-white">
+            <button
+              type="button"
+              data-mode-toggle="mobile"
+              class="inline-flex items-center gap-2 rounded-full bg-white px-3 py-1.5 text-[0.7rem] font-medium text-gray-700 whitespace-nowrap"
+            >
+              <span data-mode-active-label class="inline-flex h-6 items-center rounded-full bg-gray-900 text-white px-2 text-[0.7rem]">
+                Demo
+              </span>
+              <span data-mode-alt-label class="text-[0.65rem] leading-tight text-gray-500">
+                Voir l'UI
+              </span>
+            </button>
+          </div>
+
+          <.waw_footer copyright_year={DateTime.utc_now().year} />
+        </div>
+      </:footer>
+    </.waw_fixed_header_footer>
+    """
+  end
+
   # Helper pour préparer les composants depuis UIConfig pour l'affichage
   def prepare_components_for_display(category) do
     alias WawShowcase.UIConfig
@@ -305,6 +403,38 @@ defmodule WawShowcaseWeb.Layouts do
         # Pour la recherche et l'affichage
         search_key: String.downcase("#{item.sous_categorie} #{item.principal.nom}")
       }
+    end)
+  end
+
+  # Helper pour aplatir les variantes avec sous-variantes en une liste plate
+  # pour le rendu des previews dans le template
+  def flatten_variants_for_preview(variantes) do
+    variantes
+    |> Enum.with_index()
+    |> Enum.flat_map(fn {variant, group_idx} ->
+      if Map.has_key?(variant, :sous_variantes) do
+        # Variante avec sous-variantes
+        variant.sous_variantes
+        |> Enum.with_index()
+        |> Enum.map(fn {sous_variant, sub_idx} ->
+          %{
+            nom: "#{variant.nom} - #{sous_variant.nom}",
+            code_source: sous_variant.code_source,
+            group_nom: variant.nom,
+            group_idx: group_idx,
+            sub_idx: sub_idx
+          }
+        end)
+      else
+        # Variante simple (sans sous-variantes)
+        [%{
+          nom: variant.nom,
+          code_source: variant.code_source,
+          group_nom: nil,
+          group_idx: group_idx,
+          sub_idx: nil
+        }]
+      end
     end)
   end
 
@@ -395,6 +525,313 @@ defmodule WawShowcaseWeb.Layouts do
           title="Véhicules géolocalisés"
           description="Information concernant les véhicules géolocalisés"
         />
+        """
+
+      ## Dates et heures
+      "Dates" ->
+        ~H"""
+        <.date value={~U[2025-11-20 08:19:56.285343Z]} format={:medium} />
+        """
+
+      "Intervalle de temps" ->
+        ~H"""
+        <.interval format={:medium} from={~D[2025-11-20]} to={~D[2025-11-23]} />
+        """
+
+      "Relatives" ->
+        ~H"""
+        <.relative_time
+          value={~U[2025-11-21 08:24:47.338059Z]}
+          ref={~U[2025-11-20 08:24:47.338092Z]}
+        />
+        """
+
+      "Heures" ->
+        ~H"""
+        <.time value={~U[2025-11-20 08:27:09.103149Z]} format={:medium} />
+        """
+
+      ## Basiques
+      "Accordion" ->
+        ~H"""
+        <.waw_accordion count={12} id="accordion-single-normal" has_group>
+        <.waw_accordion id="accordion-2" head_icon="truck" title="Truck" count={8}>
+        <.waw_table without_border>
+        <:thead>
+        <.waw_th></.waw_th>
+        <.waw_th>Véhicules</.waw_th>
+        <.waw_th sort_key="asc">Heure</.waw_th>
+        </:thead>
+        <:tr state="selected">
+        <.waw_td_icon><.waw_icon name="car" stroke="none" size="4" /></.waw_td_icon>
+        <.waw_td title="6541 TBA" is_link={true} href="https://www.tag-ip.com/">
+        6541 TBA
+        <:description>Vitesse > 60km/h</:description>
+        </.waw_td>
+        <.waw_td title="14:42:37">14:42:37</.waw_td>
+        </:tr>
+        <:tr state="normal">
+        <.waw_td_icon><.waw_icon name="car" stroke="none" size="4" /></.waw_td_icon>
+        <.waw_td title="3354 TBS">
+        3354 TBS
+        <:description>Vitesse > 70km/h</:description>
+        </.waw_td>
+        <.waw_td title="14:42:37">14:42:37</.waw_td>
+        </:tr>
+        <:tr state="disabled">
+        <.waw_td_icon><.waw_icon name="car" stroke="none" size="4" /></.waw_td_icon>
+        <.waw_td title="3354 TBA">
+        3354 TBA
+        <:description>Vitesse > 50km/h</:description>
+        </.waw_td>
+        <.waw_td title="14:42:37">14:42:37</.waw_td>
+        </:tr>
+        </.waw_table>
+        </.waw_accordion>
+        <.waw_accordion id="accordion-3" head_icon="moto" title="moto" />
+        </.waw_accordion>
+        """
+
+      "Badge" ->
+        ~H"""
+        <.waw_badge id="badge-single-default" label="value" color="#12dba2"/>
+        """
+
+      "Séparateur de blocs" ->
+        ~H"""
+        <.waw_block_separator/>
+        """
+
+      "Titre de block" ->
+        ~H"""
+        <.waw_block_title label="Trackable sélectionné"/>
+        """
+
+      "Boutons" ->
+        ~H"""
+        <.waw_button label="OK" size="md" type="submit"/>
+        """
+
+      "Texte éditable" ->
+        ~H"""
+        <.waw_contenteditable id="contenteditable-single-text" label="Name" value="Edit this name">
+          <:status>
+            <.waw_icon name="checkmark-icloud"/>
+          </:status>
+        </.waw_contenteditable>
+        """
+
+      "Liste des champs avec description" ->
+        ~H"""
+        <.waw_dl>
+        <.waw_definition text_align="left" term="term" has_actions={false}>
+        <p>description en block</p>
+        </.waw_definition>
+        <.waw_definition text_align="left" term="term" has_actions={false}>
+        <p>description en block</p>
+        </.waw_definition>
+        </.waw_dl>
+        """
+
+      "Header des filtres" ->
+        ~H"""
+        <.waw_filter_header id="filter-header-single-full">
+        <:left>
+        <.waw_button label="Organisation" size="md" icon="angle-small-down" icon_position="right" />
+        <.waw_button label="Flotte" size="md" icon="angle-small-down" icon_position="right" />
+        </:left>
+        <:filter>
+        <.waw_nav_filter value={120} icon="car" description="car" />
+        </:filter>
+        <:filter>
+        <.waw_nav_filter value={25} icon="moto" />
+        </:filter>
+        <:filter>
+        <.waw_nav_filter value={145} title="Total:" active description="Nombre total" />
+        </:filter>
+        </.waw_filter_header>
+        """
+
+      "Flash" ->
+        assigns = assign(assigns, :flash_preview_id, "flash-preview-#{System.unique_integer([:positive, :monotonic])}")
+        ~H"""
+        <div class="flex flex-col items-center gap-4">
+          <.waw_button 
+            type="button" 
+            phx-click={JS.show(to: {"##{@flash_preview_id}"}, transition: {"transition-all ease-out duration-300", "opacity-0 translate-y-4", "opacity-100 translate-y-0"})} 
+            label="Afficher Flash" 
+            size="md"
+          />
+          <div id={@flash_preview_id} class="hidden">
+            <.flash kind={:info} flash={%{"info" => "Message d'information"}} />
+          </div>
+        </div>
+        """
+
+      "Groupe de flash" ->
+        assigns = assign(assigns, :flash_group_preview_id, "flash-group-preview-#{System.unique_integer([:positive, :monotonic])}")
+        ~H"""
+        <div class="flex flex-col items-center gap-4">
+          <.waw_button 
+            type="button" 
+            phx-click={JS.show(to: {"##{@flash_group_preview_id}"}, transition: {"transition-all ease-out duration-300", "opacity-0 translate-y-4", "opacity-100 translate-y-0"})} 
+            label="Afficher Groupe" 
+            size="md"
+          />
+          <div id={@flash_group_preview_id} class="hidden">
+            <.flash_group title="Notification" flash={%{"error" => "Serveur erreur."}}/>
+          </div>
+        </div>
+        """
+
+      "Footer" ->
+        ~H"""
+        <Waw.Footer.footer copyright_year={2025}/>
+        """
+
+      "Header" ->
+        ~H"""
+        <.waw_header title="Titre de la page" current_user={%{id: 1, name: "Alice", email: "alice@example.com"}} header_id="notification" connected_user={%{id: 1, name: "Alice", email: "alice@example.com"}} notification_action={JS.toggle(to: "#notification_user_menu")} user_home_url="https://auth.tag-ip.com" has_i18n>
+          <:menu_language navigate="en" href="/"> English </:menu_language>
+          <:menu_language navigate="mg" href="/"> Malagasy </:menu_language>
+        </.waw_header>
+        """
+
+      "Champ" ->
+        ~H"""
+        <.input type="search"/>
+        """
+
+      "Lien icône" ->
+        ~H"""
+        <.waw_link_icon size="sm" state="checked" icon="home"/>
+        """
+
+      "Lien texte" ->
+        ~H"""
+        <.waw_link_text label="3 derniers jours" size="sm" state="unchecked"/>
+        """
+
+      "Element d'une liste" ->
+        ~H"""
+        <Waw.List.ul>
+        <Waw.List.li acronym="T" state="selected" title="Tag-ip">Tag-ip</Waw.List.li>
+        <Waw.List.li acronym="2" title="2mi">2mi</Waw.List.li>
+        <Waw.List.li acronym="H" title="Holcim">Holcim</Waw.List.li>
+        </Waw.List.ul>
+        """
+
+      "Header de liste pour le tri" ->
+        ~H"""
+        <.waw_list_header>
+        <:left>
+        <.waw_button_icon icon="caret-down" />
+        </:left>
+        <:center>
+        <.waw_button_icon icon="caret-down" />
+        </:center>
+        <:right>
+        <.waw_button_icon icon="caret-up" />
+        <.waw_button_icon icon="caret-down" />
+        <.waw_button_icon icon="caret-up" />
+        </:right>
+        </.waw_list_header>
+        """
+
+      "Bouton collapse" ->
+        ~H"""
+        <.waw_live_button selected_item="Toutes les organisations" with_search={true} show_list={true} search_name="bouton-collapse-search">
+        <:results>
+        <.waw_li_button active>Org 1</.waw_li_button>
+        <.waw_li_button>Org 2</.waw_li_button>
+        </:results>
+        </.waw_live_button>
+        """
+
+      "Filtre de gauche à droite avec recherche" ->
+        ~H"""
+        <.waw_live_filter list={[%{id: 1, value: "Item 1", selected: true}, %{id: 2, value: "Item 2"}, %{id: 3, value: "Item 3", selected: true}, %{id: 4, value: "Item 4"}, %{id: 5, value: "Item 5"}, %{id: 6, value: "Item 6", selected: true}, %{id: 7, value: "Item 7"}]}>
+        <:left>
+        <.waw_section_title>Elements disponibles</.waw_section_title>
+        <.input id="input-single-search-without-border" name="search" value="" type="search_without_border" popup_is_visible>
+        <Waw.List.li>item 1</Waw.List.li>
+        <Waw.List.li>item 2</Waw.List.li>
+        </.input>
+        </:left>
+        <:right>
+        <.waw_section_title>Elements filtrés</.waw_section_title>
+        <.input id="input-single-search-without-border-2" name="search2" value="" type="search_without_border">
+        <Waw.List.li>item 3</Waw.List.li>
+        <Waw.List.li>item 6</Waw.List.li>
+        </.input>
+        </:right>
+        </.waw_live_filter>
+        """
+
+      "Recherche avec un resultat dans un popup" ->
+        ~H"""
+        <Waw.LiveSearch.live_search name="recherche-popup">
+        <:results>
+        <Waw.LiveSearch.list_group title="Organisations">
+        <.waw_li_button>org 1</.waw_li_button>
+        <.waw_li_button>org 2</.waw_li_button>
+        </Waw.LiveSearch.list_group>
+        <Waw.LiveSearch.list_group title="Flottes">
+        <.waw_li_button>flotte 1</.waw_li_button>
+        <.waw_li_button>flotte 2</.waw_li_button>
+        </Waw.LiveSearch.list_group>
+        </:results>
+        </Waw.LiveSearch.live_search>
+        """
+
+      "Loading" ->
+        ~H"""
+        <Waw.Loading.loading/>
+        """
+
+      "Logos" ->
+        ~H"""
+        <Waw.Logo.logo name="tag-ip"/>
+        """
+
+      "Footer de carte" ->
+        ~H"""
+        <Waw.MapFooter.map_footer>
+          <:left>
+            <Waw.MapFooter.head_section icon="flag-circle-fill" title="Localisation" />
+            <Waw.MapFooter.content id="left">
+              <Waw.MapFooter.section label="Date/heure" value="03/11/2023 à 10:53:01" description="03/11/2023 à 10:53:01" />
+              <Waw.MapFooter.section label="Position" value="-19,39916 ,47,4406" description="-19,39916 ,47,4406" />
+              <Waw.MapFooter.section label="Vitesse/Cap" value="33 km/h 198°" description="33 km/h 198°" />
+              <Waw.MapFooter.section label="Altitude" value="68 m" description="68 m" />
+            </Waw.MapFooter.content>
+          </:left>
+          <:right>
+            <Waw.MapFooter.head_section icon="car" title="Véhicule" />
+            <Waw.MapFooter.content id="right" col={2}>
+              <Waw.MapFooter.section label="Contact" value="OFF" description="OFF" />
+              <Waw.MapFooter.section label="Moteur" value="OFF" description="OFF" />
+              <Waw.MapFooter.section label="Odomètre" value="342 699,20 km" description="342 699,20 km" />
+              <Waw.MapFooter.section label="Carburant" value="171,7 l" description="171,7 l" />
+              <Waw.MapFooter.section label="RPM" value="0" description="0" />
+            </Waw.MapFooter.content>
+          </:right>
+        </Waw.MapFooter.map_footer>
+        """
+
+      "Header de carte" ->
+        ~H"""
+        <Waw.MapHeader.map_header max={100} min={0} value={45} time="10:19:45" input_name="input-range" time_title="10:19:45">
+        <.waw_button_icon icon="playpause-left-fill" icon_size={5} title="Départ précédent" />
+        <.waw_button_icon icon="backward-end-alt-fill" icon_size={5} title="Evénement précédent" />
+        <.waw_button_icon icon="backward-end-fill" title="Point précédent"/>
+        <.waw_button_icon icon="play-fill" />
+        <.waw_button_icon icon="forward-end-fill" title="Point suivant" disabled />
+        <.waw_button_icon icon="forward-end-alt-fill" icon_size={5} title="Evénement suivant" disabled />
+        <.waw_button_icon icon="playpause-right-fill" icon_size={5} title="arrêt suivant" disabled />
+        <.waw_button_text label="X" value="4" title="Changer la vitesse de lecture" />
+        <.waw_button_icon icon="arrow-triangle-2-circlepath-refresh" />
+        </Waw.MapHeader.map_header>
         """
 
       # Pour toutes les autres sous‑catégories, pas d'exécution dynamique :
@@ -567,6 +1004,375 @@ defmodule WawShowcaseWeb.Layouts do
         <.waw_status_card label="CR véhicule" state="exception" icon="sign-out" />
         """
 
+      ## Dates et heures – Dates
+      {"Dates", "Date et heure"} ->
+        ~H"""
+        <.date_time value={~U[2025-11-20 08:21:11.635563Z]} format={:medium} />
+        """
+
+      ## Dates et heures – Intervalle de temps
+      # Toutes les variantes d'intervalle nécessitent CLDR configuré
+      # Pour l'instant, on affiche un message indiquant que CLDR est requis
+      {"Intervalle de temps", _variant_nom} ->
+        safe_render_interval_variant(assigns, sous_categorie, variant_nom)
+
+      ## Basiques – Accordion
+      {"Accordion", "Avec status sélectionné"} ->
+        ~H"""
+        <.waw_accordion count={12} id="accordion-single-table" selected head_icon="car">
+        <.waw_table without_border>
+        <:thead>
+        <.waw_th sort_key="desc"></.waw_th>
+        <.waw_th sort_key="desc">Véhicules</.waw_th>
+        <.waw_th sort_key="asc">Evenement</.waw_th>
+        </:thead>
+        <:tr state="selected">
+        <.waw_td_icon><.waw_icon name="car" stroke="none" size="4" /></.waw_td_icon>
+        <.waw_td title="6541 TBA">6541 TBA</.waw_td>
+        <.waw_td title="Vitesse > 60km/h" is_link={true} href="https://www.tag-ip.com/">Vitesse > 60</.waw_td>
+        </:tr>
+        <:tr state="disabled">
+        <.waw_td_icon><.waw_icon name="car" stroke="none" size="4" /></.waw_td_icon>
+        <.waw_td title="3354 TBA">3354 TBA</.waw_td>
+        <.waw_td title="Vitesse > 50km/h">Vitesse > 50</.waw_td>
+        </:tr>
+        </.waw_table>
+        </.waw_accordion>
+        """
+
+      ## Basiques – Badge
+      {"Badge", "Avec bouton fermer"} ->
+        ~H"""
+        <.waw_badge id="badge-single-standard" label="value" description="title" color="info">
+          <:action>
+          <.waw_button_icon icon="cancel" />
+          </:action>
+        </.waw_badge>
+        """
+
+      {"Badge", "Avec étiquette"} ->
+        ~H"""
+        <.waw_badge id="badge-single-scope" label="value" scope="scope" description="Avec étiquette" color="danger"/>
+        """
+
+      {"Badge", "Avec étiquette et bouton fermer"} ->
+        ~H"""
+        <.waw_badge id="badge-single-scope-complete" label="value" scope="scope" description="Avec étiquette" color="#B1159C">
+          <:action>
+          <.waw_button_icon icon="cancel" bg_color="bg-light" />
+          </:action>
+        </.waw_badge>
+        """
+
+      ## Basiques – Séparateur de blocs
+      {"Séparateur de blocs", "Avec label"} ->
+        ~H"""
+        <.waw_block_separator label="4512 WWT"/>
+        """
+
+      ## Basiques – Titre de block
+      {"Titre de block", "Avec icône"} ->
+        ~H"""
+        <.waw_block_title label="Trackable sélectionné" icon="car"/>
+        """
+
+      ## Basiques – Boutons
+      {"Boutons", "Activé"} ->
+        ~H"""
+        <.waw_button label="Synthèse" size="md" state="checked" icon="circle-grid-3x3-fill" icon_position="left"/>
+        """
+
+      {"Boutons", "Activé toggleable"} ->
+        ~H"""
+        <.waw_button label="Synthèse" size="md" state="checked" icon="circle-grid-3x3-fill" toggleable icon_position="left"/>
+        """
+
+      {"Boutons", "Non-sélectionné"} ->
+        ~H"""
+        <.waw_button label="Evenements" size="md" state="unchecked" icon="square-stack-3d-up-fill"/>
+        """
+
+      {"Boutons", "Plein désactivé"} ->
+        ~H"""
+        <.waw_button disabled label="home" size="md" state="checked" icon="home" icon_position="right"/>
+        """
+
+      {"Boutons", "Désactivé"} ->
+        ~H"""
+        <.waw_button disabled label="label" size="md" state="unchecked" icon="home" icon_position="right"/>
+        """
+
+      {"Boutons", "Annulation"} ->
+        ~H"""
+        <.waw_button label="Annuler" size="md" type="cancel"/>
+        """
+
+      {"Boutons", "Groupe"} ->
+        ~H"""
+        <.waw_button_group position="left">
+        <.waw_button label="Organisation" size="md" icon="angle-small-down" icon_position="right" />
+        <.waw_button label="Flotte" size="md" icon="angle-small-down" icon_position="right" />
+        </.waw_button_group>
+        """
+
+      ## Basiques – Liste des champs avec description
+      {"Liste des champs avec description", "Avec actions"} ->
+        ~H"""
+        <.waw_dl>
+        <.waw_definition text_align="left" term="term" description="description">
+        <:actions>
+        <.waw_link_icon size="sm" state="checked" icon="square-and-pencil"/>
+        </:actions>
+        </.waw_definition>
+        <.waw_definition text_align="left" term="term" description="description">
+        <:actions>
+        <.waw_link_icon size="sm" state="checked" icon="square-and-pencil" disabled/>
+        </:actions>
+        </.waw_definition>
+        <.waw_definition text_align="left" term="term" description="description" />
+        </.waw_dl>
+        """
+
+      {"Liste des champs avec description", "Avec description en bloc"} ->
+        ~H"""
+        <.waw_dl>
+        <.waw_definition text_align="left" term="term">
+        <:actions>
+        <.waw_link_icon size="sm" state="checked" icon="square-and-pencil"/>
+        </:actions>
+        <p>description en block</p>
+        </.waw_definition>
+        <.waw_definition text_align="left" term="term">
+        <:actions>
+        <.waw_link_icon size="sm" state="checked" icon="square-and-pencil" disabled/>
+        </:actions>
+        <p>description en block</p>
+        </.waw_definition>
+        </.waw_dl>
+        """
+
+      {"Liste des champs avec description", "Sans actions"} ->
+        ~H"""
+        <.waw_dl>
+        <.waw_definition text_align="left" term="term" description="description" has_actions={false} />
+        <.waw_definition text_align="left" term="term" description="description" has_actions={false} />
+        <.waw_definition text_align="left" term="term" description="description" has_actions={false} />
+        <.waw_definition text_align="left" term="term" description="description" has_actions={false} />
+        </.waw_dl>
+        """
+
+      ## Basiques – Header des filtres
+      {"Header des filtres", "Avec sections gauche et droite"} ->
+        ~H"""
+        <.waw_filter_header id="filter-header-single--with-right">
+        <:left>
+        <.waw_button label="Organisation" size="md" icon="angle-small-down" icon_position="right" />
+        <.waw_button label="Flotte" size="md" icon="angle-small-down" icon_position="right" />
+        </:left>
+        <:right>
+        <.waw_button label="Actions" size="md" icon="ellipsis-circle" icon_position="right" />
+        <Waw.LiveSearch.live_search name="header-filtres-search" margin_size="lg">
+        <:results>
+        <Waw.LiveSearch.list_group title="Organisations">
+        <.waw_li_button>org 1</.waw_li_button>
+        <.waw_li_button>org 2</.waw_li_button>
+        </Waw.LiveSearch.list_group>
+        <Waw.LiveSearch.list_group title="Flottes">
+        <.waw_li_button>flotte 1</.waw_li_button>
+        <.waw_li_button>flotte 2</.waw_li_button>
+        </Waw.LiveSearch.list_group>
+        </:results>
+        </Waw.LiveSearch.live_search>
+        </:right>
+        </.waw_filter_header>
+        """
+
+      ## Basiques – Flash
+      {"Flash", "Message"} ->
+        assigns = assign(assigns, :flash_variant_preview_id, "flash-variant-preview-#{System.unique_integer([:positive, :monotonic])}")
+        ~H"""
+        <div class="flex flex-col items-center gap-4">
+          <.waw_button 
+            type="button" 
+            phx-click={JS.show(to: {"##{@flash_variant_preview_id}"}, transition: {"transition-all ease-out duration-300", "opacity-0 translate-y-4", "opacity-100 translate-y-0"})} 
+            label="Afficher Flash" 
+            size="md"
+          />
+          <div id={@flash_variant_preview_id} class="hidden">
+            <.flash kind={:info} flash={%{"info" => "Message d'information"}} />
+          </div>
+        </div>
+        """
+
+      ## Basiques – Champ
+      {"Champ", "Texte"} ->
+        ~H"""
+        <.input label="label" size="sm" type="text" placeholder="Placeholder">
+        <:tooltip_block>
+        <.tooltip position="top" color="white" content="Information du tooltip" variant="arrow" margin="top">
+        (**)
+        </.tooltip>
+        </:tooltip_block>
+        </.input>
+        """
+
+      {"Champ", "Création flotte"} ->
+        ~H"""
+        <.input label="label" size="sm" type="text" placeholder="Placeholder">
+        <:tooltip_block>
+        <.tooltip position="top" color="white" content="Information du tooltip" variant="arrow" margin="top">
+        (**)
+        </.tooltip>
+        </:tooltip_block>
+        </.input>
+        """
+
+      {"Champ", "Description ou note"} ->
+        ~H"""
+        <.input label="label" size="sm" type="text" placeholder="Placeholder" text_type="textarea"/>
+        """
+
+      {"Champ", "E-mail"} ->
+        ~H"""
+        <.input label="label" size="sm" type="text" placeholder="name@tag_ip.com" text_type="email"/>
+        """
+
+      {"Champ", "Téléphone"} ->
+        ~H"""
+        <.input label="label" size="sm" type="number" icon="iphone" placeholder="Number" text_type="number"/>
+        """
+
+      {"Champ", "Checkbox"} ->
+        ~H"""
+        <.input label="label" type="checkbox"/>
+        """
+
+      {"Champ", "Heure"} ->
+        ~H"""
+        <.input label="label" size="sm" type="time"/>
+        """
+
+      {"Champ", "Date et heure"} ->
+        ~H"""
+        <.input label="label" size="sm" type="datetime-local"/>
+        """
+
+      {"Champ", "Recherche petite taille"} ->
+        ~H"""
+        <.input size="sm" type="search"/>
+        """
+
+      {"Champ", "Recherche avec popup"} ->
+        ~H"""
+        <.input name="search" value="" type="search_without_border" popup_is_visible={true}>
+        <Waw.List.li>item 1</Waw.List.li>
+        <Waw.List.li>item 2</Waw.List.li>
+        </.input>
+        """
+
+      {"Champ", "Sélection"} ->
+        ~H"""
+        <.input label="Label" size="sm" type="select">
+        <option>option 1</option>
+        <option>option 2</option>
+        </.input>
+        """
+
+      {"Champ", "Sélection multiple"} ->
+        ~H"""
+        <.input label="Label" size="sm" type="select">
+        <option>option 1</option>
+        <option>option 2</option>
+        </.input>
+        """
+
+      ## Basiques – Lien icône
+      {"Lien icône", "Par défaut"} ->
+        ~H"""
+        <.waw_link_icon size="sm" state="unchecked" icon="home"/>
+        """
+
+      ## Basiques – Element d'une liste
+      {"Element d'une liste", "Complète avec statuts"} ->
+        ~H"""
+        <Waw.List.ul>
+        <Waw.List.li icon="person-fill" battery_number="30" connexion_status="normal">item 1</Waw.List.li>
+        <Waw.List.li icon="person-fill" state="selected"  battery_number="100" connexion_status="low">item 2</Waw.List.li>
+        <Waw.List.li icon="boat" connexion_status="moving">item 3</Waw.List.li>
+        <Waw.List.li icon="moto" connexion_status="offline">item 4</Waw.List.li>
+        <Waw.List.li icon="truck" state="selected" connexion_status="parked">item 5</Waw.List.li>
+        <Waw.List.li icon="car" connexion_status="defective">item 6</Waw.List.li>
+        <Waw.List.li icon="car" connexion_status="moving">item 7</Waw.List.li>
+        <Waw.List.li icon="person-fill" state="alert" battery_number="30" connexion_status="offline">item 8</Waw.List.li>
+        <Waw.List.li icon="person-fill" battery_number="75" connexion_status="low_activity">item 9</Waw.List.li>
+        <Waw.List.li icon="person-fill" battery_number="30" connexion_status="high_activity">item 10</Waw.List.li>
+        <Waw.List.li icon="person-fill" state="selected" battery_number="80" connexion_status="no_activity">item 11</Waw.List.li>
+        <Waw.List.li icon="person-fill" battery_number="80" connexion_status="power_off">item 12</Waw.List.li>
+        <Waw.List.li icon="lock-close-fill" lock_status="locked" battery_number="50" connexion_status="offline">item 13</Waw.List.li>
+        <Waw.List.li icon="lock-close-fill" state="selected" lock_status="unlocked" battery_number="30" connexion_status="high_activity">item 14</Waw.List.li>
+        <Waw.List.li icon="lock-close-fill" lock_status="locked" battery_number="50" connexion_status="low_activity">item 15</Waw.List.li>
+        <Waw.List.li icon="lock-close-fill" lock_status="unlocked" battery_number="30" connexion_status="no_activity">item 16</Waw.List.li>
+        <Waw.List.li icon="lock-close-fill" title="MD11802/DMY0029" lock_status="unlocked" battery_number={0} connexion_status="defective">item 17</Waw.List.li>
+        </Waw.List.ul>
+        """
+
+      {"Element d'une liste", "Classes d'événements"} ->
+        ~H"""
+        <Waw.List.ul>
+        <Waw.List.li icon="speedometer-1-right" total={5}>Cinématique</Waw.List.li>
+        <Waw.List.li icon="person" total={2} state="selected">Identification</Waw.List.li>
+        <Waw.List.li icon="world-fill" total={10}>Géographique</Waw.List.li>
+        </Waw.List.ul>
+        """
+
+      ## Basiques – Bouton collapse
+      {"Bouton collapse", "Avec menus calendrier"} ->
+        ~H"""
+        <.waw_live_button type={:menu} selected_item="Aujourd'hui" show_list={true}>
+        <:left>
+        <.waw_link_text label="3 derniers jours" size="xs" state="unchecked"/>
+        <.waw_link_text label="7 derniers jours" size="xs" state="checked" />
+        <.waw_link_text label="Cette semaine" size="xs" state="unchecked" />
+        </:left>
+        <:right>
+        <.waw_link_text label="Aujourd'hui" size="xs" state="unchecked" />
+        <.waw_link_text label="Hier" size="xs" state="unchecked" />
+        <.waw_link_text label="Avant hier" size="xs" state="unchecked" />
+        </:right>
+        <:actions>
+        <.input id="input-single-date" size="xs" type="date"/>
+        <.waw_icon name="arrow-small-right" size="4" />
+        <.input id="input-single-date2" size="xs" type="date"/>
+        <.waw_button label="Filtrer" size="xs" />
+        <.waw_button label="Annuler" size="xs" state="unchecked" />
+        </:actions>
+        </.waw_live_button>
+        """
+
+      ## Basiques – Recherche avec un resultat dans un popup
+      {"Recherche avec un resultat dans un popup", "Avec filtre"} ->
+        ~H"""
+        <Waw.LiveSearch.live_search name="recherche-popup-filtre" has_filter={true}>
+        <:results>
+        <Waw.LiveSearch.list_group title="Organisations">
+        <.waw_li_button>org 1</.waw_li_button>
+        <.waw_li_button>org 2</.waw_li_button>
+        </Waw.LiveSearch.list_group>
+        <Waw.LiveSearch.list_group title="Flottes">
+        <.waw_li_button>flotte 1</.waw_li_button>
+        <.waw_li_button>flotte 2</.waw_li_button>
+        </Waw.LiveSearch.list_group>
+        </:results>
+        <:filters>
+        <ul>
+        <Waw.List.li state="selected" total={6}>Lister tous les items</Waw.List.li>
+        <Waw.List.li connexion_status="moving">2 En mouvement</Waw.List.li>
+        <Waw.List.li connexion_status="offline">4 Déconnectées</Waw.List.li>
+        </ul>
+        </:filters>
+        </Waw.LiveSearch.live_search>
+        """
+
       # Fallback : aucune variante mappée en dur
       _ ->
         ~H"""
@@ -574,6 +1380,145 @@ defmodule WawShowcaseWeb.Layouts do
           Aperçu de variante non disponible pour ce composant.
         </div>
         """
+    end
+  end
+
+  # Helper pour rendre les variantes d'intervalle avec gestion d'erreur CLDR
+  defp safe_render_interval_variant(assigns, sous_categorie, variant_nom) do
+    # Vérifier si CLDR est configuré avant d'essayer de rendre
+    if cldr_configured?() do
+      try do
+        # Les noms sont maintenant au format "Groupe - Sous-variante"
+        # Extraire la sous-variante (après le " - ")
+        sub_variant_nom =
+          case String.split(variant_nom, " - ", parts: 2) do
+            [_group, sub] -> sub
+            [single] -> single
+            _ -> variant_nom
+          end
+
+        case sub_variant_nom do
+          # Dates et heures
+          "Medium" ->
+            ~H"""
+            <.interval from={~U[2025-12-03 10:26:07.956246Z]} to={~U[2025-12-03 11:42:16.956251Z]}/>
+            """
+
+          "Short" ->
+            # Déterminer le groupe pour savoir quel type d'intervalle utiliser
+            cond do
+              String.contains?(variant_nom, "Dates et heures") ->
+                ~H"""
+                <.interval format={:short} from={~U[2025-12-03 10:26:07.956258Z]} to={~U[2025-12-03 11:42:16.956260Z]}/>
+                """
+
+              String.contains?(variant_nom, "Heures") ->
+                ~H"""
+                <.interval format={:short} from={~T[10:26:07.956288]} to={~T[11:29:16.956289]}/>
+                """
+
+              true ->
+                ~H"""
+                <.interval format={:short} from={~U[2025-12-03 10:26:07.956258Z]} to={~U[2025-12-03 11:42:16.956260Z]}/>
+                """
+            end
+
+          "Long" ->
+            ~H"""
+            <.interval format={:long} from={~U[2025-12-03 10:26:07.956263Z]} to={~U[2025-12-03 11:42:16.956264Z]}/>
+            """
+
+          # Dates
+          "Par défaut" ->
+            cond do
+              String.contains?(variant_nom, "Dates") && !String.contains?(variant_nom, "Dates et heures") ->
+                ~H"""
+                <.interval from={~D[2025-12-03]} to={~D[2025-12-06]}/>
+                """
+
+              String.contains?(variant_nom, "Heures") ->
+                ~H"""
+                <.interval from={~T[10:26:07.956275]} to={~T[11:29:16.956277]}/>
+                """
+
+              true ->
+                ~H"""
+                <.interval from={~D[2025-12-03]} to={~D[2025-12-06]}/>
+                """
+            end
+
+          "Par mois" ->
+            ~H"""
+            <.interval from={~D[2025-12-03]} to={~D[2026-01-02]} style={:month}/>
+            """
+
+          "Par mois et jours" ->
+            ~H"""
+            <.interval from={~D[2025-12-03]} to={~D[2025-12-31]} style={:month_and_day}/>
+            """
+
+          "Par an et mois" ->
+            ~H"""
+            <.interval from={~D[2025-12-03]} to={~D[2026-12-26]} style={:year_and_month}/>
+            """
+
+          # Heures
+          "Flex" ->
+            ~H"""
+            <.interval format={:short} from={~T[10:26:07.956291]} to={~T[11:29:16.956292]} style={:flex}/>
+            """
+
+          "Time" ->
+            ~H"""
+            <.interval format={:short} from={~T[10:26:07.956294]} to={~T[11:29:16.956295]} style={:time}/>
+            """
+
+          "Zone" ->
+            ~H"""
+            <.interval from={~T[10:26:07.956296]} to={~T[11:29:16.956297]}/>
+            """
+
+          _ ->
+            assigns = assign(assigns, :sub_variant_nom, sub_variant_nom)
+            ~H"""
+            <div class="text-xs text-gray-400 text-center py-4">
+              Variante non reconnue: {@sub_variant_nom}
+            </div>
+            """
+        end
+      rescue
+        e ->
+          # Gérer les erreurs CLDR même si la vérification a passé
+          require Logger
+          Logger.warning("Erreur CLDR pour variante #{sous_categorie}/#{variant_nom}: #{Exception.message(e)}")
+          ~H"""
+          <div class="text-xs text-yellow-600 text-center py-4">
+            Aperçu non disponible (CLDR requis)
+          </div>
+          """
+      end
+    else
+      # CLDR n'est pas configuré, afficher un message directement
+      ~H"""
+      <div class="text-xs text-yellow-600 text-center py-4">
+        Aperçu non disponible (CLDR requis)
+      </div>
+      """
+    end
+  end
+
+  # Vérifier si CLDR est configuré
+  defp cldr_configured? do
+    try do
+      # Essayer d'obtenir le backend CLDR par défaut
+      backend = Cldr.default_backend!()
+      # Vérifier que le backend est bien WawShowcase.Cldr
+      backend == WawShowcase.Cldr
+    rescue
+      Cldr.NoDefaultBackendError ->
+        false
+      _ ->
+        false
     end
   end
 end
