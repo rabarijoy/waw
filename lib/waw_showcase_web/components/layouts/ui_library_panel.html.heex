@@ -588,8 +588,8 @@
                   data-component-title={name}
                   data-component-module="Waw.Icons"
                   data-component-category="icones"
-                  phx-click="copy_code"
-                  phx-value-code={code}
+                  onclick="navigator.clipboard.writeText(this.dataset.code).then(() => { const btn = this; const span = btn.querySelector('span:last-child'); if (span) { const original = span.textContent; span.textContent = 'Copié!'; setTimeout(() => { span.textContent = original; }, 2000); } })"
+                  data-code={code}
                 >
                   <div class="flex items-center justify-center h-12 w-12 text-gray-800 group-hover:text-gray-900">
                     <.waw_icon name={name} size="6" />
