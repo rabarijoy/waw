@@ -1620,6 +1620,40 @@ defmodule WawShowcaseWeb.Layouts do
         """
 
       ## Tableau
+      {"Tableau", "Composants"} ->
+        ~H"""
+        <.waw_table>
+        <:thead>
+        <.waw_th_icon></.waw_th_icon>
+        <.waw_th_icon><.waw_icon name="circuit" stroke="none" size="4" /></.waw_th_icon>
+        <.waw_th sort_key="desc">Name</.waw_th>
+        <.waw_th sort_key="asc">First Name</.waw_th>
+        <.waw_th sort_key="desc">Details</.waw_th>
+        </:thead>
+        <:tr state="selected">
+        <.waw_td_icon><.waw_icon name="square-inset-filled" stroke="none" size="4" /></.waw_td_icon>
+        <.waw_td_icon><.waw_icon name="circuit" stroke="none" size="4" /></.waw_td_icon>
+        <.waw_td title="Jean">Jean</.waw_td>
+        <.waw_td title="Dupont">Dupoint</.waw_td>
+        <.waw_td_icon><.waw_icon name="square-stack-3d-up" stroke="none" size="4" /></.waw_td_icon>
+        </:tr>
+        <:tr state="normal">
+        <.waw_td_icon><.waw_icon name="square" stroke="none" size="4" /></.waw_td_icon>
+        <.waw_td_icon><.waw_icon name="circuit" stroke="none" size="4" /></.waw_td_icon>
+        <.waw_td title="Kim">Kim</.waw_td>
+        <.waw_td title="Léna">Léna</.waw_td>
+        <.waw_td_icon is_link={true} href="https://www.tag-ip.com/"><.waw_icon name="square-stack-3d-up" stroke="none" size="4" /></.waw_td_icon>
+        </:tr>
+        <:tr state="disabled">
+        <.waw_td_icon><.waw_icon name="square" stroke="none" size="4" /></.waw_td_icon>
+        <.waw_td_icon><.waw_icon name="circuit" stroke="none" size="4" /></.waw_td_icon>
+        <.waw_td title="Sam">Sam</.waw_td>
+        <.waw_td title="Smith">Smith</.waw_td>
+        <.waw_td_icon><.waw_icon name="square-stack-3d-up" stroke="none" size="4" /></.waw_td_icon>
+        </:tr>
+        </.waw_table>
+        """
+
       {"Tableau", "Comptes-rendus flottes"} ->
         ~H"""
         <.waw_table>
