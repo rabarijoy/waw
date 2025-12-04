@@ -1036,53 +1036,71 @@ function initUiPreviewModal() {
       }
     } else if (componentEl) {
       // Pour les variantes, cloner le HTML pré-rendu caché dans la carte
-      // L'index dans le template commence à 0 pour la première variante
-      // Dans allVariants, le principal est à l'index 0 (si présent), donc les variantes commencent à 1
-      // Mais dans le template, les variantes sont indexées à partir de 0
-      let variantIndex
+      // Utiliser d'abord le nom de la variante pour trouver le conteneur (plus fiable que l'index)
+      let variantContainer = null
       
-      if (typeof variant._index === "number") {
-        // _index est l'index dans allVariants (le principal est à 0 si présent)
-        // Le template indexe les variantes à partir de 0, donc on soustrait 1 si le principal existe
-        variantIndex = variant._index - (hidePrincipal ? 0 : 1)
-      } else {
-        // Fallback: calculer l'index en cherchant dans allVariants par comparaison
-        const variantPos = allVariants.findIndex(v => 
-          v.nom === variant.nom && 
-          v.code_source === variant.code_source &&
-          v.isPrincipal === variant.isPrincipal
-        )
-        variantIndex = variantPos >= 0 ? variantPos - (hidePrincipal ? 0 : 1) : 0
+      if (variant.nom) {
+        // Méthode 1: Chercher directement par nom de variante (le plus fiable)
+        variantContainer = card.querySelector(`.variant-previews [data-variant-nom="${variant.nom}"] .component-preview-variant`)
+        
+        // Méthode 2: Si pas trouvé, chercher dans tous les conteneurs par nom
+        if (!variantContainer) {
+          const allContainers = card.querySelectorAll('.variant-previews [data-variant-index]')
+          for (const container of allContainers) {
+            const containerNom = container.getAttribute('data-variant-nom')
+            if (containerNom === variant.nom) {
+              variantContainer = container.querySelector('.component-preview-variant')
+              if (variantContainer) break
+            }
+          }
+        }
       }
       
-      // S'assurer que l'index est >= 0
-      if (variantIndex < 0) variantIndex = 0
-      
-      // Chercher le conteneur de variante de deux façons :
-      // 1. Par index (méthode principale)
-      // 2. Par nom de variante (fallback si l'index ne fonctionne pas)
-      let variantContainer = card.querySelector(`.variant-previews [data-variant-index="${variantIndex}"] .component-preview-variant`)
-      
-      // Si pas trouvé par index, essayer par nom
-      if (!variantContainer && variant.nom) {
-        variantContainer = card.querySelector(`.variant-previews [data-variant-nom="${variant.nom}"] .component-preview-variant`)
+      // Méthode 3: Fallback par index si le nom ne fonctionne pas
+      if (!variantContainer) {
+        let variantIndex
+        if (typeof variant._index === "number") {
+          variantIndex = variant._index - (hidePrincipal ? 0 : 1)
+        } else {
+          const variantPos = allVariants.findIndex(v => 
+            v.nom === variant.nom && 
+            v.code_source === variant.code_source &&
+            v.isPrincipal === variant.isPrincipal
+          )
+          variantIndex = variantPos >= 0 ? variantPos - (hidePrincipal ? 0 : 1) : 0
+        }
+        if (variantIndex >= 0) {
+          variantContainer = card.querySelector(`.variant-previews [data-variant-index="${variantIndex}"] .component-preview-variant`)
+        }
       }
 
       if (variantContainer) {
-        componentEl.innerHTML = ""
-        const clone = variantContainer.cloneNode(true)
-        componentEl.appendChild(clone)
+        // Vérifier que le conteneur contient bien du HTML rendu et non juste du texte
+        const containerHTML = variantContainer.innerHTML.trim()
+        // Si le conteneur contient le code source en texte (commence par <.waw_ ou <.input), c'est qu'il n'a pas été rendu
+        if (containerHTML.startsWith('<.waw_') || containerHTML.startsWith('<.input') || containerHTML.startsWith('<.live_')) {
+          console.warn(`Variant container found but contains unrendered code:`, {
+            variant: variant,
+            containerHTML: containerHTML.substring(0, 100)
+          })
+          // Afficher le code source comme fallback
+          componentEl.innerHTML = `<pre class="text-xs text-gray-600 whitespace-pre-wrap p-4 bg-gray-50 rounded-lg">${code.trim() || "Code source non disponible"}</pre>`
+        } else {
+          componentEl.innerHTML = ""
+          const clone = variantContainer.cloneNode(true)
+          componentEl.appendChild(clone)
+        }
       } else {
         // Debug: vérifier tous les conteneurs disponibles pour diagnostiquer
         const allVariantContainers = card.querySelectorAll('.variant-previews [data-variant-index]')
-        console.warn(`Variant preview not found for index ${variantIndex}`, {
+        console.warn(`Variant preview not found`, {
           variant: variant,
-          variantIndex: variantIndex,
           hidePrincipal: hidePrincipal,
           variantIndexInAllVariants: variant._index,
-          availableIndices: Array.from(allVariantContainers).map(c => ({
+          availableVariants: Array.from(allVariantContainers).map(c => ({
             index: c.getAttribute('data-variant-index'),
-            nom: c.getAttribute('data-variant-nom')
+            nom: c.getAttribute('data-variant-nom'),
+            sousCategorie: card.getAttribute('data-component-title')
           })),
           variantPreviewsExists: card.querySelector('.variant-previews') !== null
         })
