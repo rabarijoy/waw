@@ -1574,31 +1574,64 @@ const UICategoryHook = {
 
     const filterByCategory = (category, subcategory = null, searchTerm = "") => {
       const grid = document.getElementById("ui-components-grid")
+      const iconsSection = document.getElementById("ui-icons-section")
+      
+      // Gérer l'affichage de la section des icônes
+      if (iconsSection) {
+        if (category === "icones") {
+          iconsSection.classList.remove("hidden")
+          if (grid) grid.style.display = "none"
+        } else {
+          iconsSection.classList.add("hidden")
+          if (grid) grid.style.display = ""
+        }
+      }
+
       if (!grid) return
 
       const cards = grid.querySelectorAll(".ui-component-card")
       const term = searchTerm.toLowerCase().trim()
       let visibleCount = 0
 
-      cards.forEach((card) => {
-        const cardCategory = card.getAttribute("data-component-category")
-        const cardSubcategory = card.getAttribute("data-component-subcategory")
-        const title = card.getAttribute("data-component-title") || ""
-        const module = card.getAttribute("data-component-module") || ""
-        
-        const matchesCategory = cardCategory === category
-        const matchesSubcategory = !subcategory || cardSubcategory === subcategory
-        const matchesSearch = term === "" || 
-          title.toLowerCase().includes(term) || 
-          module.toLowerCase().includes(term)
-        
-        if (matchesCategory && matchesSubcategory && matchesSearch) {
-          card.style.display = ""
-          visibleCount++
-        } else {
-          card.style.display = "none"
-        }
-      })
+      // Si on est sur la catégorie icônes, filtrer les icônes dans la section dédiée
+      if (category === "icones" && iconsSection) {
+        const iconCards = iconsSection.querySelectorAll(".ui-icon-card")
+        iconCards.forEach((card) => {
+          const title = card.getAttribute("data-component-title") || ""
+          const module = card.getAttribute("data-component-module") || ""
+          const matchesSearch = term === "" || 
+            title.toLowerCase().includes(term) || 
+            module.toLowerCase().includes(term)
+          
+          if (matchesSearch) {
+            card.style.display = ""
+            visibleCount++
+          } else {
+            card.style.display = "none"
+          }
+        })
+      } else {
+        // Filtrer les cards normales
+        cards.forEach((card) => {
+          const cardCategory = card.getAttribute("data-component-category")
+          const cardSubcategory = card.getAttribute("data-component-subcategory")
+          const title = card.getAttribute("data-component-title") || ""
+          const module = card.getAttribute("data-component-module") || ""
+          
+          const matchesCategory = cardCategory === category
+          const matchesSubcategory = !subcategory || cardSubcategory === subcategory
+          const matchesSearch = term === "" || 
+            title.toLowerCase().includes(term) || 
+            module.toLowerCase().includes(term)
+          
+          if (matchesCategory && matchesSubcategory && matchesSearch) {
+            card.style.display = ""
+            visibleCount++
+          } else {
+            card.style.display = "none"
+          }
+        })
+      }
 
       // Gérer le message "Aucun résultat"
       const noResults = document.getElementById("ui-no-results")
