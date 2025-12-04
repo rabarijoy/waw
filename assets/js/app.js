@@ -1064,15 +1064,27 @@ function initUiPreviewModal() {
       // Utiliser d'abord le nom de la variante pour trouver le conteneur (plus fiable que l'index)
       let variantContainer = null
       
-      if (variant.nom) {
+      // Debug: vérifier que le conteneur .variant-previews existe
+      const variantPreviewsContainer = card.querySelector('.variant-previews')
+      console.log(`Looking for variant "${variant.nom}" in card:`, {
+        cardId: card.id,
+        cardTitle: card.getAttribute('data-component-title'),
+        variantNom: variant.nom,
+        variantPreviewsExists: variantPreviewsContainer !== null,
+        variantPreviewsHTML: variantPreviewsContainer ? variantPreviewsContainer.innerHTML.substring(0, 500) : 'NOT FOUND'
+      })
+      
+      if (variant.nom && variantPreviewsContainer) {
         // Méthode 1: Chercher directement par nom de variante (le plus fiable)
         // Échapper les caractères spéciaux dans le nom pour le sélecteur CSS
         const escapedNom = variant.nom.replace(/[!"#$%&'()*+,.\/:;<=>?@[\\\]^`{|}~]/g, '\\$&')
-        variantContainer = card.querySelector(`.variant-previews [data-variant-nom="${escapedNom}"] .component-preview-variant`)
+        const selector = `.variant-previews [data-variant-nom="${escapedNom}"] .component-preview-variant`
+        console.log(`Trying selector: "${selector}"`)
+        variantContainer = card.querySelector(selector)
         
         // Méthode 2: Si pas trouvé, chercher dans tous les conteneurs par nom (comparaison directe)
         if (!variantContainer) {
-          const allContainers = card.querySelectorAll('.variant-previews [data-variant-index]')
+          const allContainers = variantPreviewsContainer.querySelectorAll('[data-variant-index]')
           console.log(`Searching in ${allContainers.length} containers for variant "${variant.nom}"`)
           for (const container of allContainers) {
             const containerNom = container.getAttribute('data-variant-nom')
@@ -1088,6 +1100,8 @@ function initUiPreviewModal() {
         } else {
           console.log(`Found variant container by CSS selector!`)
         }
+      } else {
+        console.warn(`Cannot search for variant: variant.nom=${variant.nom}, variantPreviewsContainer=${!!variantPreviewsContainer}`)
       }
       
       // Méthode 3: Fallback par index si le nom ne fonctionne pas
