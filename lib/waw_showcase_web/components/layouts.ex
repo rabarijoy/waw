@@ -771,6 +771,11 @@ defmodule WawShowcaseWeb.Layouts do
         <.input name="search" type="search"/>
         """
 
+      "Champs" ->
+        ~H"""
+        <.input name="search" type="search"/>
+        """
+
       "Lien icône" ->
         ~H"""
         <.waw_link_icon size="sm" state="checked" icon="home"/>
