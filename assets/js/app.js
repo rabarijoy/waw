@@ -1012,22 +1012,27 @@ function initUiPreviewModal() {
       return
     }
     
-    const card = document.getElementById(cardId)
+    let card = document.getElementById(cardId)
     if (!card) {
       console.error(`Card with ID "${cardId}" not found in DOM`)
-      // Essayer de trouver la carte par data-component-title
-      const sousCategorie = variant.sousCategorie || ""
-      const cards = document.querySelectorAll(`[data-component-title="${sousCategorie}"]`)
-      if (cards.length > 0) {
-        console.log(`Found ${cards.length} card(s) with sous_categorie "${sousCategorie}", using first one`)
-        const card = cards[0]
-        // Mettre à jour l'ID de la carte et de la modal
-        if (!card.id) {
-          card.id = cardId
+      // Essayer de trouver la carte par data-component-title depuis la modal
+      const sousCategorie = modal.getAttribute("data-current-sous-categorie") || ""
+      if (sousCategorie) {
+        const cards = document.querySelectorAll(`[data-component-title="${sousCategorie}"]`)
+        if (cards.length > 0) {
+          console.log(`Found ${cards.length} card(s) with sous_categorie "${sousCategorie}", using first one`)
+          card = cards[0]
+          // Mettre à jour l'ID de la carte et de la modal
+          if (!card.id) {
+            card.id = cardId
+          }
+          modal.setAttribute("data-current-card-id", card.id)
+        } else {
+          console.error(`No card found with sous_categorie "${sousCategorie}"`)
+          return
         }
-        modal.setAttribute("data-current-card-id", card.id)
       } else {
-        console.error(`No card found with sous_categorie "${sousCategorie}"`)
+        console.error("No sous_categorie found in modal")
         return
       }
     }
