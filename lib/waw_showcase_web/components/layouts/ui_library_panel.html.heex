@@ -45,13 +45,26 @@
           >
             Texte &amp; nombres
           </button>
-          <button
-            type="button"
-            data-category="basiques"
-            class="ui-category-btn w-full text-left px-3 py-2 rounded-md text-xs md:text-sm text-gray-700 hover:bg-gray-100 transition-colors"
-          >
-            Basiques
-          </button>
+          <div class="space-y-1">
+            <button
+              type="button"
+              data-category="basiques"
+              class="ui-category-btn w-full text-left px-3 py-2 rounded-md text-xs md:text-sm text-gray-700 hover:bg-gray-100 transition-colors"
+            >
+              Basiques
+            </button>
+            <div id="basiques-subcategories" class="hidden pl-4 space-y-1 border-l-2 border-gray-200 ml-2">
+              <button
+                :for={{groupe, _items} <- WawShowcaseWeb.Layouts.group_basiques_components(basiques_items)}
+                type="button"
+                data-category="basiques"
+                data-subcategory={String.replace(groupe, " ", "-") |> String.downcase()}
+                class="ui-subcategory-btn w-full text-left px-3 py-1.5 rounded-md text-xs text-gray-600 hover:bg-gray-50 hover:text-gray-900 transition-colors"
+              >
+                {groupe}
+              </button>
+            </div>
+          </div>
           <button
             type="button"
             data-category="cartes"
@@ -174,15 +187,21 @@
             :for={item <- basiques_items}
             class={[
               "ui-component-card rounded-xl border border-gray-200 bg-white shadow-sm p-6 flex flex-col gap-3",
-              if item.sous_categorie in ["Header", "Footer", "Header des filtres", "Accordion"] do
-                "md:col-span-2 xl:col-span-2 bento-wide"
-              else
-                ""
+              cond do
+                item.sous_categorie in ["Header", "Footer", "Header des filtres", "Tableau", "Pagination", "Steps", "Onglets"] ->
+                  "md:col-span-2 xl:col-span-3 bento-wide"
+                item.sous_categorie in ["Header de carte", "Modal"] ->
+                  "md:col-span-2 xl:col-span-2 bento-wide"
+                item.sous_categorie == "Accordion" ->
+                  "md:col-span-2 xl:col-span-3 bento-wide"
+                true ->
+                  ""
               end
             ]}
             data-component-title={item.sous_categorie}
             data-component-module={item[:module] || item.module || ""}
             data-component-category="basiques"
+            data-component-subcategory={String.replace(Map.get(item, :groupe, "Autres"), " ", "-") |> String.downcase()}
             data-component-variantes={Jason.encode!(item.variantes)}
             data-component-principal-code={item.principal.code_source}
             data-component-principal-nom={item.principal.nom}
@@ -311,7 +330,14 @@
           <!-- Cartes -->
           <div
             :for={item <- cartes_items}
-            class="ui-component-card rounded-xl border border-gray-200 bg-white shadow-sm p-6 flex flex-col gap-3"
+            class={[
+              "ui-component-card rounded-xl border border-gray-200 bg-white shadow-sm p-6 flex flex-col gap-3",
+              if item.sous_categorie in ["Header de carte"] do
+                "md:col-span-2 xl:col-span-2 bento-wide"
+              else
+                ""
+              end
+            ]}
             data-component-title={item.sous_categorie}
             data-component-module={item[:module] || item.module || ""}
             data-component-category="cartes"

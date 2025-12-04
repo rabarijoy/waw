@@ -566,11 +566,21 @@ function applyMode(mode) {
   }
 
   const body = document.getElementById("app-body") || document.body
-  body.dataset.appMode = mode
+  if (body) {
+    body.dataset.appMode = mode
+  }
 
   const navWrapper = document.querySelector(".app-main-nav") || document.querySelector("[id^='app-main-nav-']")
   const mainContent = document.getElementById("app-main-content")
   const uiPanel = document.getElementById("ui-library-panel")
+  
+  // Debug: vérifier que les éléments sont trouvés
+  if (!mainContent) {
+    console.warn("app-main-content not found")
+  }
+  if (!uiPanel) {
+    console.warn("ui-library-panel not found")
+  }
 
   // Mettre à jour les boutons desktop
   const desktopButtons = document.querySelectorAll("[data-mode-toggle=\"desktop\"]")
@@ -616,13 +626,17 @@ function applyMode(mode) {
     if (mode === "ui") {
       mainContent.classList.add("hidden")
       uiPanel.classList.remove("hidden")
-      window.requestAnimationFrame(() => {
-        uiPanel.classList.remove("opacity-0")
-      })
+      // Forcer l'affichage immédiatement
+      uiPanel.style.display = ""
+      uiPanel.style.opacity = "1"
+      uiPanel.classList.remove("opacity-0")
     } else {
       uiPanel.classList.add("opacity-0")
-      uiPanel.classList.add("hidden")
+      setTimeout(() => {
+        uiPanel.classList.add("hidden")
+      }, 200)
       mainContent.classList.remove("hidden")
+      mainContent.style.display = ""
     }
   }
 }
@@ -633,15 +647,32 @@ function initModeSwitch() {
 
   // Délégation globale pour tous les boutons Demo/UI (desktop + mobile)
   if (!window.wawModeSwitchInitialized) {
+    // Utiliser la capture pour intercepter les clics avant qu'ils ne soient gérés par LiveView
     document.addEventListener(
       "click",
       (event) => {
-        const btn = event.target.closest("[data-mode-toggle]")
+        // Vérifier si le clic vient d'un bouton mode-toggle ou d'un élément à l'intérieur
+        let btn = event.target.closest("[data-mode-toggle]")
+        
+        // Si pas trouvé avec closest, essayer directement sur l'élément
+        if (!btn && event.target.hasAttribute && event.target.hasAttribute("data-mode-toggle")) {
+          btn = event.target
+        }
+        
+        // Vérifier aussi si le parent est un bouton
+        if (!btn && event.target.parentElement && event.target.parentElement.hasAttribute("data-mode-toggle")) {
+          btn = event.target.parentElement
+        }
+        
         if (!btn) return
+        
         // Si le clic est déclenché depuis un élément à l'intérieur de la popup UI, l'ignorer
         if (event.target.closest("#ui-preview-modal")) return
         
+        // Empêcher le comportement par défaut et la propagation
         event.preventDefault()
+        event.stopPropagation()
+        event.stopImmediatePropagation()
 
         const explicitValue = btn.getAttribute("data-mode-value")
         let nextMode = explicitValue
@@ -654,8 +685,10 @@ function initModeSwitch() {
         if (nextMode && nextMode !== currentMode) {
           applyMode(nextMode)
         }
+        
+        return false
       },
-      true
+      true // Utiliser la phase de capture pour intercepter avant LiveView
     )
 
     // À chaque fin de mise à jour LiveView (événements, formulaires, navigation),
@@ -1171,6 +1204,8 @@ if (document.readyState === "loading") {
 // Réinitialiser la popup après chaque mise à jour LiveView
 window.addEventListener("phx:page-loading-stop", () => {
   initUiPreviewModal()
+  // Réappliquer le mode après chaque mise à jour LiveView pour s'assurer que les boutons sont à jour
+  applyMode(currentMode)
 })
 
 // Handler pour les événements component_inspected envoyés par le serveur
@@ -1293,19 +1328,22 @@ const UISearchHook = {
       const cards = grid.querySelectorAll(".ui-component-card")
       const term = searchTerm.toLowerCase().trim()
       const activeCategory = window.getActiveCategory ? window.getActiveCategory() : "texte-nombres"
+      const activeSubcategory = window.getActiveSubcategory ? window.getActiveSubcategory() : null
       let visibleCount = 0
 
       cards.forEach((card) => {
         const cardCategory = card.getAttribute("data-component-category")
+        const cardSubcategory = card.getAttribute("data-component-subcategory")
         const title = card.getAttribute("data-component-title") || ""
         const module = card.getAttribute("data-component-module") || ""
         
         const matchesCategory = cardCategory === activeCategory
+        const matchesSubcategory = !activeSubcategory || cardSubcategory === activeSubcategory
         const matchesTitle = title.toLowerCase().includes(term)
         const matchesModule = module.toLowerCase().includes(term)
         const matchesSearch = term === "" || matchesTitle || matchesModule
         
-        if (matchesCategory && matchesSearch) {
+        if (matchesCategory && matchesSubcategory && matchesSearch) {
           card.style.display = ""
           visibleCount++
         } else {
@@ -1345,18 +1383,21 @@ const UISearchHook = {
       let visibleCount = 0
 
       const activeCategory = window.getActiveCategory ? window.getActiveCategory() : "texte-nombres"
+      const activeSubcategory = window.getActiveSubcategory ? window.getActiveSubcategory() : null
 
       cards.forEach((card) => {
         const cardCategory = card.getAttribute("data-component-category")
+        const cardSubcategory = card.getAttribute("data-component-subcategory")
         const title = card.getAttribute("data-component-title") || ""
         const module = card.getAttribute("data-component-module") || ""
         
         const matchesCategory = cardCategory === activeCategory
+        const matchesSubcategory = !activeSubcategory || cardSubcategory === activeSubcategory
         const matchesTitle = title.toLowerCase().includes(term)
         const matchesModule = module.toLowerCase().includes(term)
         const matchesSearch = term === "" || matchesTitle || matchesModule
         
-        if (matchesCategory && matchesSearch) {
+        if (matchesCategory && matchesSubcategory && matchesSearch) {
           card.style.display = ""
           visibleCount++
         } else {
@@ -1385,6 +1426,15 @@ window.getActiveCategory = () => {
   return activeBtn ? activeBtn.getAttribute("data-category") : "texte-nombres"
 }
 
+// Fonction globale pour obtenir la sous-catégorie active
+window.getActiveSubcategory = () => {
+  const nav = document.getElementById("ui-categories-nav")
+  if (!nav) return null
+  
+  const activeSubBtn = nav.querySelector(".ui-subcategory-btn.bg-gray-100")
+  return activeSubBtn ? activeSubBtn.getAttribute("data-subcategory") : null
+}
+
 // Hook pour gérer les catégories dans la bibliothèque UI
 const UICategoryHook = {
   mounted() {
@@ -1392,8 +1442,9 @@ const UICategoryHook = {
     if (!nav) return
 
     let activeCategory = "texte-nombres" // Catégorie par défaut
+    let activeSubcategory = null
 
-    const filterByCategory = (category, searchTerm = "") => {
+    const filterByCategory = (category, subcategory = null, searchTerm = "") => {
       const grid = document.getElementById("ui-components-grid")
       if (!grid) return
 
@@ -1403,15 +1454,17 @@ const UICategoryHook = {
 
       cards.forEach((card) => {
         const cardCategory = card.getAttribute("data-component-category")
+        const cardSubcategory = card.getAttribute("data-component-subcategory")
         const title = card.getAttribute("data-component-title") || ""
         const module = card.getAttribute("data-component-module") || ""
         
         const matchesCategory = cardCategory === category
+        const matchesSubcategory = !subcategory || cardSubcategory === subcategory
         const matchesSearch = term === "" || 
           title.toLowerCase().includes(term) || 
           module.toLowerCase().includes(term)
         
-        if (matchesCategory && matchesSearch) {
+        if (matchesCategory && matchesSubcategory && matchesSearch) {
           card.style.display = ""
           visibleCount++
         } else {
@@ -1430,10 +1483,21 @@ const UICategoryHook = {
       }
     }
 
-    const setActiveCategory = (category) => {
+    const setActiveCategory = (category, subcategory = null) => {
       activeCategory = category
+      activeSubcategory = subcategory
       
-      // Mettre à jour le style des boutons
+      // Afficher/masquer les sous-catégories pour Basiques
+      const subcategoriesContainer = document.getElementById("basiques-subcategories")
+      if (subcategoriesContainer) {
+        if (category === "basiques") {
+          subcategoriesContainer.classList.remove("hidden")
+        } else {
+          subcategoriesContainer.classList.add("hidden")
+        }
+      }
+      
+      // Mettre à jour le style des boutons de catégorie
       const buttons = nav.querySelectorAll(".ui-category-btn")
       buttons.forEach((btn) => {
         const btnCategory = btn.getAttribute("data-category")
@@ -1444,27 +1508,51 @@ const UICategoryHook = {
         }
       })
 
-      // Filtrer les cards selon la catégorie et la recherche active
+      // Mettre à jour le style des boutons de sous-catégorie
+      const subcategoryButtons = nav.querySelectorAll(".ui-subcategory-btn")
+      subcategoryButtons.forEach((btn) => {
+        const btnSubcategory = btn.getAttribute("data-subcategory")
+        if (category === "basiques" && btnSubcategory === subcategory) {
+          btn.className = "ui-subcategory-btn w-full text-left px-3 py-1.5 rounded-md text-xs bg-gray-100 text-gray-900 font-medium transition-colors"
+        } else {
+          btn.className = "ui-subcategory-btn w-full text-left px-3 py-1.5 rounded-md text-xs text-gray-600 hover:bg-gray-50 hover:text-gray-900 transition-colors"
+        }
+      })
+
+      // Filtrer les cards selon la catégorie, sous-catégorie et la recherche active
       const searchInput = document.getElementById("ui-search")
       const searchTerm = searchInput ? searchInput.value : ""
-      filterByCategory(category, searchTerm)
+      filterByCategory(category, subcategory, searchTerm)
     }
 
-    // Ajouter les event listeners aux boutons
+    // Ajouter les event listeners aux boutons de catégorie
     const buttons = nav.querySelectorAll(".ui-category-btn")
     buttons.forEach((btn) => {
       btn.addEventListener("click", (e) => {
         e.preventDefault()
         const category = btn.getAttribute("data-category")
-        setActiveCategory(category)
+        setActiveCategory(category, null)
+      })
+    })
+
+    // Ajouter les event listeners aux boutons de sous-catégorie
+    const subcategoryButtons = nav.querySelectorAll(".ui-subcategory-btn")
+    subcategoryButtons.forEach((btn) => {
+      btn.addEventListener("click", (e) => {
+        e.preventDefault()
+        const category = btn.getAttribute("data-category")
+        const subcategory = btn.getAttribute("data-subcategory")
+        setActiveCategory(category, subcategory)
       })
     })
 
     // Initialiser avec la catégorie par défaut
-    setActiveCategory(activeCategory)
+    setActiveCategory(activeCategory, null)
     
     // Exposer la fonction pour le hook de recherche
     this.setActiveCategory = setActiveCategory
+    this.getActiveCategory = () => activeCategory
+    this.getActiveSubcategory = () => activeSubcategory
   }
 }
 
@@ -1551,13 +1639,43 @@ document.addEventListener("phx:code_copied", (event) => {
   }
 })
 
+// Hook pour gérer les boutons mode-toggle dans le header
+const ModeSwitchHook = {
+  mounted() {
+    const buttons = this.el.querySelectorAll("[data-mode-toggle]")
+    buttons.forEach((btn) => {
+      btn.addEventListener("click", (event) => {
+        event.preventDefault()
+        event.stopPropagation()
+        
+        const explicitValue = btn.getAttribute("data-mode-value")
+        let nextMode = explicitValue
+
+        if (!nextMode) {
+          nextMode = currentMode === "demo" ? "ui" : "demo"
+        }
+
+        if (nextMode && nextMode !== currentMode) {
+          applyMode(nextMode)
+        }
+      })
+    })
+  },
+  
+  updated() {
+    // Réattacher les listeners après mise à jour
+    this.mounted()
+  }
+}
+
 const hooks = {
   ...colocatedHooks,
   ThemeManager: ThemeManagerHook,
   ContextMenuNotification: ContextMenuNotificationHook,
   UISearch: UISearchHook,
   UICategory: UICategoryHook,
-  BentoGrid: BentoGrid
+  BentoGrid: BentoGrid,
+  ModeSwitch: ModeSwitchHook
 }
 
 const csrfToken = document.querySelector("meta[name='csrf-token']").getAttribute("content")

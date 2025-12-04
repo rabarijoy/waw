@@ -9,6 +9,7 @@ defmodule WawShowcase.UIConfig do
     "Basiques" => [
       %{
   sous_categorie: "Accordion",
+        groupe: "Conteneurs",
         module: "Waw.Accordion",
         principal: %{
           nom: "Accordion",
@@ -80,6 +81,7 @@ defmodule WawShowcase.UIConfig do
       },
       %{
   sous_categorie: "Badge",
+        groupe: "Affichage",
         module: "Waw.Badge",
         principal: %{
           nom: "Badge",
@@ -118,6 +120,7 @@ defmodule WawShowcase.UIConfig do
       },
       %{
         sous_categorie: "Séparateur de blocs",
+        groupe: "Blocs",
         module: "Waw.BlockSeparator",
         principal: %{
           nom: "Séparateur de blocs",
@@ -136,6 +139,7 @@ defmodule WawShowcase.UIConfig do
       },
       %{
         sous_categorie: "Titre de block",
+        groupe: "Blocs",
         module: "Waw.BlockTitle",
         principal: %{
           nom: "Titre de bloc",
@@ -154,6 +158,7 @@ defmodule WawShowcase.UIConfig do
       },
       %{
   sous_categorie: "Boutons",
+        groupe: "Actions",
         module: "Waw.Button",
         principal: %{
           nom: "Bouton",
@@ -211,6 +216,7 @@ defmodule WawShowcase.UIConfig do
       },
       %{
         sous_categorie: "Texte éditable",
+        groupe: "Formulaires",
         module: "Waw.ContentEditable",
         principal: %{
           nom: "Texte éditable",
@@ -227,6 +233,7 @@ defmodule WawShowcase.UIConfig do
       },
       %{
         sous_categorie: "Liste des champs avec description",
+        groupe: "Blocs",
         module: "Waw.DefinitionList",
         principal: %{
           nom: "Liste de champs",
@@ -294,6 +301,7 @@ defmodule WawShowcase.UIConfig do
       },
       %{
         sous_categorie: "Header des filtres",
+        groupe: "Navigation",
         module: "Waw.FilterHeader",
         principal: %{
           nom: "Header des filtres",
@@ -346,6 +354,7 @@ defmodule WawShowcase.UIConfig do
       },
       %{
         sous_categorie: "Flash",
+        groupe: "Affichage",
         module: "Waw.Flash",
         principal: %{
           nom: "Flash",
@@ -364,6 +373,7 @@ defmodule WawShowcase.UIConfig do
       },
       %{
         sous_categorie: "Groupe de flash",
+        groupe: "Affichage",
         module: "Waw.Flash",
         principal: %{
           nom: "Groupe de flashes",
@@ -376,6 +386,7 @@ defmodule WawShowcase.UIConfig do
       },
       %{
   sous_categorie: "Footer",
+        groupe: "Navigation",
         module: "Waw.Footer",
         principal: %{
           nom: "Footer",
@@ -388,6 +399,7 @@ defmodule WawShowcase.UIConfig do
       },
       %{
         sous_categorie: "Header",
+        groupe: "Navigation",
         module: "Waw.Header",
         principal: %{
           nom: "Header",
@@ -403,6 +415,7 @@ defmodule WawShowcase.UIConfig do
       },
       %{
         sous_categorie: "Champs",
+        groupe: "Formulaires",
         module: "WawShowcaseWeb.CoreComponents",
         principal: %{
           nom: "Champ",
@@ -508,6 +521,7 @@ defmodule WawShowcase.UIConfig do
       },
       %{
         sous_categorie: "Lien icône",
+        groupe: "Actions",
         module: "Waw.LinkIcon",
         principal: %{
           nom: "Lien icône",
@@ -526,6 +540,7 @@ defmodule WawShowcase.UIConfig do
       },
       %{
         sous_categorie: "Lien texte",
+        groupe: "Actions",
         module: "Waw.LinkText",
         principal: %{
           nom: "Lien texte",
@@ -538,6 +553,7 @@ defmodule WawShowcase.UIConfig do
       },
       %{
         sous_categorie: "Element d'une liste",
+        groupe: "Listes",
         module: "Waw.List",
         principal: %{
           nom: "Liste",
@@ -588,6 +604,7 @@ defmodule WawShowcase.UIConfig do
       },
       %{
         sous_categorie: "Header de liste pour le tri",
+        groupe: "Listes",
         module: "Waw.ListHeader",
         principal: %{
           nom: "Header de liste",
@@ -612,6 +629,7 @@ defmodule WawShowcase.UIConfig do
       },
       %{
         sous_categorie: "Bouton collapse",
+        groupe: "Actions",
         module: "Waw.LiveButton",
         principal: %{
           nom: "Bouton déroulant",
@@ -653,6 +671,7 @@ defmodule WawShowcase.UIConfig do
       },
       %{
         sous_categorie: "Filtre de gauche à droite avec recherche",
+        groupe: "Recherche et filtres",
         module: "Waw.LiveFilter",
         principal: %{
           nom: "Filtre de liste",
@@ -680,6 +699,7 @@ defmodule WawShowcase.UIConfig do
       },
       %{
         sous_categorie: "Recherche avec un resultat dans un popup",
+        groupe: "Recherche et filtres",
         module: "Waw.LiveSearch",
         principal: %{
           nom: "Recherche avec popup",
@@ -727,6 +747,7 @@ defmodule WawShowcase.UIConfig do
       },
       %{
         sous_categorie: "Loading",
+        groupe: "Affichage",
         module: "Waw.Loading",
         principal: %{
   nom: "Loading",
@@ -739,6 +760,7 @@ defmodule WawShowcase.UIConfig do
       },
       %{
         sous_categorie: "Logos",
+        groupe: "Affichage",
         module: "Waw.Logo",
         principal: %{
   nom: "Logo Tag-IP",
@@ -751,6 +773,7 @@ defmodule WawShowcase.UIConfig do
       },
       %{
         sous_categorie: "Footer de carte",
+        groupe: "Cartes",
         module: "Waw.MapFooter",
         principal: %{
           nom: "Footer de la carte",
@@ -783,6 +806,7 @@ defmodule WawShowcase.UIConfig do
       },
       %{
         sous_categorie: "Header de carte",
+        groupe: "Cartes",
         module: "Waw.MapHeader",
         principal: %{
           nom: "Header de la carte",
@@ -805,6 +829,7 @@ defmodule WawShowcase.UIConfig do
       },
       %{
         sous_categorie: "Modal",
+        groupe: "Conteneurs",
         module: "Waw.Modal",
         principal: %{
           nom: "Modal",
@@ -819,6 +844,7 @@ defmodule WawShowcase.UIConfig do
       },
       %{
         sous_categorie: "Popup de notification",
+        groupe: "Conteneurs",
         module: "Waw.NotificationPopup",
         principal: %{
           nom: "Popup de notification",
@@ -838,6 +864,7 @@ defmodule WawShowcase.UIConfig do
       },
       %{
   sous_categorie: "Pagination",
+        groupe: "Navigation avancée",
         module: "Waw.Pagination",
         principal: %{
           nom: "Pagination",
@@ -863,6 +890,7 @@ defmodule WawShowcase.UIConfig do
       },
       %{
         sous_categorie: "Header d'un contenu",
+        groupe: "Blocs",
         module: "Waw.PanelHeader",
         principal: %{
           nom: "Header de contenu",
@@ -911,6 +939,7 @@ defmodule WawShowcase.UIConfig do
       },
       %{
         sous_categorie: "Bloc de status",
+        groupe: "Blocs",
         module: "Waw.StatusBlock",
         principal: %{
           nom: "Bloc de status",
@@ -993,6 +1022,7 @@ defmodule WawShowcase.UIConfig do
       },
       %{
         sous_categorie: "Steps",
+        groupe: "Navigation avancée",
         module: "Waw.Steps",
         principal: %{
   nom: "Steps",
@@ -1021,6 +1051,7 @@ Récapitulation
       },
       %{
         sous_categorie: "Sous header",
+        groupe: "Navigation",
         module: "WawShowcaseWeb.Components.Layout",
         principal: %{
           nom: "Sous header",
@@ -1098,6 +1129,7 @@ from={~U[2023-09-22 06:13:14.707953Z]}
       },
       %{
   sous_categorie: "Tableau",
+        groupe: "Tableaux",
         module: "Waw.Table",
         principal: %{
           nom: "Tableau",
@@ -1197,6 +1229,7 @@ from={~U[2023-09-22 06:13:14.707953Z]}
       },
       %{
         sous_categorie: "Onglets",
+        groupe: "Navigation avancée",
         module: "Waw.Tabs",
         principal: %{
           nom: "Onglets",
@@ -1254,6 +1287,7 @@ Instances
       },
       %{
         sous_categorie: "Liste de tags",
+        groupe: "Autres",
         module: "Waw.TagList",
         principal: %{
           nom: "Liste de tags",
@@ -1290,6 +1324,7 @@ Instances
       },
       %{
         sous_categorie: "Info-bulle",
+        groupe: "Autres",
         module: "Waw.Tooltip",
         principal: %{
           nom: "Info-bulle",
@@ -1304,6 +1339,7 @@ contenu
       },
       %{
         sous_categorie: "Afficher un trackable",
+        groupe: "Autres",
         module: "Waw.Name",
         principal: %{
           nom: "Trackable",

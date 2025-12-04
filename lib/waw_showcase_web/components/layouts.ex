@@ -304,6 +304,7 @@ defmodule WawShowcaseWeb.Layouts do
         <div
           id="app-header"
           phx-update="ignore"
+          phx-hook="ModeSwitch"
           data-component="waw_header"
           class="contents"
         >
@@ -444,6 +445,30 @@ defmodule WawShowcaseWeb.Layouts do
   # ----------
   # On évite toute compilation dynamique (Code.compile_string, etc.).
   # On rend en dur, avec ~H, les principaux composants de la librairie
+  # Groupe les composants Basiques par groupe
+  def group_basiques_components(components) do
+    components
+    |> Enum.group_by(&Map.get(&1, :groupe, "Autres"))
+    |> Enum.sort_by(fn {groupe, _} ->
+      # Ordre des groupes
+      order = [
+        "Navigation",
+        "Actions",
+        "Affichage",
+        "Formulaires",
+        "Listes",
+        "Conteneurs",
+        "Blocs",
+        "Tableaux",
+        "Navigation avancée",
+        "Recherche et filtres",
+        "Cartes",
+        "Autres"
+      ]
+      Enum.find_index(order, &(&1 == groupe)) || 999
+    end)
+  end
+
   # pour garantir un comportement stable et prévisible.
   def render_component_preview(assigns) do
     sous_categorie = Map.get(assigns, :sous_categorie) || Map.get(assigns, "sous_categorie")
@@ -554,42 +579,44 @@ defmodule WawShowcaseWeb.Layouts do
       ## Basiques
       "Accordion" ->
         ~H"""
-        <.waw_accordion count={12} id="accordion-single-normal" has_group>
-        <.waw_accordion id="accordion-2" head_icon="truck" title="Truck" count={8}>
-        <.waw_table without_border>
-        <:thead>
-        <.waw_th></.waw_th>
-        <.waw_th>Véhicules</.waw_th>
-        <.waw_th sort_key="asc">Heure</.waw_th>
-        </:thead>
-        <:tr state="selected">
-        <.waw_td_icon><.waw_icon name="car" stroke="none" size="4" /></.waw_td_icon>
-        <.waw_td title="6541 TBA" is_link={true} href="https://www.tag-ip.com/">
-        6541 TBA
-        <:description>Vitesse > 60km/h</:description>
-        </.waw_td>
-        <.waw_td title="14:42:37">14:42:37</.waw_td>
-        </:tr>
-        <:tr state="normal">
-        <.waw_td_icon><.waw_icon name="car" stroke="none" size="4" /></.waw_td_icon>
-        <.waw_td title="3354 TBS">
-        3354 TBS
-        <:description>Vitesse > 70km/h</:description>
-        </.waw_td>
-        <.waw_td title="14:42:37">14:42:37</.waw_td>
-        </:tr>
-        <:tr state="disabled">
-        <.waw_td_icon><.waw_icon name="car" stroke="none" size="4" /></.waw_td_icon>
-        <.waw_td title="3354 TBA">
-        3354 TBA
-        <:description>Vitesse > 50km/h</:description>
-        </.waw_td>
-        <.waw_td title="14:42:37">14:42:37</.waw_td>
-        </:tr>
-        </.waw_table>
-        </.waw_accordion>
-        <.waw_accordion id="accordion-3" head_icon="moto" title="moto" />
-        </.waw_accordion>
+        <div class="-mx-6 -my-4">
+          <.waw_accordion count={12} id="accordion-single-normal" has_group>
+          <.waw_accordion id="accordion-2" head_icon="truck" title="Truck" count={8}>
+          <.waw_table without_border>
+          <:thead>
+          <.waw_th></.waw_th>
+          <.waw_th>Véhicules</.waw_th>
+          <.waw_th sort_key="asc">Heure</.waw_th>
+          </:thead>
+          <:tr state="selected">
+          <.waw_td_icon><.waw_icon name="car" stroke="none" size="4" /></.waw_td_icon>
+          <.waw_td title="6541 TBA" is_link={true} href="https://www.tag-ip.com/">
+          6541 TBA
+          <:description>Vitesse > 60km/h</:description>
+          </.waw_td>
+          <.waw_td title="14:42:37">14:42:37</.waw_td>
+          </:tr>
+          <:tr state="normal">
+          <.waw_td_icon><.waw_icon name="car" stroke="none" size="4" /></.waw_td_icon>
+          <.waw_td title="3354 TBS">
+          3354 TBS
+          <:description>Vitesse > 70km/h</:description>
+          </.waw_td>
+          <.waw_td title="14:42:37">14:42:37</.waw_td>
+          </:tr>
+          <:tr state="disabled">
+          <.waw_td_icon><.waw_icon name="car" stroke="none" size="4" /></.waw_td_icon>
+          <.waw_td title="3354 TBA">
+          3354 TBA
+          <:description>Vitesse > 50km/h</:description>
+          </.waw_td>
+          <.waw_td title="14:42:37">14:42:37</.waw_td>
+          </:tr>
+          </.waw_table>
+          </.waw_accordion>
+          <.waw_accordion id="accordion-3" head_icon="moto" title="moto" />
+          </.waw_accordion>
+        </div>
         """
 
       "Badge" ->
@@ -656,10 +683,10 @@ defmodule WawShowcaseWeb.Layouts do
         assigns = assign(assigns, :flash_preview_id, "flash-preview-#{System.unique_integer([:positive, :monotonic])}")
         ~H"""
         <div class="flex flex-col items-center gap-4">
-          <.waw_button 
-            type="button" 
-            phx-click={JS.show(to: {"##{@flash_preview_id}"}, transition: {"transition-all ease-out duration-300", "opacity-0 translate-y-4", "opacity-100 translate-y-0"})} 
-            label="Afficher Flash" 
+          <.waw_button
+            type="button"
+            phx-click={JS.show(to: "##{@flash_preview_id}", transition: {"transition-all ease-out duration-300", "opacity-0 translate-y-4", "opacity-100 translate-y-0"})}
+            label="Afficher Flash"
             size="md"
           />
           <div id={@flash_preview_id} class="hidden">
@@ -672,10 +699,10 @@ defmodule WawShowcaseWeb.Layouts do
         assigns = assign(assigns, :flash_group_preview_id, "flash-group-preview-#{System.unique_integer([:positive, :monotonic])}")
         ~H"""
         <div class="flex flex-col items-center gap-4">
-          <.waw_button 
-            type="button" 
-            phx-click={JS.show(to: {"##{@flash_group_preview_id}"}, transition: {"transition-all ease-out duration-300", "opacity-0 translate-y-4", "opacity-100 translate-y-0"})} 
-            label="Afficher Groupe" 
+          <.waw_button
+            type="button"
+            phx-click={JS.show(to: "##{@flash_group_preview_id}", transition: {"transition-all ease-out duration-300", "opacity-0 translate-y-4", "opacity-100 translate-y-0"})}
+            label="Afficher Groupe"
             size="md"
           />
           <div id={@flash_group_preview_id} class="hidden">
@@ -686,7 +713,9 @@ defmodule WawShowcaseWeb.Layouts do
 
       "Footer" ->
         ~H"""
-        <Waw.Footer.footer copyright_year={2025}/>
+        <div class="-mx-6 -my-4">
+          <Waw.Footer.footer copyright_year={2025}/>
+        </div>
         """
 
       "Header" ->
@@ -1019,25 +1048,27 @@ defmodule WawShowcaseWeb.Layouts do
       ## Basiques – Accordion
       {"Accordion", "Avec status sélectionné"} ->
         ~H"""
-        <.waw_accordion count={12} id="accordion-single-table" selected head_icon="car">
-        <.waw_table without_border>
-        <:thead>
-        <.waw_th sort_key="desc"></.waw_th>
-        <.waw_th sort_key="desc">Véhicules</.waw_th>
-        <.waw_th sort_key="asc">Evenement</.waw_th>
-        </:thead>
-        <:tr state="selected">
-        <.waw_td_icon><.waw_icon name="car" stroke="none" size="4" /></.waw_td_icon>
-        <.waw_td title="6541 TBA">6541 TBA</.waw_td>
-        <.waw_td title="Vitesse > 60km/h" is_link={true} href="https://www.tag-ip.com/">Vitesse > 60</.waw_td>
-        </:tr>
-        <:tr state="disabled">
-        <.waw_td_icon><.waw_icon name="car" stroke="none" size="4" /></.waw_td_icon>
-        <.waw_td title="3354 TBA">3354 TBA</.waw_td>
-        <.waw_td title="Vitesse > 50km/h">Vitesse > 50</.waw_td>
-        </:tr>
-        </.waw_table>
-        </.waw_accordion>
+        <div class="-mx-6 -my-4">
+          <.waw_accordion count={12} id="accordion-single-table" selected head_icon="car">
+          <.waw_table without_border>
+          <:thead>
+          <.waw_th sort_key="desc"></.waw_th>
+          <.waw_th sort_key="desc">Véhicules</.waw_th>
+          <.waw_th sort_key="asc">Evenement</.waw_th>
+          </:thead>
+          <:tr state="selected">
+          <.waw_td_icon><.waw_icon name="car" stroke="none" size="4" /></.waw_td_icon>
+          <.waw_td title="6541 TBA">6541 TBA</.waw_td>
+          <.waw_td title="Vitesse > 60km/h" is_link={true} href="https://www.tag-ip.com/">Vitesse > 60</.waw_td>
+          </:tr>
+          <:tr state="disabled">
+          <.waw_td_icon><.waw_icon name="car" stroke="none" size="4" /></.waw_td_icon>
+          <.waw_td title="3354 TBA">3354 TBA</.waw_td>
+          <.waw_td title="Vitesse > 50km/h">Vitesse > 50</.waw_td>
+          </:tr>
+          </.waw_table>
+          </.waw_accordion>
+        </div>
         """
 
       ## Basiques – Badge
@@ -1192,10 +1223,10 @@ defmodule WawShowcaseWeb.Layouts do
         assigns = assign(assigns, :flash_variant_preview_id, "flash-variant-preview-#{System.unique_integer([:positive, :monotonic])}")
         ~H"""
         <div class="flex flex-col items-center gap-4">
-          <.waw_button 
-            type="button" 
-            phx-click={JS.show(to: {"##{@flash_variant_preview_id}"}, transition: {"transition-all ease-out duration-300", "opacity-0 translate-y-4", "opacity-100 translate-y-0"})} 
-            label="Afficher Flash" 
+          <.waw_button
+            type="button"
+            phx-click={JS.show(to: "##{@flash_variant_preview_id}", transition: {"transition-all ease-out duration-300", "opacity-0 translate-y-4", "opacity-100 translate-y-0"})}
+            label="Afficher Flash"
             size="md"
           />
           <div id={@flash_variant_preview_id} class="hidden">
