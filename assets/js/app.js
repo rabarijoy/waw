@@ -2208,13 +2208,44 @@ document.addEventListener("phx:code_copied", (event) => {
 // Hook pour gérer les boutons mode-toggle dans le header
 const ModeSwitchHook = {
   mounted() {
+    this.attachListeners()
+    
+    // Réappliquer le mode après le montage
+    setTimeout(() => {
+      applyMode(currentMode)
+    }, 100)
+  },
+  
+  updated() {
+    // Réattacher les listeners après mise à jour
+    this.attachListeners()
+    
+    // Réappliquer le mode après la mise à jour
+    setTimeout(() => {
+      applyMode(currentMode)
+    }, 100)
+  },
+  
+  attachListeners() {
+    // Chercher les boutons dans l'élément et dans tout le document au cas où
     const buttons = this.el.querySelectorAll("[data-mode-toggle]")
-    buttons.forEach((btn) => {
-      btn.addEventListener("click", (event) => {
+    const allButtons = document.querySelectorAll("[data-mode-toggle]")
+    
+    // Utiliser un Set pour éviter les doublons
+    const uniqueButtons = new Set([...buttons, ...allButtons])
+    
+    uniqueButtons.forEach((btn) => {
+      // Retirer les anciens listeners en clonant le bouton
+      const newBtn = btn.cloneNode(true)
+      btn.parentNode?.replaceChild(newBtn, btn)
+      
+      // Ajouter le nouveau listener
+      newBtn.addEventListener("click", (event) => {
         event.preventDefault()
         event.stopPropagation()
+        event.stopImmediatePropagation()
         
-        const explicitValue = btn.getAttribute("data-mode-value")
+        const explicitValue = newBtn.getAttribute("data-mode-value")
         let nextMode = explicitValue
 
         if (!nextMode) {
@@ -2224,13 +2255,10 @@ const ModeSwitchHook = {
         if (nextMode && nextMode !== currentMode) {
           applyMode(nextMode)
         }
-      })
+        
+        return false
+      }, true) // Utiliser la phase de capture
     })
-  },
-  
-  updated() {
-    // Réattacher les listeners après mise à jour
-    this.mounted()
   }
 }
 
