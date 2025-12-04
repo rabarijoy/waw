@@ -138,6 +138,7 @@
               <div
                 :for={{variant, idx} <- Enum.with_index(WawShowcaseWeb.Layouts.flatten_variants_for_preview(item.variantes))}
                 data-variant-index={idx}
+                data-variant-nom={variant.nom}
                 data-group-nom={variant.group_nom}
                 data-group-idx={variant.group_idx}
                 data-sub-idx={variant.sub_idx}
@@ -283,6 +284,7 @@
               <div
                 :for={{variant, idx} <- Enum.with_index(WawShowcaseWeb.Layouts.flatten_variants_for_preview(item.variantes))}
                 data-variant-index={idx}
+                data-variant-nom={variant.nom}
                 data-group-nom={variant.group_nom}
                 data-group-idx={variant.group_idx}
                 data-sub-idx={variant.sub_idx}
@@ -363,6 +365,7 @@
               <div
                 :for={{variant, idx} <- Enum.with_index(WawShowcaseWeb.Layouts.flatten_variants_for_preview(item.variantes))}
                 data-variant-index={idx}
+                data-variant-nom={variant.nom}
                 data-group-nom={variant.group_nom}
                 data-group-idx={variant.group_idx}
                 data-sub-idx={variant.sub_idx}

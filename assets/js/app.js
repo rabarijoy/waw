@@ -1058,15 +1058,35 @@ function initUiPreviewModal() {
       // S'assurer que l'index est >= 0
       if (variantIndex < 0) variantIndex = 0
       
-      const variantContainer = card.querySelector(`.variant-previews [data-variant-index="${variantIndex}"] .component-preview-variant`)
+      // Chercher le conteneur de variante de deux façons :
+      // 1. Par index (méthode principale)
+      // 2. Par nom de variante (fallback si l'index ne fonctionne pas)
+      let variantContainer = card.querySelector(`.variant-previews [data-variant-index="${variantIndex}"] .component-preview-variant`)
+      
+      // Si pas trouvé par index, essayer par nom
+      if (!variantContainer && variant.nom) {
+        variantContainer = card.querySelector(`.variant-previews [data-variant-nom="${variant.nom}"] .component-preview-variant`)
+      }
 
       if (variantContainer) {
         componentEl.innerHTML = ""
         const clone = variantContainer.cloneNode(true)
         componentEl.appendChild(clone)
       } else {
-        // Debug: afficher l'index recherché pour diagnostiquer
-        console.warn(`Variant preview not found for index ${variantIndex}, variant:`, variant)
+        // Debug: vérifier tous les conteneurs disponibles pour diagnostiquer
+        const allVariantContainers = card.querySelectorAll('.variant-previews [data-variant-index]')
+        console.warn(`Variant preview not found for index ${variantIndex}`, {
+          variant: variant,
+          variantIndex: variantIndex,
+          hidePrincipal: hidePrincipal,
+          variantIndexInAllVariants: variant._index,
+          availableIndices: Array.from(allVariantContainers).map(c => ({
+            index: c.getAttribute('data-variant-index'),
+            nom: c.getAttribute('data-variant-nom')
+          })),
+          variantPreviewsExists: card.querySelector('.variant-previews') !== null
+        })
+        
         // Fallback: afficher le code source si aucun preview n'est disponible
         componentEl.innerHTML = `<pre class="text-xs text-gray-600 whitespace-pre-wrap p-4 bg-gray-50 rounded-lg">${code.trim() || "Code source non disponible"}</pre>`
       }
