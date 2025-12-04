@@ -1445,24 +1445,12 @@ defmodule WawShowcaseWeb.Layouts do
       ## Basiques – Champs
       {"Champs", "Texte"} ->
         ~H"""
-        <.input name="text" label="label" type="text" placeholder="Placeholder" value="">
-        <:tooltip_block>
-        <.tooltip position="top" color="white" content="Information du tooltip" variant="arrow" margin="top">
-        (**)
-        </.tooltip>
-        </:tooltip_block>
-        </.input>
+        <.input name="text" label="label" type="text" placeholder="Placeholder" value=""/>
         """
 
       {"Champs", "Création flotte"} ->
         ~H"""
-        <.input name="flotte" label="label" type="text" placeholder="Placeholder" value="">
-        <:tooltip_block>
-        <.tooltip position="top" color="white" content="Information du tooltip" variant="arrow" margin="top">
-        (**)
-        </.tooltip>
-        </:tooltip_block>
-        </.input>
+        <.input name="flotte" label="label" type="text" placeholder="Placeholder" value=""/>
         """
 
       {"Champs", "Description ou note"} ->
