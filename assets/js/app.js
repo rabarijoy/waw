@@ -1518,11 +1518,252 @@ const UISearchHook = {
     if (searchInput.value) {
       filterCards(searchInput.value)
     }
-  },
+  }
+}
 
-  updated() {
-    // Re-filtrer après mise à jour du DOM
-    const searchInput = this.el
+Hooks.UISearch = UISearchHook
+
+// Hook pour la recherche Spotlight dans la bibliothèque UI
+const SpotlightSearchHook = {
+  mounted() {
+    const modal = this.el
+    const trigger = document.getElementById("ui-search-trigger")
+    const input = document.getElementById("ui-spotlight-input")
+    const resultsList = document.getElementById("ui-spotlight-results-list")
+    const noResults = document.getElementById("ui-spotlight-no-results")
+    const closeButtons = modal.querySelectorAll("[data-spotlight-close]")
+    
+    let selectedIndex = -1
+    let results = []
+
+    const openModal = () => {
+      modal.classList.remove("hidden")
+      setTimeout(() => {
+        input?.focus()
+      }, 100)
+      document.body.style.overflow = "hidden"
+    }
+
+    const closeModal = () => {
+      modal.classList.add("hidden")
+      if (input) input.value = ""
+      selectedIndex = -1
+      results = []
+      document.body.style.overflow = ""
+    }
+
+    const getCategoryLabel = (category) => {
+      const labels = {
+        "texte-nombres": "Texte et Nombres",
+        "basiques": "Basiques",
+        "dates-heures": "Dates et heures",
+        "cartes": "Cartes",
+        "formulaire": "Formulaire",
+        "icones": "Icônes"
+      }
+      return labels[category] || category
+    }
+
+    const searchAllComponents = (term) => {
+      if (!term || term.trim().length === 0) {
+        results = []
+        renderResults()
+        return
+      }
+
+      const searchTerm = term.toLowerCase().trim()
+      results = []
+      const grid = document.getElementById("ui-components-grid")
+      const iconsSection = document.getElementById("ui-icons-section")
+
+      // Rechercher dans les cards normales
+      if (grid) {
+        const cards = grid.querySelectorAll(".ui-component-card")
+        cards.forEach((card) => {
+          const title = card.getAttribute("data-component-title") || ""
+          const module = card.getAttribute("data-component-module") || ""
+          const category = card.getAttribute("data-component-category") || ""
+          const subcategory = card.getAttribute("data-component-subcategory")
+          const cardId = card.id || ""
+          
+          const matchesTitle = title.toLowerCase().includes(searchTerm)
+          const matchesModule = module.toLowerCase().includes(searchTerm)
+          
+          if (matchesTitle || matchesModule) {
+            results.push({
+              id: cardId,
+              title: title,
+              category: category,
+              subcategory: subcategory,
+              type: "component",
+              element: card
+            })
+          }
+        })
+      }
+
+      // Rechercher dans les icônes
+      if (iconsSection) {
+        const iconCards = iconsSection.querySelectorAll(".ui-icon-card")
+        iconCards.forEach((card) => {
+          const title = card.getAttribute("data-component-title") || ""
+          const module = card.getAttribute("data-component-module") || ""
+          
+          const matchesTitle = title.toLowerCase().includes(searchTerm)
+          const matchesModule = module.toLowerCase().includes(searchTerm)
+          
+          if (matchesTitle || matchesModule) {
+            results.push({
+              id: card.id || "",
+              title: title,
+              category: "icones",
+              subcategory: null,
+              type: "icon",
+              element: card
+            })
+          }
+        })
+      }
+
+      renderResults()
+    }
+
+    const renderResults = () => {
+      if (!resultsList || !noResults) return
+
+      if (results.length === 0) {
+        resultsList.innerHTML = ""
+        noResults.classList.remove("hidden")
+        return
+      }
+
+      noResults.classList.add("hidden")
+      resultsList.innerHTML = results.map((result, index) => `
+        <button
+          type="button"
+          class="w-full text-left px-4 py-3 rounded-lg hover:bg-gray-100 transition-colors flex items-center justify-between group ${index === selectedIndex ? 'bg-gray-100' : ''}"
+          data-result-index="${index}"
+          data-result-id="${result.id}"
+          data-result-category="${result.category}"
+          data-result-subcategory="${result.subcategory || ''}"
+        >
+          <div class="flex-1 min-w-0">
+            <div class="font-medium text-gray-900 truncate">${result.title}</div>
+            <div class="text-sm text-gray-500 truncate">${getCategoryLabel(result.category)}</div>
+          </div>
+          <svg class="w-5 h-5 text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+          </svg>
+        </button>
+      `).join("")
+
+      // Ajouter les event listeners
+      resultsList.querySelectorAll("button[data-result-index]").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          const index = parseInt(btn.getAttribute("data-result-index"))
+          selectResult(index)
+        })
+      })
+    }
+
+    const selectResult = (index) => {
+      if (index < 0 || index >= results.length) return
+
+      const result = results[index]
+      closeModal()
+
+      // Ouvrir la catégorie correspondante
+      const sidebar = document.getElementById("ui-categories-sidebar")
+      if (sidebar) {
+        // Accéder au hook via l'élément
+        const hookEl = sidebar
+        const hookId = hookEl.getAttribute("data-phx-hook")
+        if (hookId === "UICategory") {
+          // Utiliser la fonction exposée sur window
+          if (window.setActiveCategory) {
+            window.setActiveCategory(result.category, result.subcategory)
+          } else {
+            // Fallback: trouver le hook via liveSocket
+            if (window.liveSocket) {
+              const hooks = window.liveSocket.hooks || {}
+              const hook = hooks.UICategory
+              if (hook && hook.setActiveCategory) {
+                hook.setActiveCategory(result.category, result.subcategory)
+              }
+            }
+          }
+        }
+      }
+
+      // Attendre que la catégorie soit ouverte puis scroller vers le composant
+      setTimeout(() => {
+        const element = result.element
+        if (element) {
+          // S'assurer que l'élément est visible
+          element.style.display = ""
+          
+          // Scroller vers l'élément avec animation
+          element.scrollIntoView({
+            behavior: "smooth",
+            block: "center"
+          })
+
+          // Ajouter un effet de surbrillance temporaire
+          element.classList.add("ring-2", "ring-blue-500", "ring-offset-2")
+          setTimeout(() => {
+            element.classList.remove("ring-2", "ring-blue-500", "ring-offset-2")
+          }, 2000)
+        }
+      }, 300)
+    }
+
+    // Event listeners
+    trigger?.addEventListener("click", openModal)
+    closeButtons.forEach(btn => btn.addEventListener("click", closeModal))
+    
+    input?.addEventListener("input", (e) => {
+      searchAllComponents(e.target.value)
+      selectedIndex = -1
+    })
+
+    input?.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") {
+        closeModal()
+      } else if (e.key === "ArrowDown") {
+        e.preventDefault()
+        selectedIndex = Math.min(selectedIndex + 1, results.length - 1)
+        renderResults()
+        const selectedBtn = resultsList.querySelector(`[data-result-index="${selectedIndex}"]`)
+        selectedBtn?.scrollIntoView({ block: "nearest", behavior: "smooth" })
+      } else if (e.key === "ArrowUp") {
+        e.preventDefault()
+        selectedIndex = Math.max(selectedIndex - 1, -1)
+        renderResults()
+        if (selectedIndex >= 0) {
+          const selectedBtn = resultsList.querySelector(`[data-result-index="${selectedIndex}"]`)
+          selectedBtn?.scrollIntoView({ block: "nearest", behavior: "smooth" })
+        }
+      } else if (e.key === "Enter" && selectedIndex >= 0) {
+        e.preventDefault()
+        selectResult(selectedIndex)
+      }
+    })
+
+    // Raccourci clavier ⌘K ou Ctrl+K
+    document.addEventListener("keydown", (e) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === "k") {
+        e.preventDefault()
+        if (modal.classList.contains("hidden")) {
+          openModal()
+        } else {
+          closeModal()
+        }
+      }
+    })
+  }
+}
+
+Hooks.SpotlightSearch = SpotlightSearchHook
     const grid = document.getElementById("ui-components-grid")
     const noResults = document.getElementById("ui-no-results")
     
@@ -1735,6 +1976,11 @@ const UICategoryHook = {
     this.setActiveCategory = setActiveCategory
     this.getActiveCategory = () => activeCategory
     this.getActiveSubcategory = () => activeSubcategory
+    
+    // Exposer aussi sur window pour le SpotlightSearchHook
+    window.setActiveCategory = setActiveCategory
+    window.getActiveCategory = () => activeCategory
+    window.getActiveSubcategory = () => activeSubcategory
   }
 }
 

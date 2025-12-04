@@ -10,20 +10,74 @@
     else
       []
     end %>
-  <!-- Header avec titre à gauche et recherche à droite -->
+  <!-- Header avec titre à gauche et bouton recherche à droite -->
   <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
     <div>
       <h1 class="text-lg md:text-xl font-semibold text-gray-900">Waw Components - Cliquez pour decouvrir</h1>
     </div>
 
-    <div class="w-full md:w-72 md:ml-auto">
-      <.waw_input
-        id="ui-search"
-        type="search"
-        size="sm"
-        placeholder="Rechercher un composant"
-        phx-hook="UISearch"
-      />
+    <div class="w-full md:w-auto">
+      <button
+        type="button"
+        id="ui-search-trigger"
+        class="w-full md:w-72 px-4 py-2 text-sm text-gray-500 bg-white border border-gray-300 rounded-lg hover:border-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition-colors flex items-center gap-2"
+      >
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+        </svg>
+        <span>Rechercher un composant</span>
+        <span class="ml-auto text-xs text-gray-400">⌘K</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Modal Spotlight -->
+  <div
+    id="ui-spotlight-modal"
+    class="fixed inset-0 z-50 hidden flex items-start justify-center pt-[20vh]"
+    phx-hook="SpotlightSearch"
+  >
+    <!-- Overlay -->
+    <div class="absolute inset-0 bg-black/50 backdrop-blur-sm" data-spotlight-close></div>
+    
+    <!-- Modal Content -->
+    <div class="relative w-full max-w-2xl mx-4 bg-white rounded-2xl shadow-2xl overflow-hidden">
+      <!-- Search Input -->
+      <div class="p-4 border-b border-gray-200">
+        <div class="flex items-center gap-3">
+          <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+          </svg>
+          <input
+            type="text"
+            id="ui-spotlight-input"
+            class="flex-1 text-lg outline-none placeholder-gray-400"
+            placeholder="Rechercher un composant..."
+            autocomplete="off"
+          />
+          <button
+            type="button"
+            data-spotlight-close
+            class="p-1 rounded hover:bg-gray-100 text-gray-400 hover:text-gray-600 transition-colors"
+          >
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+      </div>
+      
+      <!-- Results List -->
+      <div id="ui-spotlight-results" class="max-h-[60vh] overflow-y-auto">
+        <div class="p-2">
+          <div id="ui-spotlight-results-list" class="space-y-1">
+            <!-- Results will be inserted here -->
+          </div>
+          <div id="ui-spotlight-no-results" class="hidden p-8 text-center text-gray-500">
+            <p>Aucun résultat trouvé</p>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 
