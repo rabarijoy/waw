@@ -6,7 +6,7 @@
   <% formulaire_items = WawShowcase.UIConfig.get_components_by_category("Formulaire") %>
   <% icon_names =
     if function_exported?(Waw.Icons, :icon_list, 0) do
-      Waw.Icons.icon_list()
+      WawShowcaseWeb.Layouts.filter_valid_icons(Waw.Icons.icon_list())
     else
       []
     end %>
@@ -459,27 +459,30 @@
               </button>
             </div>
           </div>
-          <!-- Icônes -->
-          <div class="space-y-3 md:col-span-2 xl:col-span-3">
-            <div class="flex items-baseline justify-between">
-              <div>
-                <h2 class="text-sm font-semibold text-gray-900">
-                  Icônes
-                </h2>
-                <p class="text-xs text-gray-500">
-                  Cliquez sur une icône pour copier le code source.
-                </p>
-              </div>
+        </div>
+        
+        <!-- Section Icônes (séparée de la grille principale) -->
+        <div id="ui-icons-section" class="hidden space-y-4">
+          <div class="flex items-baseline justify-between">
+            <div>
+              <h2 class="text-sm font-semibold text-gray-900">
+                Icônes
+              </h2>
+              <p class="text-xs text-gray-500">
+                Cliquez sur une icône pour copier le code source.
+              </p>
             </div>
+          </div>
 
-            <div
-              class="w-full grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 xl:grid-cols-10 gap-4"
-            >
-              <%= for name <- icon_names do %>
+          <div
+            class="w-full grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 xl:grid-cols-10 gap-4"
+          >
+            <%= for name <- icon_names do %>
+              <%= if WawShowcaseWeb.Layouts.icon_exists?(name) do %>
                 <% code = "<.waw_icon name=\\\"#{name}\\\" />" %>
                 <button
                   type="button"
-                  class="ui-component-card group relative flex flex-col items-center justify-center rounded-xl border border-gray-200 bg-white p-5 text-gray-700 hover:border-gray-300 hover:bg-gray-50 hover:shadow-sm transition-colors aspect-square w-full"
+                  class="ui-icon-card group relative flex flex-col items-center justify-center rounded-xl border border-gray-200 bg-white p-5 text-gray-700 hover:border-gray-300 hover:bg-gray-50 hover:shadow-sm transition-colors aspect-square w-full"
                   data-component-title={name}
                   data-component-module="Waw.Icons"
                   data-component-category="icones"
@@ -494,7 +497,7 @@
                   </span>
                 </button>
               <% end %>
-            </div>
+            <% end %>
           </div>
         </div>
       </div>

@@ -1446,6 +1446,36 @@ const UICategoryHook = {
 
     const filterByCategory = (category, subcategory = null, searchTerm = "") => {
       const grid = document.getElementById("ui-components-grid")
+      const iconsSection = document.getElementById("ui-icons-section")
+      
+      // Gérer la section icônes séparément
+      if (iconsSection) {
+        if (category === "icones") {
+          iconsSection.classList.remove("hidden")
+          // Filtrer les icônes selon la recherche
+          const iconCards = iconsSection.querySelectorAll(".ui-icon-card")
+          const term = searchTerm.toLowerCase().trim()
+          let visibleIconCount = 0
+          
+          iconCards.forEach((card) => {
+            const title = card.getAttribute("data-component-title") || ""
+            const module = card.getAttribute("data-component-module") || ""
+            const matchesSearch = term === "" || 
+              title.toLowerCase().includes(term) || 
+              module.toLowerCase().includes(term)
+            
+            if (matchesSearch) {
+              card.style.display = ""
+              visibleIconCount++
+            } else {
+              card.style.display = "none"
+            }
+          })
+        } else {
+          iconsSection.classList.add("hidden")
+        }
+      }
+      
       if (!grid) return
 
       const cards = grid.querySelectorAll(".ui-component-card")
@@ -1475,7 +1505,10 @@ const UICategoryHook = {
       // Gérer le message "Aucun résultat"
       const noResults = document.getElementById("ui-no-results")
       if (noResults) {
-        if (visibleCount === 0) {
+        const totalVisible = category === "icones" 
+          ? (iconsSection ? iconsSection.querySelectorAll(".ui-icon-card:not([style*='display: none'])").length : 0)
+          : visibleCount
+        if (totalVisible === 0) {
           noResults.classList.remove("hidden")
         } else {
           noResults.classList.add("hidden")
