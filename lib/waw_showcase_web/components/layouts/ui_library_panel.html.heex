@@ -225,6 +225,25 @@
               </div>
             </div>
 
+            <!-- Préviews des variantes (cachées, utilisées par la popup) -->
+            <div class="hidden variant-previews">
+              <div
+                :for={{variant, idx} <- Enum.with_index(WawShowcaseWeb.Layouts.flatten_variants_for_preview(item.variantes))}
+                data-variant-index={idx}
+                data-variant-nom={variant.nom}
+                data-group-nom={variant.group_nom}
+                data-group-idx={variant.group_idx}
+                data-sub-idx={variant.sub_idx}
+              >
+                <div class="component-preview-variant">
+                  <.render_variant_preview
+                    sous_categorie={item.sous_categorie}
+                    variant_nom={variant.nom}
+                  />
+                </div>
+              </div>
+            </div>
+
             <!-- Bloc titre -->
             <div>
               <h3 class="text-base font-semibold text-gray-900 truncate">
@@ -429,6 +448,25 @@
             >
               <div class="component-preview">
                 <.render_component_preview code_source={item.principal.code_source} sous_categorie={item.sous_categorie} />
+              </div>
+            </div>
+
+            <!-- Préviews des variantes (cachées, utilisées par la popup) -->
+            <div class="hidden variant-previews">
+              <div
+                :for={{variant, idx} <- Enum.with_index(WawShowcaseWeb.Layouts.flatten_variants_for_preview(item.variantes))}
+                data-variant-index={idx}
+                data-variant-nom={variant.nom}
+                data-group-nom={variant.group_nom}
+                data-group-idx={variant.group_idx}
+                data-sub-idx={variant.sub_idx}
+              >
+                <div class="component-preview-variant">
+                  <.render_variant_preview
+                    sous_categorie={item.sous_categorie}
+                    variant_nom={variant.nom}
+                  />
+                </div>
               </div>
             </div>
 
