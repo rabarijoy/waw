@@ -989,11 +989,11 @@ defmodule WawShowcaseWeb.Layouts do
 
       "Sous header" ->
         ~H"""
-        <.subheader>
+        <.waw_subheader>
         <:right>
         <div>Texte à droite</div>
         </:right>
-        </.subheader>
+        </.waw_subheader>
         """
 
       "Header d'un contenu" ->
