@@ -959,11 +959,13 @@ function initUiPreviewModal() {
 
   function renderFlatNav(variants, container, principalNom, hidePrincipal) {
     // Construire la liste des variantes pour la nav
+    // Assigner un _index à chaque variante pour correspondre aux index dans le template
+    let flatIndex = hidePrincipal ? 0 : 1 // Le principal est à l'index 0 si présent
     const allVariants = hidePrincipal
-      ? variants.map(v => ({ ...v, isPrincipal: false }))
+      ? variants.map(v => ({ ...v, isPrincipal: false, _index: flatIndex++ }))
       : [
-          { nom: principalNom || "Principal", code_source: null, isPrincipal: true },
-          ...variants.map(v => ({ ...v, isPrincipal: false }))
+          { nom: principalNom || "Principal", code_source: null, isPrincipal: true, _index: 0 },
+          ...variants.map(v => ({ ...v, isPrincipal: false, _index: flatIndex++ }))
         ]
 
     container.innerHTML = ""
