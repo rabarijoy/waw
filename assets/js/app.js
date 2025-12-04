@@ -2078,20 +2078,19 @@ const AutoResizeCardHook = {
     const previewTrigger = card.querySelector('.ui-preview-trigger')
     if (!previewTrigger) return
 
-    let currentColSpan = this.getCurrentColSpan(card)
     const maxColSpan = 12 // Maximum de colonnes dans une grille Tailwind standard
     const grid = card.closest('#ui-components-grid')
     if (!grid) return
 
     // Expansion progressive jusqu'à résolution du débordement
-    const tryExpand = () => {
+    const tryExpand = (currentColSpan) => {
       const cardRect = card.getBoundingClientRect()
       const previewRect = previewTrigger.getBoundingClientRect()
       const overflow = previewRect.width > (cardRect.width - 10)
 
       if (overflow && currentColSpan < maxColSpan) {
-        currentColSpan++
-        this.setColSpan(card, currentColSpan)
+        const newColSpan = currentColSpan + 1
+        this.setColSpan(card, newColSpan)
         
         // Vérifier à nouveau après un court délai pour laisser le DOM se mettre à jour
         setTimeout(() => {
@@ -2099,14 +2098,15 @@ const AutoResizeCardHook = {
           const newPreviewRect = previewTrigger.getBoundingClientRect()
           const stillOverflowing = newPreviewRect.width > (newCardRect.width - 10)
           
-          if (stillOverflowing && currentColSpan < maxColSpan) {
-            tryExpand()
+          if (stillOverflowing && newColSpan < maxColSpan) {
+            tryExpand(newColSpan)
           }
         }, 50)
       }
     }
 
-    tryExpand()
+    const initialColSpan = this.getCurrentColSpan(card)
+    tryExpand(initialColSpan)
   },
 
   expandCardVertically() {
