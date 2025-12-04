@@ -1040,6 +1040,47 @@ defmodule WawShowcaseWeb.Layouts do
         </.waw_status_block>
         """
 
+      "Info-bulle" ->
+        ~H"""
+        <div class="relative inline-block group">
+          <span class="cursor-pointer">contenu</span>
+          <div class="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 opacity-100 !visible !block pointer-events-auto z-50" style="display: block !important; visibility: visible !important; opacity: 1 !important;">
+            <.tooltip position="top" color="white" content="Information du tooltip" variant="simple" margin="top">
+            contenu
+            </.tooltip>
+          </div>
+        </div>
+        """
+
+      "Liste de tags" ->
+        ~H"""
+        <.waw_tag_list title="Flottes">
+        <:tag>
+        <.waw_badge id="badge-single-scope-complete" label="value" scope="scope" description="Avec étiquette" color="info-dark">
+        <:action>
+        <.waw_button_icon icon="cancel" bg_color="bg-light" />
+        </:action>
+        </.waw_badge>
+        </:tag>
+        <:tag>
+        <.waw_badge id="badge-single-scope" label="value" scope="scope" description="Avec étiquette" color="danger" />
+        </:tag>
+        <:tag>
+        <.waw_badge id="badge-single-standard" label="value" description="title" color="info">
+        <:action>
+        <.waw_button_icon icon="cancel" />
+        </:action>
+        </.waw_badge>
+        </:tag>
+        <:tag>
+        <.waw_badge id="badge-single-default" label="value" color="success" />
+        </:tag>
+        <:actions>
+        <.waw_button_icon icon="add" title="Ajouter un tag" />
+        </:actions>
+        </.waw_tag_list>
+        """
+
       "Popup de notification" ->
         assigns = assign(assigns, :notification_popup_preview_id, "notification-popup-preview-#{System.unique_integer([:positive, :monotonic])}")
         ~H"""
