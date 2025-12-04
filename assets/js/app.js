@@ -1042,7 +1042,7 @@ function initUiPreviewModal() {
       let variantIndex
       
       if (typeof variant._index === "number") {
-        // Pour les variantes hiérarchiques, _index est déjà l'index plat dans allVariants
+        // _index est l'index dans allVariants (le principal est à 0 si présent)
         // Le template indexe les variantes à partir de 0, donc on soustrait 1 si le principal existe
         variantIndex = variant._index - (hidePrincipal ? 0 : 1)
       } else {
