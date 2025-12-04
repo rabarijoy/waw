@@ -914,9 +914,11 @@ defmodule WawShowcaseWeb.Layouts do
   end
 
   # Helper pour rendre les variantes en dur (utilisé par la popup)
+  attr :sous_categorie, :string, required: true
+  attr :variant_nom, :string, required: true
   def render_variant_preview(assigns) do
-    sous_categorie = Map.get(assigns, :sous_categorie) || Map.get(assigns, "sous_categorie")
-    variant_nom = Map.get(assigns, :variant_nom) || Map.get(assigns, "variant_nom")
+    sous_categorie = assigns.sous_categorie
+    variant_nom = assigns.variant_nom
 
     case {sous_categorie, variant_nom} do
       ## Texte et Nombres – Distance

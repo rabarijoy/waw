@@ -1077,15 +1077,28 @@ function initUiPreviewModal() {
       if (variantContainer) {
         // Vérifier que le conteneur contient bien du HTML rendu et non juste du texte
         const containerHTML = variantContainer.innerHTML.trim()
+        
+        // Debug: afficher le contenu du conteneur pour diagnostiquer
+        console.log(`Variant container found for "${variant.nom}":`, {
+          containerHTML: containerHTML.substring(0, 200),
+          startsWithWaw: containerHTML.startsWith('<.waw_'),
+          startsWithInput: containerHTML.startsWith('<.input'),
+          startsWithLive: containerHTML.startsWith('<.live_'),
+          startsWithDiv: containerHTML.startsWith('<div'),
+          startsWithButton: containerHTML.startsWith('<button')
+        })
+        
         // Si le conteneur contient le code source en texte (commence par <.waw_ ou <.input), c'est qu'il n'a pas été rendu
         if (containerHTML.startsWith('<.waw_') || containerHTML.startsWith('<.input') || containerHTML.startsWith('<.live_')) {
-          console.warn(`Variant container found but contains unrendered code:`, {
+          console.error(`Variant container found but contains UNRENDERED code!`, {
             variant: variant,
-            containerHTML: containerHTML.substring(0, 100)
+            sousCategorie: card.getAttribute('data-component-title'),
+            containerHTML: containerHTML.substring(0, 200)
           })
           // Afficher le code source comme fallback
           componentEl.innerHTML = `<pre class="text-xs text-gray-600 whitespace-pre-wrap p-4 bg-gray-50 rounded-lg">${code.trim() || "Code source non disponible"}</pre>`
         } else {
+          // Le conteneur contient du HTML rendu, on peut le cloner
           componentEl.innerHTML = ""
           const clone = variantContainer.cloneNode(true)
           componentEl.appendChild(clone)
