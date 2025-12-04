@@ -903,6 +903,113 @@ defmodule WawShowcaseWeb.Layouts do
         </Waw.MapHeader.map_header>
         """
 
+      "Pagination" ->
+        ~H"""
+        <.waw_pagination label="Page" meta={%{current_page: 1, total_pages: 2, previous_page: nil, next_page: 2}} previous_page_action={nil} next_page_action={nil}/>
+        """
+
+      "Steps" ->
+        ~H"""
+        <.waw_steps>
+        <:step status={:valid}>
+        Initialisation
+        </:step>
+        <:step status={:invalid} active>
+        Covoiturage
+        </:step>
+        <:step status={:disabled}>
+        Véhicule
+        </:step>
+        <:step status={:disabled}>
+        Chauffeur
+        </:step>
+        <:step status={:disabled} disabled>
+        Récapitulation
+        </:step>
+        </.waw_steps>
+        """
+
+      "Tableau" ->
+        ~H"""
+        <.waw_table>
+        <:thead>
+        <.waw_th sort_key="desc">Name</.waw_th>
+        <.waw_th sort_key="asc">First Name</.waw_th>
+        </:thead>
+        <:tr state="selected">
+        <.waw_td title="Jean">Jean</.waw_td>
+        <.waw_td title="Dupont">Dupont</.waw_td>
+        </:tr>
+        <:tr state="normal">
+        <.waw_td title="Kim">Kim</.waw_td>
+        <.waw_td title="Léna" is_link={true} href="https://www.tag-ip.com/">Léna</.waw_td>
+        </:tr>
+        <:tr state="disabled">
+        <.waw_td title="Sam">Sam</.waw_td>
+        <.waw_td title="Smith">Smith</.waw_td>
+        </:tr>
+        </.waw_table>
+        """
+
+      "Onglets" ->
+        ~H"""
+        <.waw_tabs size="lg" align_tab="left">
+        <.waw_tab active>
+        Items
+        </.waw_tab>
+        <.waw_tab>
+        Flottes
+        </.waw_tab>
+        <.waw_tab disabled>
+        Instances
+        </.waw_tab>
+        <:actions>
+        <.waw_button label="Rafraîchir" size="sm" variant="outlined" icon="home" />
+        <div>
+        <.input id="input-single-search-litle-2" name="search" value="" size="sm" type="search" />
+        </div>
+        </:actions>
+        <:content>
+        <div>Content of tab</div>
+        </:content>
+        </.waw_tabs>
+        """
+
+      "Afficher un trackable" ->
+        ~H"""
+        <.waw_name value={%{label: "TGP0012", name: "4212TBA", tracker_label: "MD0014", custom_name: "ix35"}}/>
+        """
+
+      "Modal" ->
+        ~H"""
+        <div>
+        <.waw_button type="button" label="Ouvrir Modal" />
+        </div>
+        """
+
+      "Sous header" ->
+        ~H"""
+        <.subheader>
+        <:right>
+        <div>Texte à droite</div>
+        </:right>
+        </.subheader>
+        """
+
+      "Header d'un contenu" ->
+        ~H"""
+        <.waw_panel_header title="Title"/>
+        """
+
+      "Bloc de status" ->
+        ~H"""
+        <.waw_status_block title="Informations" icon="info-circle-fill">
+        <:content>
+        <.waw_status_block_content value="Le véhicule est au parking. La balise GPS est connectée." />
+        </:content>
+        </.waw_status_block>
+        """
+
       # Pour toutes les autres sous‑catégories, pas d'exécution dynamique :
       _ ->
         ~H"""
