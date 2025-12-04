@@ -1553,6 +1553,220 @@ defmodule WawShowcaseWeb.Layouts do
         </Waw.LiveSearch.live_search>
         """
 
+      ## Pagination
+      {"Pagination", "Simple"} ->
+        ~H"""
+        <.waw_pagination label="Page" total={9} current_page={1}>
+        <:left>
+        <.waw_button_icon icon="caret-left" icon_size={5} disabled />
+        </:left>
+        <:right>
+        <.waw_button_icon icon="caret-right" icon_size={5} />
+        </:right>
+        </.waw_pagination>
+        """
+
+      ## Tableau
+      {"Tableau", "Comptes-rendus flottes"} ->
+        ~H"""
+        <.waw_table>
+        <:thead>
+        <.waw_th_icon></.waw_th_icon>
+        <.waw_th_icon><.waw_icon name="circuit" stroke="none" size="4" /></.waw_th_icon>
+        <.waw_th sort_key="desc">Name</.waw_th>
+        <.waw_th sort_key="asc">First Name</.waw_th>
+        <.waw_th sort_key="desc">Details</.waw_th>
+        </:thead>
+        <:tr state="selected">
+        <.waw_td_icon><.waw_icon name="square-inset-filled" stroke="none" size="4" /></.waw_td_icon>
+        <.waw_td_icon><.waw_icon name="circuit" stroke="none" size="4" /></.waw_td_icon>
+        <.waw_td title="Jean">Jean</.waw_td>
+        <.waw_td title="Dupont">Dupoint</.waw_td>
+        <.waw_td_icon><.waw_icon name="square-stack-3d-up" stroke="none" size="4" /></.waw_td_icon>
+        </:tr>
+        <:tr state="normal">
+        <.waw_td_icon><.waw_icon name="square" stroke="none" size="4" /></.waw_td_icon>
+        <.waw_td_icon><.waw_icon name="circuit" stroke="none" size="4" /></.waw_td_icon>
+        <.waw_td title="Kim">Kim</.waw_td>
+        <.waw_td title="Léna">Léna</.waw_td>
+        <.waw_td_icon is_link={true} href="https://www.tag-ip.com/"><.waw_icon name="square-stack-3d-up" stroke="none" size="4" /></.waw_td_icon>
+        </:tr>
+        </.waw_table>
+        """
+
+      ## Onglets
+      {"Onglets", "Petite taille"} ->
+        ~H"""
+        <.waw_tabs size="sm" align_tab="left">
+        <.waw_tab size="sm" active>
+        Items
+        </.waw_tab>
+        <.waw_tab size="sm">
+        Flottes
+        </.waw_tab>
+        <.waw_tab size="sm" disabled>
+        Instances
+        </.waw_tab>
+        <:actions>
+        <.waw_button label="Créer" size="sm" />
+        <.waw_button label="Rafraîchir" size="sm" icon="home" />
+        <div>
+        <.input id="input-single-search-litle" name="search" value="" size="sm" type="search" />
+        </div>
+        </:actions>
+        <:content>
+        <div>Content of tab</div>
+        </:content>
+        </.waw_tabs>
+        """
+
+      ## Afficher un trackable
+      {"Afficher un trackable", "Avec symbole"} ->
+        ~H"""
+        <.waw_name size="sm" value={%{label: "TGP0012", name: "4212TBA", tracker_label: "MD0014", custom_name: "ix35", trackable_symbol: "moto"}} with_symbol/>
+        """
+
+      ## Sous header
+      {"Sous header", "Fil d'Ariane"} ->
+        ~H"""
+        <.waw_subheader>
+        <:breadcrumb>
+        <.waw_nav_breadcrumb>
+        <.waw_icon name="home-fill" size="4" stroke="none" />
+        </.waw_nav_breadcrumb>
+        </:breadcrumb>
+        <:breadcrumb>
+        <.waw_nav_breadcrumb>2MI</.waw_nav_breadcrumb>
+        </:breadcrumb>
+        <:breadcrumb>
+        <.waw_nav_breadcrumb>Coursiers</.waw_nav_breadcrumb>
+        </:breadcrumb>
+        <:breadcrumb>
+        <.waw_nav_breadcrumb active>Vue globale</.waw_nav_breadcrumb>
+        </:breadcrumb>
+        </.waw_subheader>
+        """
+
+      {"Sous header", "Complet"} ->
+        ~H"""
+        <.waw_subheader>
+        <:breadcrumb>
+        <.waw_nav_breadcrumb>
+        <.waw_icon name="home-fill" size="4" stroke="none" />
+        </.waw_nav_breadcrumb>
+        </:breadcrumb>
+        <:breadcrumb>
+        <.waw_nav_breadcrumb>2MI</.waw_nav_breadcrumb>
+        </:breadcrumb>
+        <:breadcrumb>
+        <.waw_nav_breadcrumb>Coursiers</.waw_nav_breadcrumb>
+        </:breadcrumb>
+        <:breadcrumb>
+        <.waw_nav_breadcrumb active>Vue globale</.waw_nav_breadcrumb>
+        </:breadcrumb>
+        <:right>
+        <div>Texte à droite</div>
+        </:right>
+        </.waw_subheader>
+        """
+
+      ## Header d'un contenu
+      {"Header d'un contenu", "Avec acronyme et sous-titre"} ->
+        ~H"""
+        <.waw_panel_header selected title="Acronyme" subtitle="55 En mouvement" acronym="A" subtitle_type="success"/>
+        """
+
+      {"Header d'un contenu", "Avec bouton réduit"} ->
+        ~H"""
+        <.waw_panel_header title="Caret left" icon="truck">
+        <:actions>
+        <.waw_icon name="caret-left" size="6" />
+        </:actions>
+        </.waw_panel_header>
+        """
+
+      {"Header d'un contenu", "Avec statut et bouton réduit"} ->
+        ~H"""
+        <.waw_panel_header title="Caret left" icon="truck" subtitle="À l'arrêt" subtitle_type="warning">
+        <:actions>
+        <.waw_icon name="caret-left" size="6" />
+        </:actions>
+        </.waw_panel_header>
+        """
+
+      {"Header d'un contenu", "Avec statut et bouton déroulant"} ->
+        ~H"""
+        <.waw_panel_header title="Caret right" icon="car" subtitle="En mouvement" subtitle_type="success">
+        <:actions>
+        <.waw_icon name="caret-right" size="6" />
+        </:actions>
+        </.waw_panel_header>
+        """
+
+      ## Bloc de status
+      {"Bloc de status", "Avec clé-valeur"} ->
+        ~H"""
+        <.waw_status_block title="Localisation" icon="world">
+        <:right>
+        <.waw_icon name="sign-out" size="4" stroke="none" />
+        </:right>
+        <:content>
+        <.waw_status_block_content col={2} label="Dernière position" value="-12.31027, 49.30167" />
+        <.waw_status_block_content col={2} label="Route et PK" value="-" />
+        </:content>
+        </.waw_status_block>
+        """
+
+      {"Bloc de status", "Avec clé-valeur et status"} ->
+        ~H"""
+        <.waw_status_block status={:success} title="Informations balise GPS" icon="tracker">
+        <:right>
+        <span>Connectée</span>
+        </:right>
+        <:content>
+        <.waw_status_block_content col={2} label="Dernière position" value="10:53:10  31 oct. 2023, -12.31027, 49.30167" />
+        </:content>
+        </.waw_status_block>
+        """
+
+      {"Bloc de status", "Avec liste de trajets"} ->
+        ~H"""
+        <.waw_status_block title="Compte-Rendu du trajet" icon="circuit">
+        <:table>
+        <.waw_table without_border>
+        <:thead>
+        <.waw_th>#</.waw_th>
+        <.waw_th>De</.waw_th>
+        <.waw_th>A</.waw_th>
+        <.waw_th>Durée</.waw_th>
+        <.waw_th>Distance</.waw_th>
+        </:thead>
+        <:tr state="selected">
+        <.waw_td>3</.waw_td>
+        <.waw_td title="08:05:52">08:05:52</.waw_td>
+        <.waw_td title="09:04:52">09:04:52</.waw_td>
+        <.waw_td title="1h14min34s">1h14min34s</.waw_td>
+        <.waw_td title="20km">20km</.waw_td>
+        </:tr>
+        <:tr state="normal">
+        <.waw_td>2</.waw_td>
+        <.waw_td title="07:05:52">07:05:52</.waw_td>
+        <.waw_td title="08:04:52">08:04:52</.waw_td>
+        <.waw_td title="14min34s">14min34s</.waw_td>
+        <.waw_td title="21km">21km</.waw_td>
+        </:tr>
+        <:tr state="normal">
+        <.waw_td>1</.waw_td>
+        <.waw_td title="06:05:52">06:05:52</.waw_td>
+        <.waw_td title="07:04:52">07:04:52</.waw_td>
+        <.waw_td title="14min34s">14min34s</.waw_td>
+        <.waw_td title="25km">25km</.waw_td>
+        </:tr>
+        </.waw_table>
+        </:table>
+        </.waw_status_block>
+        """
+
       # Fallback : aucune variante mappée en dur
       _ ->
         ~H"""
