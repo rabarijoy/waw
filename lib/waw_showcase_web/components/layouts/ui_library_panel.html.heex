@@ -188,6 +188,7 @@
           <!-- Basiques -->
           <div
             :for={item <- basiques_items}
+            id={"ui-component-card-#{String.replace(item.sous_categorie, " ", "-") |> String.downcase()}"}
             phx-hook="AutoResizeCard"
             class={[
               "ui-component-card rounded-xl border border-gray-200 bg-white shadow-sm p-6 flex flex-col gap-3",
@@ -280,6 +281,7 @@
           <!-- Dates et Heures -->
           <div
             :for={item <- dates_heures_items}
+            id={"ui-component-card-#{String.replace(item.sous_categorie, " ", "-") |> String.downcase()}"}
             phx-hook="AutoResizeCard"
             class="ui-component-card rounded-xl border border-gray-200 bg-white shadow-sm p-6 flex flex-col gap-3"
             data-component-title={item.sous_categorie}
@@ -355,6 +357,7 @@
           <!-- Cartes -->
           <div
             :for={item <- cartes_items}
+            id={"ui-component-card-#{String.replace(item.sous_categorie, " ", "-") |> String.downcase()}"}
             phx-hook="AutoResizeCard"
             class={[
               "ui-component-card rounded-xl border border-gray-200 bg-white shadow-sm p-6 flex flex-col gap-3",
@@ -437,6 +440,8 @@
           <!-- Formulaire -->
           <div
             :for={item <- formulaire_items}
+            id={"ui-component-card-#{String.replace(item.sous_categorie, " ", "-") |> String.downcase()}"}
+            phx-hook="AutoResizeCard"
             class="ui-component-card rounded-xl border border-gray-200 bg-white shadow-sm p-6 flex flex-col gap-3"
             data-component-title={item.sous_categorie}
             data-component-module={item[:module] || item.module || ""}
