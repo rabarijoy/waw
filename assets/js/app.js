@@ -1046,9 +1046,13 @@ function initUiPreviewModal() {
         // Le template indexe les variantes à partir de 0, donc on soustrait 1 si le principal existe
         variantIndex = variant._index - (hidePrincipal ? 0 : 1)
       } else {
-        // Pour les variantes plates, calculer l'index
-        const variantPos = allVariants.indexOf(variant)
-        variantIndex = variantPos - (hidePrincipal ? 0 : 1)
+        // Fallback: calculer l'index en cherchant dans allVariants par comparaison
+        const variantPos = allVariants.findIndex(v => 
+          v.nom === variant.nom && 
+          v.code_source === variant.code_source &&
+          v.isPrincipal === variant.isPrincipal
+        )
+        variantIndex = variantPos >= 0 ? variantPos - (hidePrincipal ? 0 : 1) : 0
       }
       
       // S'assurer que l'index est >= 0
