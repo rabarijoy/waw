@@ -1442,8 +1442,8 @@ defmodule WawShowcaseWeb.Layouts do
         </div>
         """
 
-      ## Basiques – Champ
-      {"Champ", "Texte"} ->
+      ## Basiques – Champs
+      {"Champs", "Texte"} ->
         ~H"""
         <.input name="text" label="label" type="text" placeholder="Placeholder" value="">
         <:tooltip_block>
@@ -1454,7 +1454,7 @@ defmodule WawShowcaseWeb.Layouts do
         </.input>
         """
 
-      {"Champ", "Création flotte"} ->
+      {"Champs", "Création flotte"} ->
         ~H"""
         <.input name="flotte" label="label" type="text" placeholder="Placeholder" value="">
         <:tooltip_block>
@@ -1465,42 +1465,42 @@ defmodule WawShowcaseWeb.Layouts do
         </.input>
         """
 
-      {"Champ", "Description ou note"} ->
+      {"Champs", "Description ou note"} ->
         ~H"""
         <.input name="description" label="label" type="textarea" placeholder="Placeholder" value=""/>
         """
 
-      {"Champ", "E-mail"} ->
+      {"Champs", "E-mail"} ->
         ~H"""
         <.input name="email" label="label" type="email" placeholder="name@tag_ip.com" value=""/>
         """
 
-      {"Champ", "Téléphone"} ->
+      {"Champs", "Téléphone"} ->
         ~H"""
         <.input name="phone" label="label" type="tel" placeholder="Number" value=""/>
         """
 
-      {"Champ", "Checkbox"} ->
+      {"Champs", "Checkbox"} ->
         ~H"""
         <.input name="checkbox" label="label" type="checkbox" value=""/>
         """
 
-      {"Champ", "Heure"} ->
+      {"Champs", "Heure"} ->
         ~H"""
         <.input name="time" label="label" type="time" value=""/>
         """
 
-      {"Champ", "Date et heure"} ->
+      {"Champs", "Date et heure"} ->
         ~H"""
         <.input name="datetime" label="label" type="datetime-local" value=""/>
         """
 
-      {"Champ", "Recherche petite taille"} ->
+      {"Champs", "Recherche petite taille"} ->
         ~H"""
         <.input name="search-small" type="search" value=""/>
         """
 
-      {"Champ", "Recherche avec popup"} ->
+      {"Champs", "Recherche avec popup"} ->
         ~H"""
         <.input name="search" value="" type="search">
         <Waw.List.li>item 1</Waw.List.li>
@@ -1508,12 +1508,12 @@ defmodule WawShowcaseWeb.Layouts do
         </.input>
         """
 
-      {"Champ", "Sélection"} ->
+      {"Champs", "Sélection"} ->
         ~H"""
         <.input name="select" label="Label" type="select" options={[{"option 1", "option 1"}, {"option 2", "option 2"}]} value="" />
         """
 
-      {"Champ", "Sélection multiple"} ->
+      {"Champs", "Sélection multiple"} ->
         ~H"""
         <.input name="select-multiple" label="Label" type="select" multiple={true} options={[{"option 1", "option 1"}, {"option 2", "option 2"}]} value="" />
         """
