@@ -1577,51 +1577,189 @@ const BentoGrid = {
     
     // Attendre que le layout soit stabilisé
     setTimeout(() => {
-      const wideCards = Array.from(grid.querySelectorAll('.bento-wide'))
-      if (wideCards.length === 0) return
+      // Ne s'applique qu'en mode xl (3 colonnes)
+      if (window.innerWidth < 1280) return
       
-      // Pour chaque carte large, vérifier si elle est seule sur sa ligne
-      wideCards.forEach((card) => {
-        const cardRect = card.getBoundingClientRect()
-        
-        // Trouver toutes les cartes visibles dans la grille
-        const allCards = Array.from(grid.querySelectorAll('.ui-component-card'))
-          .filter(c => window.getComputedStyle(c).display !== 'none')
-        
-        // Trouver les cartes sur la même ligne (même top avec une tolérance)
-        const sameLineCards = allCards.filter(c => {
-          if (c === card) return false
-          const cRect = c.getBoundingClientRect()
-          return Math.abs(cRect.top - cardRect.top) < 5
-        })
-        
-        // Si aucune carte n'est sur la même ligne OU si la carte est la dernière de sa ligne
-        // et qu'il n'y a qu'une colonne libre à droite, prendre toute la largeur
-        if (sameLineCards.length === 0) {
-          // Seule sur sa ligne, prendre toute la largeur
-          card.classList.remove('xl:col-span-2')
-          card.classList.add('xl:col-span-3')
-        } else {
-          // Vérifier si la carte est à la fin de sa ligne (pas de carte à droite)
-          const cardsToRight = sameLineCards.filter(c => {
-            const cRect = c.getBoundingClientRect()
-            return cRect.left > cardRect.right + 10 // Tolérance pour le gap
-          })
-          
-          if (cardsToRight.length === 0) {
-            // Pas de carte à droite, prendre toute la largeur
-            card.classList.remove('xl:col-span-2')
-            card.classList.add('xl:col-span-3')
-          } else {
-            // Il y a une carte à droite, garder col-span-2
-            card.classList.remove('xl:col-span-3')
-            if (!card.classList.contains('xl:col-span-2')) {
-              card.classList.add('xl:col-span-2')
-            }
-          }
+      const allCards = Array.from(grid.querySelectorAll('.ui-component-card'))
+        .filter(c => window.getComputedStyle(c).display !== 'none')
+      
+      if (allCards.length === 0) return
+      
+      // Organiser les cards par lignes
+      const cardsByLine = this.organizeCardsByLine(allCards)
+      
+      // Optimiser chaque ligne
+      cardsByLine.forEach((lineCards) => {
+        this.optimizeLine(lineCards, allCards, cardsByLine)
+      })
+    }, 150)
+  },
+  
+  organizeCardsByLine(cards) {
+    const lines = []
+    const processed = new Set()
+    
+    cards.forEach(card => {
+      if (processed.has(card)) return
+      
+      const cardRect = card.getBoundingClientRect()
+      const line = [card]
+      processed.add(card)
+      
+      // Trouver toutes les cards sur la même ligne
+      cards.forEach(otherCard => {
+        if (processed.has(otherCard)) return
+        const otherRect = otherCard.getBoundingClientRect()
+        if (Math.abs(otherRect.top - cardRect.top) < 5) {
+          line.push(otherCard)
+          processed.add(otherCard)
         }
       })
-    }, 100)
+      
+      // Trier par position horizontale
+      line.sort((a, b) => {
+        const aRect = a.getBoundingClientRect()
+        const bRect = b.getBoundingClientRect()
+        return aRect.left - bRect.left
+      })
+      
+      lines.push(line)
+    })
+    
+    return lines.sort((a, b) => {
+      const aTop = a[0].getBoundingClientRect().top
+      const bTop = b[0].getBoundingClientRect().top
+      return aTop - bTop
+    })
+  },
+  
+  getCardSpan(card) {
+    if (card.classList.contains('xl:col-span-3')) return 3
+    if (card.classList.contains('xl:col-span-2')) return 2
+    return 1
+  },
+  
+  setCardSpan(card, span) {
+    card.classList.remove('xl:col-span-2', 'xl:col-span-3')
+    if (span === 2) {
+      card.classList.add('xl:col-span-2')
+    } else if (span === 3) {
+      card.classList.add('xl:col-span-3')
+    }
+  },
+  
+  optimizeLine(lineCards, allCards, allLines) {
+    // Calculer l'espace occupé sur cette ligne
+    let occupiedSpace = 0
+    lineCards.forEach(card => {
+      occupiedSpace += this.getCardSpan(card)
+    })
+    
+    // Si la ligne est complète (3 colonnes), ne rien faire
+    if (occupiedSpace >= 3) return
+    
+    const currentLineIndex = allLines.findIndex(line => line === lineCards)
+    
+    // Cas 1: Une card de 2 colonnes est seule sur sa ligne
+    if (occupiedSpace === 2 && lineCards.length === 1) {
+      const card = lineCards[0]
+      const cardSpan = this.getCardSpan(card)
+      
+      if (cardSpan === 2) {
+        // Chercher une card de 1 colonne dans les lignes suivantes qui peut être combinée
+        const nextSingleCard = this.findNextSingleCard(allLines, currentLineIndex)
+        
+        if (nextSingleCard) {
+          // Utiliser grid-column pour positionner la card suivante sur la même ligne
+          // En utilisant order CSS, on peut réorganiser visuellement
+          card.style.order = currentLineIndex * 100
+          nextSingleCard.card.style.order = currentLineIndex * 100 + 1
+          
+          // S'assurer que les spans sont corrects
+          this.setCardSpan(card, 2)
+          this.setCardSpan(nextSingleCard.card, 1)
+          return
+        }
+        
+        // Si aucune card de 1 colonne ne peut être combinée, étendre à 3 colonnes
+        this.setCardSpan(card, 3)
+      }
+    }
+    
+    // Cas 2: Deux cards de 1 colonne sur la même ligne
+    if (occupiedSpace === 2 && lineCards.length === 2) {
+      const bothSingle = lineCards.every(c => this.getCardSpan(c) === 1)
+      if (bothSingle) {
+        // Chercher une troisième card de 1 colonne pour compléter la ligne
+        const nextSingleCard = this.findNextSingleCard(allLines, currentLineIndex)
+        
+        if (nextSingleCard) {
+          lineCards.forEach((c, idx) => {
+            c.style.order = currentLineIndex * 100 + idx
+          })
+          nextSingleCard.card.style.order = currentLineIndex * 100 + 2
+          
+          this.setCardSpan(nextSingleCard.card, 1)
+          return
+        }
+      }
+    }
+    
+    // Cas 3: Une card de 1 colonne seule sur sa ligne
+    if (occupiedSpace === 1 && lineCards.length === 1) {
+      const card = lineCards[0]
+      const cardSpan = this.getCardSpan(card)
+      
+      if (cardSpan === 1) {
+        // Chercher une card de 2 colonnes dans les lignes suivantes
+        const nextDoubleCard = this.findNextDoubleCard(allLines, currentLineIndex)
+        
+        if (nextDoubleCard) {
+          card.style.order = currentLineIndex * 100
+          nextDoubleCard.card.style.order = currentLineIndex * 100 + 1
+          
+          this.setCardSpan(card, 1)
+          this.setCardSpan(nextDoubleCard.card, 2)
+          return
+        }
+      }
+    }
+  },
+  
+  findNextSingleCard(allLines, currentLineIndex) {
+    for (let i = currentLineIndex + 1; i < allLines.length; i++) {
+      const line = allLines[i]
+      const lineOccupied = line.reduce((sum, c) => sum + this.getCardSpan(c), 0)
+      
+      // Chercher une card de 1 colonne dans cette ligne
+      const singleCard = line.find(c => this.getCardSpan(c) === 1)
+      
+      if (singleCard) {
+        // Si la ligne peut se permettre de perdre cette card (elle a d'autres cards ou plus d'espace)
+        if (line.length > 1 || lineOccupied > 1) {
+          return { card: singleCard, lineIndex: i }
+        }
+      }
+    }
+    return null
+  },
+  
+  findNextDoubleCard(allLines, currentLineIndex) {
+    for (let i = currentLineIndex + 1; i < allLines.length; i++) {
+      const line = allLines[i]
+      const lineOccupied = line.reduce((sum, c) => sum + this.getCardSpan(c), 0)
+      
+      // Chercher une card de 2 colonnes dans cette ligne
+      const doubleCard = line.find(c => this.getCardSpan(c) === 2)
+      
+      if (doubleCard) {
+        // Si la ligne peut se permettre de perdre cette card
+        if (line.length > 1 || lineOccupied > 2) {
+          return { card: doubleCard, lineIndex: i }
+        }
+      }
+    }
+    return null
   }
 }
 

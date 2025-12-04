@@ -108,7 +108,7 @@
           </p>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 auto-rows-[minmax(0,_auto)]" id="ui-components-grid">
+        <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 auto-rows-[minmax(0,_auto)]" id="ui-components-grid" phx-hook="BentoGrid" style="grid-auto-flow: row;">
           <!-- Texte et Nombres -->
           <div
             :for={item <- text_items}
