@@ -1,4 +1,4 @@
-<div class="py-6 px-4">
+<div class="py-6">
   <% text_items = WawShowcase.UIConfig.get_components_by_category("Texte et Nombres") %>
   <% basiques_items = WawShowcase.UIConfig.get_components_by_category("Basiques") %>
   <% dates_heures_items = WawShowcase.UIConfig.get_components_by_category("Dates et heures") %>
@@ -11,7 +11,7 @@
       []
     end %>
   <!-- Header avec titre à gauche et recherche à droite -->
-  <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
+  <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6 max-w-7xl mx-auto">
     <div>
       <h1 class="text-lg md:text-xl font-semibold text-gray-900">Bibliothèque UI</h1>
       <p class="text-xs md:text-sm text-gray-500">
@@ -30,7 +30,7 @@
     </div>
   </div>
 
-  <div class="flex flex-col md:flex-row gap-6">
+  <div class="flex flex-col md:flex-row gap-6 max-w-7xl mx-auto">
     <!-- Sidebar catégories resserrée à gauche -->
     <aside id="ui-categories-sidebar" class="w-full md:w-56 flex-shrink-0" phx-hook="UICategory">
       <div class="bg-white rounded-lg border border-gray-200 shadow-sm p-4 space-y-3">

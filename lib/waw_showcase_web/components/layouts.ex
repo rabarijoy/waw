@@ -481,7 +481,7 @@ defmodule WawShowcaseWeb.Layouts do
       # Essayer de rendre l'icône pour vérifier qu'elle existe
       # On utilise un render minimaliste pour valider
       assigns = %{name: icon_name, size: "6"}
-      
+
       # Essayer de créer le composant waw_icon
       # Si le composant existe et que l'icône est valide, cela fonctionnera
       # Sinon, cela lèvera une exception
