@@ -1105,17 +1105,26 @@ function initUiPreviewModal() {
         }
       } else {
         // Debug: vérifier tous les conteneurs disponibles pour diagnostiquer
-        const allVariantContainers = card.querySelectorAll('.variant-previews [data-variant-index]')
-        console.warn(`Variant preview not found`, {
+        const variantPreviewsContainer = card.querySelector('.variant-previews')
+        const allVariantContainers = variantPreviewsContainer 
+          ? variantPreviewsContainer.querySelectorAll('[data-variant-index]')
+          : []
+        
+        console.error(`Variant preview not found!`, {
           variant: variant,
+          variantNom: variant.nom,
+          sousCategorie: card.getAttribute('data-component-title'),
           hidePrincipal: hidePrincipal,
           variantIndexInAllVariants: variant._index,
+          variantPreviewsExists: variantPreviewsContainer !== null,
+          totalContainers: allVariantContainers.length,
           availableVariants: Array.from(allVariantContainers).map(c => ({
             index: c.getAttribute('data-variant-index'),
             nom: c.getAttribute('data-variant-nom'),
-            sousCategorie: card.getAttribute('data-component-title')
+            hasPreview: c.querySelector('.component-preview-variant') !== null
           })),
-          variantPreviewsExists: card.querySelector('.variant-previews') !== null
+          cardId: card.id,
+          cardHTML: card.outerHTML.substring(0, 500)
         })
         
         // Fallback: afficher le code source si aucun preview n'est disponible
