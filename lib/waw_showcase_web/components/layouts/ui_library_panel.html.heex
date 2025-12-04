@@ -39,7 +39,7 @@
   >
     <!-- Overlay -->
     <div class="absolute inset-0 bg-black/50 backdrop-blur-sm" data-spotlight-close></div>
-    
+
     <!-- Modal Content -->
     <div class="relative w-full max-w-2xl mx-4 bg-white rounded-2xl shadow-2xl overflow-hidden">
       <!-- Search Input -->
@@ -66,7 +66,7 @@
           </button>
         </div>
       </div>
-      
+
       <!-- Results List -->
       <div id="ui-spotlight-results" class="max-h-[60vh] overflow-y-auto">
         <div class="p-2">
@@ -229,8 +229,8 @@
               <button
                 type="button"
                 class="px-3 py-1.5 text-xs font-medium text-white bg-gray-900 rounded-md hover:bg-gray-800 transition-colors focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 whitespace-nowrap shrink-0"
-                phx-click="copy_code"
-                phx-value-code={code}
+                onclick="navigator.clipboard.writeText(this.dataset.code).then(() => { const btn = this; const originalText = btn.textContent; btn.textContent = 'Copié!'; setTimeout(() => { btn.textContent = originalText; }, 2000); })"
+                data-code={code}
               >
                 Copier
               </button>
@@ -322,8 +322,8 @@
               <button
                 type="button"
                 class="px-3 py-1.5 text-xs font-medium text-white bg-gray-900 rounded-md hover:bg-gray-800 transition-colors focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 whitespace-nowrap shrink-0"
-                phx-click="copy_code"
-                phx-value-code={code}
+                onclick="navigator.clipboard.writeText(this.dataset.code).then(() => { const btn = this; const originalText = btn.textContent; btn.textContent = 'Copié!'; setTimeout(() => { btn.textContent = originalText; }, 2000); })"
+                data-code={code}
               >
                 Copier
               </button>
@@ -398,8 +398,8 @@
               <button
                 type="button"
                 class="px-3 py-1.5 text-xs font-medium text-white bg-gray-900 rounded-md hover:bg-gray-800 transition-colors focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 whitespace-nowrap shrink-0"
-                phx-click="copy_code"
-                phx-value-code={code}
+                onclick="navigator.clipboard.writeText(this.dataset.code).then(() => { const btn = this; const originalText = btn.textContent; btn.textContent = 'Copié!'; setTimeout(() => { btn.textContent = originalText; }, 2000); })"
+                data-code={code}
               >
                 Copier
               </button>
@@ -481,8 +481,8 @@
               <button
                 type="button"
                 class="px-3 py-1.5 text-xs font-medium text-white bg-gray-900 rounded-md hover:bg-gray-800 transition-colors focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 whitespace-nowrap shrink-0"
-                phx-click="copy_code"
-                phx-value-code={code}
+                onclick="navigator.clipboard.writeText(this.dataset.code).then(() => { const btn = this; const originalText = btn.textContent; btn.textContent = 'Copié!'; setTimeout(() => { btn.textContent = originalText; }, 2000); })"
+                data-code={code}
               >
                 Copier
               </button>
@@ -554,8 +554,8 @@
               <button
                 type="button"
                 class="px-3 py-1.5 text-xs font-medium text-white bg-gray-900 rounded-md hover:bg-gray-800 transition-colors focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 whitespace-nowrap shrink-0"
-                phx-click="copy_code"
-                phx-value-code={code}
+                onclick="navigator.clipboard.writeText(this.dataset.code).then(() => { const btn = this; const originalText = btn.textContent; btn.textContent = 'Copié!'; setTimeout(() => { btn.textContent = originalText; }, 2000); })"
+                data-code={code}
               >
                 Copier
               </button>
