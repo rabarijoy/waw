@@ -1013,6 +1013,8 @@ function initUiPreviewModal() {
     const principalCode = card.getAttribute("data-component-principal-code") || ""
     const principalNom = card.getAttribute("data-component-principal-nom") || card.getAttribute("data-component-title") || ""
     const code = variant.isPrincipal ? principalCode : (variant.code_source || "")
+    const sousCategorie = card.getAttribute("data-component-title") || ""
+    const hidePrincipal = sousCategorie === "Distance"
 
     if (codeEl) {
       codeEl.textContent = code.trim()
@@ -1032,12 +1034,23 @@ function initUiPreviewModal() {
       }
     } else if (componentEl) {
       // Pour les variantes, cloner le HTML pré-rendu caché dans la carte
-      // Utiliser _flatIndex si disponible, sinon calculer l'index
-      const variantIndex = typeof variant._flatIndex === "number" 
-        ? variant._flatIndex 
-        : (typeof variant._index === "number" 
-          ? variant._index 
-          : allVariants.indexOf(variant) - 1)
+      // L'index dans le template commence à 0 pour la première variante
+      // Dans allVariants, le principal est à l'index 0 (si présent), donc les variantes commencent à 1
+      // Mais dans le template, les variantes sont indexées à partir de 0
+      let variantIndex
+      
+      if (typeof variant._index === "number") {
+        // Pour les variantes hiérarchiques, _index est déjà l'index plat dans allVariants
+        // Le template indexe les variantes à partir de 0, donc on soustrait 1 si le principal existe
+        variantIndex = variant._index - (hidePrincipal ? 0 : 1)
+      } else {
+        // Pour les variantes plates, calculer l'index
+        const variantPos = allVariants.indexOf(variant)
+        variantIndex = variantPos - (hidePrincipal ? 0 : 1)
+      }
+      
+      // S'assurer que l'index est >= 0
+      if (variantIndex < 0) variantIndex = 0
       
       const variantContainer = card.querySelector(`.variant-previews [data-variant-index="${variantIndex}"] .component-preview-variant`)
 
@@ -1046,6 +1059,8 @@ function initUiPreviewModal() {
         const clone = variantContainer.cloneNode(true)
         componentEl.appendChild(clone)
       } else {
+        // Debug: afficher l'index recherché pour diagnostiquer
+        console.warn(`Variant preview not found for index ${variantIndex}, variant:`, variant)
         // Fallback: afficher le code source si aucun preview n'est disponible
         componentEl.innerHTML = `<pre class="text-xs text-gray-600 whitespace-pre-wrap p-4 bg-gray-50 rounded-lg">${code.trim() || "Code source non disponible"}</pre>`
       }
