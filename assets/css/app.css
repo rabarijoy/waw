@@ -118,6 +118,16 @@ body {
   width: 100%;
 }
 
+/* Neutraliser les marges internes dans les aperçus de composants de la bibliothèque UI
+   sans impacter le reste de l'application */
+.ui-preview-trigger * {
+  margin: 0 !important;
+}
+
+.component-preview-variant * {
+  margin: 0 !important;
+}
+
 /* Import Waw Components CSS from local dependency - content included directly below */
 
 /* This file is for your main application CSS */
