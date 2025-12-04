@@ -998,13 +998,15 @@ defmodule WawShowcaseWeb.Layouts do
               <:cancel>
                 <.waw_button_icon icon="cancel" icon_size={5} stroke="none" phx-click={JS.hide(to: "##{@modal_preview_id}", transition: {"transition-all ease-out duration-300", "opacity-100 scale-100", "opacity-0 scale-95"})} />
               </:cancel>
-              <div class="p-6">
-                <p class="text-gray-700">Contenu du modal de démonstration.</p>
-                <div class="mt-4 flex justify-end gap-2">
-                  <.waw_button label="Annuler" size="sm" phx-click={JS.hide(to: "##{@modal_preview_id}", transition: {"transition-all ease-out duration-300", "opacity-100 scale-100", "opacity-0 scale-95"})} />
-                  <.waw_button label="Confirmer" size="sm" type="submit" />
+              <:content>
+                <div class="p-6">
+                  <p class="text-gray-700">Contenu du modal de démonstration.</p>
                 </div>
-              </div>
+              </:content>
+              <:actions>
+                <.waw_button label="Annuler" size="sm" phx-click={JS.hide(to: "##{@modal_preview_id}", transition: {"transition-all ease-out duration-300", "opacity-100 scale-100", "opacity-0 scale-95"})} />
+                <.waw_button label="Confirmer" size="sm" type="submit" />
+              </:actions>
             </.waw_modal>
           </div>
         </div>
