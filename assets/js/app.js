@@ -1067,8 +1067,6 @@ function initUiPreviewModal() {
     }
 
     // Re-rendre la navigation avec le bon bouton actif et le nom réel
-    const sousCategorie = card.getAttribute("data-component-title") || ""
-    const hidePrincipal = sousCategorie === "Distance"
     const hasSubVariants = currentVariants.some(v => v.sous_variantes && Array.isArray(v.sous_variantes))
     
     if (hasSubVariants) {
