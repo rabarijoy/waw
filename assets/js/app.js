@@ -1448,36 +1448,57 @@ const UISearchHook = {
   mounted() {
     const searchInput = this.el
     const grid = document.getElementById("ui-components-grid")
+    const iconsSection = document.getElementById("ui-icons-section")
     const noResults = document.getElementById("ui-no-results")
     
     if (!grid) return
 
     const filterCards = (searchTerm) => {
-      const cards = grid.querySelectorAll(".ui-component-card")
-      const term = searchTerm.toLowerCase().trim()
       const activeCategory = window.getActiveCategory ? window.getActiveCategory() : "texte-nombres"
       const activeSubcategory = window.getActiveSubcategory ? window.getActiveSubcategory() : null
+      const term = searchTerm.toLowerCase().trim()
       let visibleCount = 0
 
-      cards.forEach((card) => {
-        const cardCategory = card.getAttribute("data-component-category")
-        const cardSubcategory = card.getAttribute("data-component-subcategory")
-        const title = card.getAttribute("data-component-title") || ""
-        const module = card.getAttribute("data-component-module") || ""
-        
-        const matchesCategory = cardCategory === activeCategory
-        const matchesSubcategory = !activeSubcategory || cardSubcategory === activeSubcategory
-        const matchesTitle = title.toLowerCase().includes(term)
-        const matchesModule = module.toLowerCase().includes(term)
-        const matchesSearch = term === "" || matchesTitle || matchesModule
-        
-        if (matchesCategory && matchesSubcategory && matchesSearch) {
-          card.style.display = ""
-          visibleCount++
-        } else {
-          card.style.display = "none"
-        }
-      })
+      // Si on est sur la catégorie icônes, filtrer les icônes dans la section dédiée
+      if (activeCategory === "icones" && iconsSection) {
+        const iconCards = iconsSection.querySelectorAll(".ui-icon-card")
+        iconCards.forEach((card) => {
+          const title = card.getAttribute("data-component-title") || ""
+          const module = card.getAttribute("data-component-module") || ""
+          const matchesSearch = term === "" || 
+            title.toLowerCase().includes(term) || 
+            module.toLowerCase().includes(term)
+          
+          if (matchesSearch) {
+            card.style.display = ""
+            visibleCount++
+          } else {
+            card.style.display = "none"
+          }
+        })
+      } else {
+        // Filtrer les cards normales
+        const cards = grid.querySelectorAll(".ui-component-card")
+        cards.forEach((card) => {
+          const cardCategory = card.getAttribute("data-component-category")
+          const cardSubcategory = card.getAttribute("data-component-subcategory")
+          const title = card.getAttribute("data-component-title") || ""
+          const module = card.getAttribute("data-component-module") || ""
+          
+          const matchesCategory = cardCategory === activeCategory
+          const matchesSubcategory = !activeSubcategory || cardSubcategory === activeSubcategory
+          const matchesTitle = title.toLowerCase().includes(term)
+          const matchesModule = module.toLowerCase().includes(term)
+          const matchesSearch = term === "" || matchesTitle || matchesModule
+          
+          if (matchesCategory && matchesSubcategory && matchesSearch) {
+            card.style.display = ""
+            visibleCount++
+          } else {
+            card.style.display = "none"
+          }
+        })
+      }
 
       // Afficher/masquer le message "Aucun résultat"
       if (noResults) {
