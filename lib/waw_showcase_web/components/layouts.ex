@@ -660,8 +660,9 @@ defmodule WawShowcaseWeb.Layouts do
         """
 
       "Badge" ->
+        assigns = assign(assigns, :badge_id, "badge-preview-#{System.unique_integer([:positive, :monotonic])}")
         ~H"""
-        <.waw_badge id="badge-single-default" label="value" color="#12dba2"/>
+        <.waw_badge id={@badge_id} label="value" color="#12dba2"/>
         """
 
       "Séparateur de blocs" ->
@@ -720,7 +721,11 @@ defmodule WawShowcaseWeb.Layouts do
         """
 
       "Flash" ->
-        assigns = assign(assigns, :flash_preview_id, "flash-preview-#{System.unique_integer([:positive, :monotonic])}")
+        flash_info_id = "flash-info-#{System.unique_integer([:positive, :monotonic])}"
+        assigns = 
+          assigns
+          |> assign(:flash_preview_id, "flash-preview-#{System.unique_integer([:positive, :monotonic])}")
+          |> assign(:flash_info_id, flash_info_id)
         ~H"""
         <div class="flex flex-col items-center gap-4">
           <.waw_button
@@ -730,7 +735,7 @@ defmodule WawShowcaseWeb.Layouts do
             size="md"
           />
           <div id={@flash_preview_id} class="hidden">
-            <.flash kind={:info} flash={%{"info" => "Message d'information"}} />
+            <.flash id={@flash_info_id} kind={:info} flash={%{"info" => "Message d'information"}} />
           </div>
         </div>
         """
@@ -1052,27 +1057,29 @@ defmodule WawShowcaseWeb.Layouts do
         """
 
       "Liste de tags" ->
+        unique_id = System.unique_integer([:positive, :monotonic])
+        assigns = assign(assigns, :tag_list_unique_id, unique_id)
         ~H"""
         <.waw_tag_list title="Flottes">
         <:tag>
-        <.waw_badge id="badge-single-scope-complete" label="value" scope="scope" description="Avec étiquette" color="info-dark">
+        <.waw_badge id={"badge-tag-list-1-#{@tag_list_unique_id}"} label="value" scope="scope" description="Avec étiquette" color="info-dark">
         <:action>
         <.waw_button_icon icon="cancel" bg_color="bg-light" />
         </:action>
         </.waw_badge>
         </:tag>
         <:tag>
-        <.waw_badge id="badge-single-scope" label="value" scope="scope" description="Avec étiquette" color="danger" />
+        <.waw_badge id={"badge-tag-list-2-#{@tag_list_unique_id}"} label="value" scope="scope" description="Avec étiquette" color="danger" />
         </:tag>
         <:tag>
-        <.waw_badge id="badge-single-standard" label="value" description="title" color="info">
+        <.waw_badge id={"badge-tag-list-3-#{@tag_list_unique_id}"} label="value" description="title" color="info">
         <:action>
         <.waw_button_icon icon="cancel" />
         </:action>
         </.waw_badge>
         </:tag>
         <:tag>
-        <.waw_badge id="badge-single-default" label="value" color="success" />
+        <.waw_badge id={"badge-tag-list-4-#{@tag_list_unique_id}"} label="value" color="success" />
         </:tag>
         <:actions>
         <.waw_button_icon icon="add" title="Ajouter un tag" />
@@ -1320,8 +1327,9 @@ defmodule WawShowcaseWeb.Layouts do
 
       ## Basiques – Badge
       {"Badge", "Avec bouton fermer"} ->
+        assigns = assign(assigns, :badge_variant_id, "badge-variant-#{System.unique_integer([:positive, :monotonic])}")
         ~H"""
-        <.waw_badge id="badge-single-standard" label="value" description="title" color="info">
+        <.waw_badge id={@badge_variant_id} label="value" description="title" color="info">
           <:action>
           <.waw_button_icon icon="cancel" />
           </:action>
@@ -1329,13 +1337,15 @@ defmodule WawShowcaseWeb.Layouts do
         """
 
       {"Badge", "Avec étiquette"} ->
+        assigns = assign(assigns, :badge_variant_id, "badge-variant-#{System.unique_integer([:positive, :monotonic])}")
         ~H"""
-        <.waw_badge id="badge-single-scope" label="value" scope="scope" description="Avec étiquette" color="danger"/>
+        <.waw_badge id={@badge_variant_id} label="value" scope="scope" description="Avec étiquette" color="danger"/>
         """
 
       {"Badge", "Avec étiquette et bouton fermer"} ->
+        assigns = assign(assigns, :badge_variant_id, "badge-variant-#{System.unique_integer([:positive, :monotonic])}")
         ~H"""
-        <.waw_badge id="badge-single-scope-complete" label="value" scope="scope" description="Avec étiquette" color="#B1159C">
+        <.waw_badge id={@badge_variant_id} label="value" scope="scope" description="Avec étiquette" color="#B1159C">
           <:action>
           <.waw_button_icon icon="cancel" bg_color="bg-light" />
           </:action>
@@ -1467,7 +1477,11 @@ defmodule WawShowcaseWeb.Layouts do
 
       ## Basiques – Flash
       {"Flash", "Message"} ->
-        assigns = assign(assigns, :flash_variant_preview_id, "flash-variant-preview-#{System.unique_integer([:positive, :monotonic])}")
+        flash_info_id = "flash-info-variant-#{System.unique_integer([:positive, :monotonic])}"
+        assigns = 
+          assigns
+          |> assign(:flash_variant_preview_id, "flash-variant-preview-#{System.unique_integer([:positive, :monotonic])}")
+          |> assign(:flash_info_variant_id, flash_info_id)
         ~H"""
         <div class="flex flex-col items-center gap-4">
           <.waw_button
@@ -1477,7 +1491,7 @@ defmodule WawShowcaseWeb.Layouts do
             size="md"
           />
           <div id={@flash_variant_preview_id} class="hidden">
-            <.flash kind={:info} flash={%{"info" => "Message d'information"}} />
+            <.flash id={@flash_info_variant_id} kind={:info} flash={%{"info" => "Message d'information"}} />
           </div>
         </div>
         """
