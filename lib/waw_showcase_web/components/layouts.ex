@@ -722,7 +722,7 @@ defmodule WawShowcaseWeb.Layouts do
 
       "Flash" ->
         flash_info_id = "flash-info-#{System.unique_integer([:positive, :monotonic])}"
-        assigns = 
+        assigns =
           assigns
           |> assign(:flash_preview_id, "flash-preview-#{System.unique_integer([:positive, :monotonic])}")
           |> assign(:flash_info_id, flash_info_id)
@@ -1478,7 +1478,7 @@ defmodule WawShowcaseWeb.Layouts do
       ## Basiques – Flash
       {"Flash", "Message"} ->
         flash_info_id = "flash-info-variant-#{System.unique_integer([:positive, :monotonic])}"
-        assigns = 
+        assigns =
           assigns
           |> assign(:flash_variant_preview_id, "flash-variant-preview-#{System.unique_integer([:positive, :monotonic])}")
           |> assign(:flash_info_variant_id, flash_info_id)

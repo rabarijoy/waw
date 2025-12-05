@@ -1731,51 +1731,63 @@ const SpotlightSearchHook = {
       if (index < 0 || index >= results.length) return
 
       const result = results[index]
+      const targetId = result.id
+      const targetCategory = result.category
+      const targetSubcategory = result.subcategory
+      
       closeModal()
 
-      // Ouvrir la catégorie correspondante
-      const sidebar = document.getElementById("ui-categories-sidebar")
-      if (sidebar) {
-        // Accéder au hook via l'élément
-        const hookEl = sidebar
-        const hookId = hookEl.getAttribute("data-phx-hook")
-        if (hookId === "UICategory") {
-          // Utiliser la fonction exposée sur window
-          if (window.setActiveCategory) {
-            window.setActiveCategory(result.category, result.subcategory)
-          } else {
-            // Fallback: trouver le hook via liveSocket
-            if (window.liveSocket) {
-              const hooks = window.liveSocket.hooks || {}
-              const hook = hooks.UICategory
-              if (hook && hook.setActiveCategory) {
-                hook.setActiveCategory(result.category, result.subcategory)
-              }
-            }
+      // Ouvrir la catégorie correspondante AVANT de scroller
+      if (window.setActiveCategory) {
+        window.setActiveCategory(targetCategory, targetSubcategory)
+      } else {
+        // Fallback: trouver le hook via liveSocket
+        if (window.liveSocket) {
+          const hooks = window.liveSocket.hooks || {}
+          const hook = hooks.UICategory
+          if (hook && hook.setActiveCategory) {
+            hook.setActiveCategory(targetCategory, targetSubcategory)
           }
         }
       }
 
-      // Attendre que la catégorie soit ouverte puis scroller vers le composant
+      // Attendre que le filtrage soit terminé puis retrouver l'élément par son ID
       setTimeout(() => {
-        const element = result.element
+        // Retrouver l'élément par son ID (pas par référence)
+        let element = null
+        
+        if (targetCategory === "icones") {
+          const iconsSection = document.getElementById("ui-icons-section")
+          if (iconsSection && targetId) {
+            element = iconsSection.querySelector(`#${targetId}`)
+          }
+        } else {
+          const grid = document.getElementById("ui-components-grid")
+          if (grid && targetId) {
+            element = grid.querySelector(`#${targetId}`)
+          }
+        }
+        
         if (element) {
-          // S'assurer que l'élément est visible
+          // S'assurer que l'élément est visible (au cas où)
           element.style.display = ""
           
-          // Scroller vers l'élément avec animation
-          element.scrollIntoView({
-            behavior: "smooth",
-            block: "center"
-          })
+          // Attendre un peu plus pour que le layout soit stabilisé
+          requestAnimationFrame(() => {
+            // Scroller vers l'élément avec animation
+            element.scrollIntoView({
+              behavior: "smooth",
+              block: "center"
+            })
 
-          // Ajouter un effet de surbrillance temporaire
-          element.classList.add("ring-2", "ring-blue-500", "ring-offset-2")
-          setTimeout(() => {
-            element.classList.remove("ring-2", "ring-blue-500", "ring-offset-2")
-          }, 2000)
+            // Ajouter un effet de surbrillance temporaire
+            element.classList.add("ring-2", "ring-blue-500", "ring-offset-2", "transition-all", "duration-300")
+            setTimeout(() => {
+              element.classList.remove("ring-2", "ring-blue-500", "ring-offset-2", "transition-all", "duration-300")
+            }, 2000)
+          })
         }
-      }, 300)
+      }, 400) // Délai augmenté pour laisser le temps au filtrage
     }
 
     // Event listeners
