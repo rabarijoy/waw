@@ -221,16 +221,17 @@ function showComponentMenu(component, x, y, targetElement) {
   })
   buttonsContainer.appendChild(inspectButton)
   
-  // Bouton "Voir dans le Storybook"
-  const storybookButton = document.createElement("button")
-  storybookButton.className = "component-inspector-button"
-  storybookButton.textContent = "Voir dans le Storybook"
-  storybookButton.addEventListener("click", () => {
-    // Ouvrir le Storybook dans un nouvel onglet
-    window.open("https://waw.tag-ip.xyz/", "_blank")
-    closeComponentMenu()
-  })
-  buttonsContainer.appendChild(storybookButton)
+  // Bouton "Voir plus de détails"
+  if (component.tag || component.nom) {
+    const viewInUIButton = document.createElement("button")
+    viewInUIButton.className = "component-inspector-button"
+    viewInUIButton.textContent = "Voir plus de détails"
+    viewInUIButton.addEventListener("click", () => {
+      closeComponentMenu()
+      navigateToUIComponent(component.tag || component.nom)
+    })
+    buttonsContainer.appendChild(viewInUIButton)
+  }
   
   menu.appendChild(buttonsContainer)
   document.body.appendChild(menu)
@@ -276,6 +277,50 @@ function closeComponentMenu() {
   if (menu) {
     menu.remove()
   }
+}
+
+// Fonction pour naviguer vers un composant dans la page UI
+function navigateToUIComponent(componentTag) {
+  // Chercher la carte dans la page UI
+  const targetCard = document.querySelector(`[data-component="${componentTag}"]`)
+  
+  if (!targetCard) {
+    showFlash("warning", "Ce composant n'est pas encore dans la bibliothèque UI")
+    return
+  }
+  
+  // Vérifier si la page UI est affichée, sinon naviguer vers elle
+  const uiPanel = document.getElementById("ui-library-panel")
+  if (!uiPanel || uiPanel.classList.contains("hidden")) {
+    // Basculer vers le mode UI
+    if (typeof applyMode === "function") {
+      applyMode("ui")
+      // Attendre que le DOM soit mis à jour avant de scroller
+      setTimeout(() => {
+        scrollToComponent(targetCard)
+      }, 300)
+    } else {
+      showFlash("info", "Navigation vers la bibliothèque UI...")
+    }
+    return
+  }
+  
+  // Scroll vers la carte
+  scrollToComponent(targetCard)
+}
+
+// Fonction helper pour scroller vers une carte et la mettre en évidence
+function scrollToComponent(targetCard) {
+  if (!targetCard) return
+  
+  // Scroll vers la carte
+  targetCard.scrollIntoView({ behavior: 'smooth', block: 'center' })
+  
+  // Highlight temporaire
+  targetCard.classList.add('highlight-card')
+  setTimeout(() => {
+    targetCard.classList.remove('highlight-card')
+  }, 3000)
 }
 
 // Fonction helper pour extraire les attributs d'un élément DOM

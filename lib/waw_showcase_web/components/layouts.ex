@@ -469,6 +469,72 @@ defmodule WawShowcaseWeb.Layouts do
     end)
   end
 
+  @doc """
+  Retourne la valeur data-component correspondant à une sous-catégorie.
+  Cette valeur est utilisée pour identifier les composants dans les pages Demo
+  et permettre la navigation depuis le menu contextuel vers la page UI.
+  """
+  def get_component_data_attribute(sous_categorie) do
+    case sous_categorie do
+      # Basiques
+      "Accordion" -> "waw_accordion"
+      "Badge" -> "waw_badge"
+      "Boutons" -> "waw_button"
+      "Champs" -> "input"
+      "Header" -> "waw_header"
+      "Footer" -> "waw_footer"
+      "Tableau" -> "waw_table"
+      "Titre de block" -> "waw_block_title"
+      "Séparateur de blocs" -> "waw_block_separator"
+      "Header des filtres" -> "waw_filter_header"
+      "Flash" -> "waw_flash"
+      "Groupe de flash" -> "waw_flash_group"
+      "Pagination" -> "waw_pagination"
+      "Steps" -> "waw_steps"
+      "Onglets" -> "waw_tabs"
+      "Modal" -> "waw_modal"
+      "Header de carte" -> "waw_card_header"
+      "Statistique" -> "waw_stat"
+      "Status block" -> "waw_status_block"
+      "Texte éditable" -> "waw_contenteditable"
+      "Liste des champs avec description" -> "waw_dl"
+      "Liste" -> "waw_ul"
+      "Tooltip" -> "tooltip"
+      
+      # Texte et Nombres
+      "Devises" -> "currency"
+      "Texte" -> "waw_text"
+      "Distance" -> "waw_distance"
+      "Nombre" -> "waw_number"
+      "Volume" -> "waw_number"
+      "Valeur nil" -> "waw_number"
+      
+      # Dates et heures
+      "Date" -> "waw_date"
+      "Heure" -> "waw_time"
+      "Date et heure" -> "waw_date_time"
+      "Intervalle" -> "waw_interval"
+      "Temps relatif" -> "waw_relative_time"
+      
+      # Cartes
+      "Compte-rendu" -> "waw_card"
+      "Dashboard" -> "waw_dashboard_card"
+      "Volume de carburant" -> "waw_fuel_card"
+      "Statistique" -> "waw_stat"
+      
+      # Icônes
+      _ when is_binary(sous_categorie) -> 
+        # Pour les icônes, utiliser le nom directement
+        if String.starts_with?(sous_categorie, "waw_icon") do
+          "waw_icon"
+        else
+          nil
+        end
+      
+      _ -> nil
+    end
+  end
+
   # Filtre les icônes valides en vérifiant qu'elles peuvent être rendues
   # On retourne simplement la liste pour l'instant car le filtrage se fera au rendu
   # avec icon_exists? pour chaque icône
