@@ -155,10 +155,10 @@
           <!-- Texte et Nombres -->
           <div
             :for={item <- text_items}
-            id={"ui-component-card-#{String.replace(item.sous_categorie, " ", "-") |> String.downcase()}"}
+            id={if item.data_component, do: "component-#{item.data_component}", else: "ui-component-card-#{String.replace(item.sous_categorie, " ", "-") |> String.downcase()}"}
             phx-hook="AutoResizeCard"
             class="ui-component-card rounded-xl border border-gray-200 bg-white shadow-sm p-6 flex flex-col gap-3"
-            data-component={WawShowcaseWeb.Layouts.get_component_data_attribute(item.sous_categorie)}
+            data-component={item.data_component}
             data-component-title={item.sous_categorie}
             data-component-module={item[:module] || item.module || ""}
             data-component-category="texte-nombres"
@@ -232,7 +232,7 @@
           <!-- Basiques -->
           <div
             :for={item <- basiques_items}
-            id={"ui-component-card-#{String.replace(item.sous_categorie, " ", "-") |> String.downcase()}"}
+            id={if item.data_component, do: "component-#{item.data_component}", else: "ui-component-card-#{String.replace(item.sous_categorie, " ", "-") |> String.downcase()}"}
             phx-hook="AutoResizeCard"
             class={[
               "ui-component-card rounded-xl border border-gray-200 bg-white shadow-sm p-6 flex flex-col gap-3",
@@ -247,7 +247,7 @@
                   ""
               end
             ]}
-            data-component={WawShowcaseWeb.Layouts.get_component_data_attribute(item.sous_categorie)}
+            data-component={item.data_component}
             data-component-title={item.sous_categorie}
             data-component-module={item[:module] || item.module || ""}
             data-component-category="basiques"
@@ -326,10 +326,10 @@
           <!-- Dates et Heures -->
           <div
             :for={item <- dates_heures_items}
-            id={"ui-component-card-#{String.replace(item.sous_categorie, " ", "-") |> String.downcase()}"}
+            id={if item.data_component, do: "component-#{item.data_component}", else: "ui-component-card-#{String.replace(item.sous_categorie, " ", "-") |> String.downcase()}"}
             phx-hook="AutoResizeCard"
             class="ui-component-card rounded-xl border border-gray-200 bg-white shadow-sm p-6 flex flex-col gap-3"
-            data-component={WawShowcaseWeb.Layouts.get_component_data_attribute(item.sous_categorie)}
+            data-component={item.data_component}
             data-component-title={item.sous_categorie}
             data-component-module={item[:module] || item.module || ""}
             data-component-category="dates-heures"
@@ -403,7 +403,7 @@
           <!-- Cartes -->
           <div
             :for={item <- cartes_items}
-            id={"ui-component-card-#{String.replace(item.sous_categorie, " ", "-") |> String.downcase()}"}
+            id={if item.data_component, do: "component-#{item.data_component}", else: "ui-component-card-#{String.replace(item.sous_categorie, " ", "-") |> String.downcase()}"}
             phx-hook="AutoResizeCard"
             class={[
               "ui-component-card rounded-xl border border-gray-200 bg-white shadow-sm p-6 flex flex-col gap-3",
@@ -413,7 +413,7 @@
                 ""
               end
             ]}
-            data-component={WawShowcaseWeb.Layouts.get_component_data_attribute(item.sous_categorie)}
+            data-component={item.data_component}
             data-component-title={item.sous_categorie}
             data-component-module={item[:module] || item.module || ""}
             data-component-category="cartes"

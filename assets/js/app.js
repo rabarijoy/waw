@@ -221,16 +221,174 @@ function showComponentMenu(component, x, y, targetElement) {
   })
   buttonsContainer.appendChild(inspectButton)
   
-  // Bouton "Voir plus de détails"
-  if (component.tag || component.nom) {
-    const viewInUIButton = document.createElement("button")
-    viewInUIButton.className = "component-inspector-button"
-    viewInUIButton.textContent = "Voir plus de détails"
-    viewInUIButton.addEventListener("click", () => {
-      closeComponentMenu()
-      navigateToUIComponent(component.tag || component.nom)
-    })
-    buttonsContainer.appendChild(viewInUIButton)
+  // Bouton "Voir plus de détails" - créer un lien simple vers l'ancre
+  // Ne pas afficher le bouton si les données ne sont pas encore chargées
+  // (tag undefined ET nom = "Chargement..." signifie que les données sont en cours de chargement)
+  const isDataLoaded = component.tag || (component.nom && component.nom !== "Chargement..." && component.nom !== "Composant non identifié")
+  if (isDataLoaded) {
+    const tagToUse = component.tag
+    if (tagToUse) {
+      const cardId = `component-${tagToUse}`
+      
+      // Créer un lien simple vers l'ancre dans la page UI
+      const viewInUILink = document.createElement("a")
+      viewInUILink.className = "component-inspector-button"
+      viewInUILink.textContent = "Voir plus de détails"
+      viewInUILink.href = `#${cardId}`
+      
+      // Gérer le clic pour basculer vers UI si nécessaire
+      viewInUILink.addEventListener("click", (e) => {
+        e.preventDefault()
+        closeComponentMenu()
+        
+        const uiPanel = document.getElementById("ui-library-panel")
+        const isUIVisible = uiPanel && !uiPanel.classList.contains("hidden")
+        
+        console.log("[Voir plus de détails] Tag:", tagToUse, "CardId:", cardId, "UI visible:", isUIVisible)
+        
+        // Fonction pour ouvrir la catégorie et scroller vers la carte
+        const openCategoryAndScroll = () => {
+          // Chercher la carte pour obtenir sa catégorie
+          const card = document.getElementById(cardId) || document.querySelector(`[data-component="${tagToUse}"]`)
+          if (!card) {
+            requestAnimationFrame(() => {
+              setTimeout(openCategoryAndScroll, 50)
+            })
+            return
+          }
+          
+          // Récupérer la catégorie de la carte
+          const cardCategory = card.getAttribute('data-component-category')
+          
+          if (cardCategory) {
+            // Trouver le bouton de catégorie correspondant et le cliquer
+            const categoryButton = document.querySelector(`[data-category="${cardCategory}"]`)
+            if (categoryButton) {
+              // Vérifier si la catégorie est déjà active
+              const isActive = categoryButton.classList.contains('bg-gray-900')
+              
+              if (!isActive) {
+                // Cliquer pour ouvrir la catégorie
+                categoryButton.click()
+                
+                // Attendre que le filtrage soit terminé en vérifiant que la carte est visible
+                const waitForFilter = (attempt = 0) => {
+                  if (attempt > 20) {
+                    // Timeout, essayer de scroller quand même
+                    performScroll()
+                    return
+                  }
+                  
+                  const finalCard = document.getElementById(cardId) || document.querySelector(`[data-component="${tagToUse}"]`)
+                  if (finalCard && finalCard.style.display !== 'none') {
+                    // La carte est visible, scroller
+                    requestAnimationFrame(() => {
+                      performScroll()
+                    })
+                  } else {
+                    requestAnimationFrame(() => {
+                      setTimeout(() => waitForFilter(attempt + 1), 50)
+                    })
+                  }
+                }
+                
+                waitForFilter(0)
+              } else {
+                // Catégorie déjà ouverte, scroller directement
+                requestAnimationFrame(() => {
+                  performScroll()
+                })
+              }
+            } else {
+              // Pas de bouton trouvé, scroller quand même
+              requestAnimationFrame(() => {
+                performScroll()
+              })
+            }
+          } else {
+            // Pas de catégorie, scroller quand même
+            requestAnimationFrame(() => {
+              performScroll()
+            })
+          }
+        }
+        
+        // Fonction pour effectuer le scroll de manière fluide
+        const performScroll = () => {
+          const finalCard = document.getElementById(cardId) || document.querySelector(`[data-component="${tagToUse}"]`)
+          if (!finalCard) {
+            requestAnimationFrame(() => {
+              setTimeout(performScroll, 100)
+            })
+            return
+          }
+          
+          // S'assurer que la carte est visible
+          if (finalCard.style.display === 'none') {
+            finalCard.style.display = ''
+          }
+          
+          // Utiliser requestAnimationFrame pour synchroniser avec le rendu
+          requestAnimationFrame(() => {
+            // Utiliser scrollIntoView avec smooth pour une animation fluide
+            finalCard.scrollIntoView({ 
+              behavior: 'smooth', 
+              block: 'center',
+              inline: 'nearest'
+            })
+            
+            // Attendre que le scroll commence avant d'ajouter le highlight
+            requestAnimationFrame(() => {
+              requestAnimationFrame(() => {
+                finalCard.classList.add('highlight-card')
+                setTimeout(() => {
+                  finalCard.classList.remove('highlight-card')
+                }, 3000)
+              })
+            })
+          })
+        }
+        
+        if (!isUIVisible) {
+          // Si la page UI n'est pas visible, basculer vers elle
+          if (typeof applyMode === "function") {
+            applyMode("ui")
+            
+            // Attendre que le panel soit visible puis ouvrir la catégorie et scroller
+            const waitAndOpen = (attempt = 0) => {
+              if (attempt > 40) {
+                console.warn("[Voir plus de détails] Timeout après", attempt, "tentatives")
+                return
+              }
+              
+              const panel = document.getElementById("ui-library-panel")
+              if (!panel || panel.classList.contains("hidden")) {
+                requestAnimationFrame(() => {
+                  setTimeout(() => waitAndOpen(attempt + 1), 50)
+                })
+                return
+              }
+              
+              // Panel visible, attendre un frame pour que le DOM soit stabilisé
+              requestAnimationFrame(() => {
+                requestAnimationFrame(() => {
+                  openCategoryAndScroll()
+                })
+              })
+            }
+            
+            waitAndOpen(0)
+          }
+        } else {
+          // Page UI déjà visible, ouvrir la catégorie et scroller directement
+          requestAnimationFrame(() => {
+            openCategoryAndScroll()
+          })
+        }
+      })
+      
+      buttonsContainer.appendChild(viewInUILink)
+    }
   }
   
   menu.appendChild(buttonsContainer)
@@ -281,13 +439,8 @@ function closeComponentMenu() {
 
 // Fonction pour naviguer vers un composant dans la page UI
 function navigateToUIComponent(componentTag) {
-  // Chercher la carte dans la page UI
-  const targetCard = document.querySelector(`[data-component="${componentTag}"]`)
-  
-  if (!targetCard) {
-    showFlash("warning", "Ce composant n'est pas encore dans la bibliothèque UI")
-    return
-  }
+  // Construire l'ID de la carte basé sur le data-component
+  const cardId = `component-${componentTag}`
   
   // Vérifier si la page UI est affichée, sinon naviguer vers elle
   const uiPanel = document.getElementById("ui-library-panel")
@@ -295,32 +448,182 @@ function navigateToUIComponent(componentTag) {
     // Basculer vers le mode UI
     if (typeof applyMode === "function") {
       applyMode("ui")
-      // Attendre que le DOM soit mis à jour avant de scroller
-      setTimeout(() => {
-        scrollToComponent(targetCard)
-      }, 300)
-    } else {
-      showFlash("info", "Navigation vers la bibliothèque UI...")
+      
+      // Attendre que le panel soit visible puis utiliser le hash pour scroller
+      const waitAndScroll = () => {
+        const panel = document.getElementById("ui-library-panel")
+        if (!panel || panel.classList.contains("hidden")) {
+          setTimeout(waitAndScroll, 100)
+          return
+        }
+        
+        // Panel visible, utiliser window.location.hash pour déclencher le scroll natif
+        // Le navigateur gérera automatiquement le scroll vers l'ancre
+        setTimeout(() => {
+          window.location.hash = cardId
+          
+          // Ajouter le highlight après le scroll
+          setTimeout(() => {
+            const card = document.getElementById(cardId)
+            if (card) {
+              card.classList.add('highlight-card')
+              setTimeout(() => {
+                card.classList.remove('highlight-card')
+              }, 3000)
+            }
+          }, 500)
+        }, 300)
+      }
+      
+      waitAndScroll()
     }
     return
   }
   
-  // Scroll vers la carte
-  scrollToComponent(targetCard)
+  // Page UI déjà visible, utiliser directement le hash
+  window.location.hash = cardId
+  
+  // Ajouter le highlight
+  setTimeout(() => {
+    const card = document.getElementById(cardId)
+    if (card) {
+      card.classList.add('highlight-card')
+      setTimeout(() => {
+        card.classList.remove('highlight-card')
+      }, 3000)
+    }
+  }, 300)
 }
 
 // Fonction helper pour scroller vers une carte et la mettre en évidence
 function scrollToComponent(targetCard) {
-  if (!targetCard) return
+  if (!targetCard) {
+    console.warn("[scrollToComponent] Carte cible invalide")
+    return
+  }
   
-  // Scroll vers la carte
-  targetCard.scrollIntoView({ behavior: 'smooth', block: 'center' })
+  console.log("[scrollToComponent] Scroll vers la carte:", targetCard)
   
-  // Highlight temporaire
-  targetCard.classList.add('highlight-card')
+  // Retirer le highlight précédent s'il existe
+  targetCard.classList.remove('highlight-card')
+  
+  // Fonction pour effectuer le scroll avec retry si nécessaire
+  const performScroll = (attempts = 0) => {
+    if (attempts > 10) {
+      console.warn("[scrollToComponent] Impossible de scroller après", attempts, "tentatives, utilisation de scrollIntoView")
+      // Fallback final: utiliser scrollIntoView
+      try {
+        targetCard.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'nearest' })
+        addHighlight()
+      } catch (error) {
+        console.error("[scrollToComponent] Erreur avec scrollIntoView:", error)
+      }
+      return
+    }
+    
+    // Vérifier que la carte est toujours dans le DOM
+    if (!targetCard.parentNode) {
+      console.warn("[scrollToComponent] Carte retirée du DOM")
+      return
+    }
+    
+    // Obtenir la position actuelle
+    const rect = targetCard.getBoundingClientRect()
+    const scrollTop = window.pageYOffset || document.documentElement.scrollTop
+    
+    // Vérifier la visibilité de la carte
+    const computedStyle = window.getComputedStyle(targetCard)
+    const isVisible = computedStyle.display !== 'none' && 
+                     computedStyle.visibility !== 'hidden' && 
+                     computedStyle.opacity !== '0'
+    
+    console.log("[scrollToComponent] Position (tentative", attempts + 1, "):", {
+      top: rect.top,
+      left: rect.left,
+      width: rect.width,
+      height: rect.height,
+      scrollTop: scrollTop,
+      viewportHeight: window.innerHeight,
+      isVisible: isVisible,
+      display: computedStyle.display,
+      visibility: computedStyle.visibility
+    })
+    
+    // Utiliser scrollIntoView directement - il gère automatiquement les cas où l'élément n'est pas encore positionné
+    // scrollIntoView attend que l'élément soit visible avant de scroller
+    try {
+      console.log("[scrollToComponent] Utilisation de scrollIntoView (tentative", attempts + 1, ")")
+      
+      // Si la carte n'a pas encore de taille, attendre un peu mais utiliser scrollIntoView quand même
+      // scrollIntoView devrait forcer le navigateur à calculer la position
+      if ((rect.width === 0 && rect.height === 0) && attempts < 5) {
+        console.log("[scrollToComponent] Carte pas encore rendue, attente avant scrollIntoView...")
+        setTimeout(() => performScroll(attempts + 1), 200)
+        return
+      }
+      
+      // Utiliser scrollIntoView même si la taille est 0 - il devrait quand même fonctionner
+      targetCard.scrollIntoView({ 
+        behavior: 'smooth', 
+        block: 'center',
+        inline: 'nearest'
+      })
+      
+      // Ajouter le highlight après un court délai pour laisser le scroll commencer
+      setTimeout(() => {
+        addHighlight()
+        
+        // Vérifier la position après le scroll
+        setTimeout(() => {
+          const rectAfter = targetCard.getBoundingClientRect()
+          const scrollTopAfter = window.pageYOffset || document.documentElement.scrollTop
+          const isInViewport = rectAfter.top >= 0 && rectAfter.top < window.innerHeight
+          const isCentered = Math.abs(rectAfter.top - (window.innerHeight / 2)) < 200
+          
+          console.log("[scrollToComponent] Position après scroll:", {
+            top: rectAfter.top,
+            scrollTop: scrollTopAfter,
+            inViewport: isInViewport,
+            centered: isCentered
+          })
+          
+          // Si la carte n'est pas visible ou centrée, réessayer une fois
+          if ((!isInViewport || !isCentered) && attempts < 3) {
+            console.log("[scrollToComponent] Carte pas correctement positionnée, nouvelle tentative...")
+            setTimeout(() => performScroll(attempts + 1), 300)
+          }
+        }, 600)
+      }, 200)
+    } catch (error) {
+      console.error("[scrollToComponent] Erreur lors du scroll:", error)
+      addHighlight()
+    }
+  }
+  
+  // Fonction pour ajouter le highlight
+  const addHighlight = () => {
+    if (targetCard.parentNode) {
+      // Forcer un reflow pour s'assurer que les styles sont appliqués
+      void targetCard.offsetHeight
+      
+      // Ajouter le highlight
+      targetCard.classList.add('highlight-card')
+      console.log("[scrollToComponent] Highlight ajouté")
+      
+      // Retirer le highlight après 3 secondes
+      setTimeout(() => {
+        if (targetCard.parentNode) {
+          targetCard.classList.remove('highlight-card')
+          console.log("[scrollToComponent] Highlight retiré")
+        }
+      }, 3000)
+    }
+  }
+  
+  // Commencer le scroll après un court délai pour laisser le DOM se stabiliser
   setTimeout(() => {
-    targetCard.classList.remove('highlight-card')
-  }, 3000)
+    performScroll(0)
+  }, 100)
 }
 
 // Fonction helper pour extraire les attributs d'un élément DOM

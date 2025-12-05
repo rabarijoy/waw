@@ -8,6 +8,11 @@
 @source "../../deps/waw/lib";
 @source "../../../waw-components/lib";
 
+/* Smooth scroll behavior pour les ancres */
+html {
+  scroll-behavior: smooth;
+}
+
 /* A Tailwind plugin that makes "hero-#{ICON}" classes available.
    The heroicons installation itself is managed by your mix.exs */
 @plugin "../vendor/heroicons";
@@ -264,6 +269,9 @@ body {
   cursor: pointer;
   border-radius: 4px;
   transition: background-color 0.15s;
+  text-decoration: none;
+  display: block;
+  width: 100%;
 }
 
 .component-inspector-button:hover {
@@ -294,25 +302,31 @@ header.navbar nav a {
 
 /* Effet highlight pour les cartes de composants lors de la navigation depuis le menu contextuel */
 .highlight-card {
-  animation: highlight-pulse 0.6s ease-in-out;
+  animation: highlight-pulse 2s cubic-bezier(0.4, 0, 0.2, 1);
   outline: 2px solid #007aff;
   outline-offset: 4px;
   border-radius: 0.75rem;
+  transition: outline-color 0.3s ease-out, outline-width 0.3s ease-out, box-shadow 0.3s ease-out;
 }
 
 @keyframes highlight-pulse {
   0% {
-    outline-color: #007aff;
+    outline-color: rgba(0, 122, 255, 0.3);
     outline-width: 2px;
-    box-shadow: 0 0 0 0 rgba(0, 122, 255, 0.4);
+    box-shadow: 0 0 0 0 rgba(0, 122, 255, 0);
   }
-  50% {
-    outline-color: #004abb;
+  15% {
+    outline-color: #007aff;
     outline-width: 3px;
-    box-shadow: 0 0 0 8px rgba(0, 122, 255, 0.2);
+    box-shadow: 0 0 0 6px rgba(0, 122, 255, 0.3);
+  }
+  30% {
+    outline-color: #0051d5;
+    outline-width: 2px;
+    box-shadow: 0 0 0 4px rgba(0, 122, 255, 0.2);
   }
   100% {
-    outline-color: #007aff;
+    outline-color: rgba(0, 122, 255, 0);
     outline-width: 2px;
     box-shadow: 0 0 0 0 rgba(0, 122, 255, 0);
   }

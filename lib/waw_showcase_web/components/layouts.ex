@@ -500,7 +500,7 @@ defmodule WawShowcaseWeb.Layouts do
       "Liste des champs avec description" -> "waw_dl"
       "Liste" -> "waw_ul"
       "Tooltip" -> "tooltip"
-      
+
       # Texte et Nombres
       "Devises" -> "currency"
       "Texte" -> "waw_text"
@@ -508,29 +508,29 @@ defmodule WawShowcaseWeb.Layouts do
       "Nombre" -> "waw_number"
       "Volume" -> "waw_number"
       "Valeur nil" -> "waw_number"
-      
+
       # Dates et heures
       "Date" -> "waw_date"
       "Heure" -> "waw_time"
       "Date et heure" -> "waw_date_time"
       "Intervalle" -> "waw_interval"
       "Temps relatif" -> "waw_relative_time"
-      
+
       # Cartes
       "Compte-rendu" -> "waw_card"
       "Dashboard" -> "waw_dashboard_card"
       "Volume de carburant" -> "waw_fuel_card"
       "Statistique" -> "waw_stat"
-      
+
       # Icônes
-      _ when is_binary(sous_categorie) -> 
+      _ when is_binary(sous_categorie) ->
         # Pour les icônes, utiliser le nom directement
         if String.starts_with?(sous_categorie, "waw_icon") do
           "waw_icon"
         else
           nil
         end
-      
+
       _ -> nil
     end
   end
