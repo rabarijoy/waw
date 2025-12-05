@@ -1663,10 +1663,13 @@ const SpotlightSearchHook = {
         })
       }
 
-      // Rechercher dans les icônes
+      // Rechercher dans les icônes - un seul résultat "Afficher les icones"
       if (iconsSection) {
         const iconCards = iconsSection.querySelectorAll(".ui-icon-card")
-        iconCards.forEach((card) => {
+        let hasIconMatch = false
+        
+        // Vérifier s'il y a au moins une correspondance
+        for (const card of iconCards) {
           const title = card.getAttribute("data-component-title") || ""
           const module = card.getAttribute("data-component-module") || ""
           
@@ -1674,16 +1677,22 @@ const SpotlightSearchHook = {
           const matchesModule = module.toLowerCase().includes(searchTerm)
           
           if (matchesTitle || matchesModule) {
-            results.push({
-              id: card.id || "",
-              title: title,
-              category: "icones",
-              subcategory: null,
-              type: "icon",
-              element: card
-            })
+            hasIconMatch = true
+            break
           }
-        })
+        }
+        
+        // Si des icônes correspondent, ajouter un seul résultat
+        if (hasIconMatch) {
+          results.push({
+            id: "icones-category",
+            title: "Afficher les icones",
+            category: "icones",
+            subcategory: null,
+            type: "icons-category",
+            element: null
+          })
+        }
       }
 
       renderResults()
@@ -1734,6 +1743,7 @@ const SpotlightSearchHook = {
       const targetId = result.id
       const targetCategory = result.category
       const targetSubcategory = result.subcategory
+      const resultType = result.type
       
       closeModal()
 
@@ -1751,7 +1761,22 @@ const SpotlightSearchHook = {
         }
       }
 
-      // Attendre que le filtrage soit terminé puis retrouver l'élément par son ID
+      // Pour la catégorie icônes, on ne scroll pas vers un élément spécifique
+      if (resultType === "icons-category") {
+        // Juste scroller vers le début de la section icônes
+        setTimeout(() => {
+          const iconsSection = document.getElementById("ui-icons-section")
+          if (iconsSection) {
+            iconsSection.scrollIntoView({
+              behavior: "smooth",
+              block: "start"
+            })
+          }
+        }, 400)
+        return
+      }
+
+      // Pour les autres résultats, scroller vers l'élément spécifique
       setTimeout(() => {
         // Retrouver l'élément par son ID (pas par référence)
         let element = null
