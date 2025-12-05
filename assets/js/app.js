@@ -706,27 +706,90 @@ function initModeSwitch() {
 
 function initUiLinkDisabler() {
   const uiPanel = document.getElementById("ui-library-panel")
-  if (!uiPanel) return
-
-  // Intercepter tous les clics sur les liens dans la zone UI
-  uiPanel.addEventListener("click", (event) => {
-    // Trouver le lien le plus proche (a, ou élément avec href/navigate)
-    const link = event.target.closest("a, [href], [navigate], [data-navigate]")
+  const uiModal = document.getElementById("ui-preview-modal")
+  
+  // Fonction pour bloquer la navigation
+  const blockNavigation = (event) => {
+    // Ne pas bloquer les clics sur les éléments de contrôle de la modal elle-même
+    if (event.target.closest("#ui-preview-modal-header, #ui-preview-modal-close, .variant-nav, .copy-code-btn")) {
+      return
+    }
+    
+    // Trouver le lien le plus proche (a, ou élément avec href/navigate/phx-click)
+    const link = event.target.closest("a, [href], [navigate], [data-navigate], [phx-click], [data-phx-link], button")
     if (!link) return
 
-    // Vérifier si c'est un vrai lien (pas juste un élément avec un attribut vide)
+    // Vérifier si c'est un élément avec navigation
     const href = link.getAttribute("href")
     const navigate = link.getAttribute("navigate")
     const dataNavigate = link.getAttribute("data-navigate")
+    const phxClick = link.getAttribute("phx-click")
+    const phxLink = link.getAttribute("data-phx-link")
+    
+    // Vérifier si le phx-click contient "navigate" ou "patch"
+    const hasNavigation = phxClick && (phxClick.includes("navigate") || phxClick.includes("patch"))
     
     // Si c'est un lien vers #, une route, ou un navigate, bloquer
-    if (href || navigate || dataNavigate) {
-      event.preventDefault()
-      event.stopPropagation()
-      event.stopImmediatePropagation()
-      return false
+    if (href || navigate || dataNavigate || hasNavigation || phxLink) {
+      // Ignorer les liens vers # ou vides
+      if (href && href !== "#" && href !== "") {
+        event.preventDefault()
+        event.stopPropagation()
+        event.stopImmediatePropagation()
+        return false
+      }
+      // Bloquer tous les navigate et phx-click de navigation
+      if (navigate || dataNavigate || hasNavigation || phxLink) {
+        event.preventDefault()
+        event.stopPropagation()
+        event.stopImmediatePropagation()
+        return false
+      }
     }
-  }, true) // Utiliser capture pour intercepter avant que Phoenix ne gère le clic
+  }
+
+  // Intercepter tous les clics dans la zone UI
+  if (uiPanel) {
+    uiPanel.addEventListener("click", blockNavigation, true)
+  }
+  
+  // Intercepter aussi dans la modal de preview
+  if (uiModal) {
+    uiModal.addEventListener("click", blockNavigation, true)
+  }
+  
+  // Intercepter aussi les événements phx:click avant qu'ils ne soient traités par LiveView
+  const blockPhxEvents = (event) => {
+    // Ne pas bloquer les événements sur les éléments de contrôle
+    if (event.target.closest("#ui-preview-modal-header, #ui-preview-modal-close, .variant-nav, .copy-code-btn")) {
+      return
+    }
+    
+    // Vérifier si l'événement vient d'un élément avec navigation
+    const target = event.target.closest("[navigate], [data-phx-link], [phx-click]")
+    if (target) {
+      const navigate = target.getAttribute("navigate")
+      const phxLink = target.getAttribute("data-phx-link")
+      const phxClick = target.getAttribute("phx-click")
+      const hasNavigation = phxClick && (phxClick.includes("navigate") || phxClick.includes("patch"))
+      
+      if (navigate || phxLink || hasNavigation) {
+        event.preventDefault()
+        event.stopPropagation()
+        event.stopImmediatePropagation()
+        return false
+      }
+    }
+  }
+  
+  // Intercepter les événements phx:click dans la phase de capture
+  if (uiPanel) {
+    uiPanel.addEventListener("phx:click", blockPhxEvents, true)
+  }
+  
+  if (uiModal) {
+    uiModal.addEventListener("phx:click", blockPhxEvents, true)
+  }
 }
 
 // Initialiser le désactivateur de liens UI
