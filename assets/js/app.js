@@ -1584,8 +1584,6 @@ const UISearchHook = {
   }
 }
 
-Hooks.UISearch = UISearchHook
-
 // Hook pour la recherche Spotlight dans la bibliothèque UI
 const SpotlightSearchHook = {
   mounted() {
@@ -1825,8 +1823,6 @@ const SpotlightSearchHook = {
     })
   }
 }
-
-Hooks.SpotlightSearch = SpotlightSearchHook
 
 // Fonction globale pour obtenir la catégorie active
 window.getActiveCategory = () => {
@@ -2282,6 +2278,7 @@ const hooks = {
   ThemeManager: ThemeManagerHook,
   ContextMenuNotification: ContextMenuNotificationHook,
   UISearch: UISearchHook,
+  SpotlightSearch: SpotlightSearchHook,
   UICategory: UICategoryHook,
   BentoGrid: BentoGrid,
   ModeSwitch: ModeSwitchHook
