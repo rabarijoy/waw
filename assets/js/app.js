@@ -1827,48 +1827,6 @@ const SpotlightSearchHook = {
 }
 
 Hooks.SpotlightSearch = SpotlightSearchHook
-    const grid = document.getElementById("ui-components-grid")
-    const noResults = document.getElementById("ui-no-results")
-    
-    if (grid && searchInput.value) {
-      const cards = grid.querySelectorAll(".ui-component-card")
-      const term = searchInput.value.toLowerCase().trim()
-      let visibleCount = 0
-
-      const activeCategory = window.getActiveCategory ? window.getActiveCategory() : "texte-nombres"
-      const activeSubcategory = window.getActiveSubcategory ? window.getActiveSubcategory() : null
-
-      cards.forEach((card) => {
-        const cardCategory = card.getAttribute("data-component-category")
-        const cardSubcategory = card.getAttribute("data-component-subcategory")
-        const title = card.getAttribute("data-component-title") || ""
-        const module = card.getAttribute("data-component-module") || ""
-        
-        const matchesCategory = cardCategory === activeCategory
-        const matchesSubcategory = !activeSubcategory || cardSubcategory === activeSubcategory
-        const matchesTitle = title.toLowerCase().includes(term)
-        const matchesModule = module.toLowerCase().includes(term)
-        const matchesSearch = term === "" || matchesTitle || matchesModule
-        
-        if (matchesCategory && matchesSubcategory && matchesSearch) {
-          card.style.display = ""
-          visibleCount++
-        } else {
-          card.style.display = "none"
-        }
-      })
-
-      // Afficher/masquer le message "Aucun résultat"
-      if (noResults) {
-        if (visibleCount === 0) {
-          noResults.classList.remove("hidden")
-        } else {
-          noResults.classList.add("hidden")
-        }
-      }
-    }
-  }
-}
 
 // Fonction globale pour obtenir la catégorie active
 window.getActiveCategory = () => {
