@@ -1619,7 +1619,6 @@ const SpotlightSearchHook = {
         "basiques": "Basiques",
         "dates-heures": "Dates et heures",
         "cartes": "Cartes",
-        "formulaire": "Formulaire",
         "icones": "Icônes"
       }
       return labels[category] || category

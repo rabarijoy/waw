@@ -3,7 +3,6 @@
   <% basiques_items = WawShowcase.UIConfig.get_components_by_category("Basiques") %>
   <% dates_heures_items = WawShowcase.UIConfig.get_components_by_category("Dates et heures") %>
   <% cartes_items = WawShowcase.UIConfig.get_components_by_category("Cartes") %>
-  <% formulaire_items = WawShowcase.UIConfig.get_components_by_category("Formulaire") %>
   <% icon_names =
     if function_exported?(Waw.Icons, :icon_list, 0) do
       WawShowcaseWeb.Layouts.filter_valid_icons(Waw.Icons.icon_list())
@@ -129,13 +128,6 @@
             class="ui-category-btn w-full text-left px-3 py-2 rounded-md text-xs md:text-sm text-gray-700 hover:bg-gray-100 transition-colors"
           >
             Dates &amp; heures
-          </button>
-          <button
-            type="button"
-            data-category="formulaire"
-            class="ui-category-btn w-full text-left px-3 py-2 rounded-md text-xs md:text-sm text-gray-700 hover:bg-gray-100 transition-colors"
-          >
-            Formulaire
           </button>
           <button
             type="button"
@@ -435,79 +427,6 @@
                   code_source={item.principal.code_source}
                   sous_categorie={item.sous_categorie}
                 />
-              </div>
-            </div>
-
-            <!-- Préviews des variantes (cachées, utilisées par la popup) -->
-            <div class="hidden variant-previews">
-              <div
-                :for={{variant, idx} <- Enum.with_index(WawShowcaseWeb.Layouts.flatten_variants_for_preview(item.variantes))}
-                data-variant-index={idx}
-                data-variant-nom={variant.nom}
-                data-group-nom={variant.group_nom}
-                data-group-idx={variant.group_idx}
-                data-sub-idx={variant.sub_idx}
-              >
-                <div class="component-preview-variant">
-                  <.render_variant_preview
-                    sous_categorie={item.sous_categorie}
-                    variant_nom={variant.nom}
-                  />
-                </div>
-              </div>
-            </div>
-
-            <!-- Bloc titre -->
-            <div>
-              <h3 class="text-base font-semibold text-gray-900 truncate">
-                {item.principal.nom}
-              </h3>
-            </div>
-
-            <!-- Bloc sous-titre -->
-            <div>
-              <p class="text-sm text-gray-500">
-                {item.sous_categorie}
-              </p>
-            </div>
-
-            <!-- Bloc code source avec bouton Copier sur la même ligne (discret) -->
-            <% code = item.principal.code_source %>
-            <div class="flex gap-2 items-start border-t border-gray-100 pt-3">
-              <div class="flex-1 rounded-md bg-gray-50 border border-gray-200 px-2 py-1.5 max-h-[4rem] overflow-y-auto overflow-x-auto">
-                <pre class="text-xs text-gray-600 leading-relaxed whitespace-pre-wrap">
-{code}</pre>
-              </div>
-              <button
-                type="button"
-                class="px-3 py-1.5 text-xs font-medium text-white bg-gray-900 rounded-md hover:bg-gray-800 transition-colors focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 whitespace-nowrap shrink-0"
-                onclick="navigator.clipboard.writeText(this.dataset.code).then(() => { const btn = this; const originalText = btn.textContent; btn.textContent = 'Copié!'; setTimeout(() => { btn.textContent = originalText; }, 2000); })"
-                data-code={code}
-              >
-                Copier
-              </button>
-            </div>
-          </div>
-          <!-- Formulaire -->
-          <div
-            :for={item <- formulaire_items}
-            id={"ui-component-card-#{String.replace(item.sous_categorie, " ", "-") |> String.downcase()}"}
-            phx-hook="AutoResizeCard"
-            class="ui-component-card rounded-xl border border-gray-200 bg-white shadow-sm p-6 flex flex-col gap-3"
-            data-component-title={item.sous_categorie}
-            data-component-module={item[:module] || item.module || ""}
-            data-component-category="formulaire"
-            data-component-variantes={Jason.encode!(item.variantes)}
-            data-component-principal-code={item.principal.code_source}
-            data-component-principal-nom={item.principal.nom}
-          >
-            <!-- Aperçu du composant -->
-            <div
-              class="ui-preview-trigger rounded-lg border-2 border-gray-200 bg-white min-h-[10rem] flex items-center justify-center py-4 flex-1 cursor-pointer hover-border-gray-300 transition-colors [&_*]:m-0"
-              data-ui-preview="true"
-            >
-              <div class="component-preview">
-                <.render_component_preview code_source={item.principal.code_source} sous_categorie={item.sous_categorie} />
               </div>
             </div>
 

@@ -1660,8 +1660,6 @@ Content
         ]
       },
     ],
-    "Formulaire" => [
-    ],
     "Mises en page" => [
       %{
         sous_categorie: "Mise en page des formulaires",
