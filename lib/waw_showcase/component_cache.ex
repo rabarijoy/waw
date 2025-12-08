@@ -6,9 +6,26 @@ defmodule WawShowcase.ComponentCache do
 
   @doc """
   Récupère tous les composants depuis le cache.
+  S'assure que le cache est chargé avant de retourner les composants.
+  Force le chargement si le cache est vide.
   """
   def get_components do
-    WawShowcase.ComponentExtractor.load_components()
+    require Logger
+
+    # Vérifier si le cache est déjà rempli
+    case :ets.lookup(:waw_showcase_cache, :waw_components) do
+      [{:waw_components, components}] when is_list(components) and length(components) > 0 ->
+        # Cache rempli, retourner directement
+        Logger.debug("ComponentCache.get_components - Cache hit: #{length(components)} components")
+        components
+
+      _ ->
+        # Cache vide ou pas encore rempli, charger maintenant de manière synchrone
+        Logger.debug("ComponentCache.get_components - Cache miss, loading components synchronously...")
+        components = WawShowcase.ComponentExtractor.load_components()
+        Logger.debug("ComponentCache.get_components - Loaded #{length(components)} components")
+        components
+    end
   end
 
   @doc """
@@ -19,14 +36,20 @@ defmodule WawShowcase.ComponentCache do
   def find_by_tag(tag_name, opts \\ [])
 
   def find_by_tag(tag_name, opts) when is_binary(tag_name) do
+    require Logger
     input_type = Keyword.get(opts, :input_type)
 
     # D'abord chercher dans les composants Waw
+    all_components = get_components()
+    Logger.debug("ComponentCache.find_by_tag - Searching for tag: '#{tag_name}', total components: #{length(all_components)}")
+
     component =
-      get_components()
+      all_components
       |> Enum.find(fn component ->
         component.tag == tag_name
       end)
+
+    Logger.debug("ComponentCache.find_by_tag - Found: #{inspect(component != nil)}")
 
     # Si pas trouvé, vérifier si c'est un composant Phoenix standard
     component =

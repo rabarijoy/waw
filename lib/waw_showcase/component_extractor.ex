@@ -4,17 +4,37 @@ defmodule WawShowcase.ComponentExtractor do
   Parcourt lib/waw, récupère les modules et extrait leur documentation.
   """
 
-  @waw_path "/Volumes/PortableSSD/School/CNED/2A/Stage/waw-components/lib/waw"
-
   defstruct [:nom, :code_source, :module, :tag]
 
   @doc """
   Récupère tous les composants depuis Waw et les met en cache.
   """
   def load_components do
-    WawShowcase.Cache.get(:waw_components, fn ->
-      extract_all_components()
-    end)
+    require Logger
+    Logger.debug("ComponentExtractor.load_components - Starting...")
+
+    # Vérifier si le cache contient une liste vide et la forcer à se recharger
+    case :ets.lookup(:waw_showcase_cache, :waw_components) do
+      [{:waw_components, components}] when is_list(components) and length(components) > 0 ->
+        Logger.debug("ComponentExtractor.load_components - Cache hit: #{length(components)} components")
+        components
+
+      [{:waw_components, []}] ->
+        Logger.debug("ComponentExtractor.load_components - Cache contains empty list, forcing reload...")
+        # Supprimer l'entrée vide et forcer le rechargement
+        :ets.delete(:waw_showcase_cache, :waw_components)
+        extracted = extract_all_components()
+        Logger.debug("ComponentExtractor.load_components - Extracted #{length(extracted)} components")
+        :ets.insert(:waw_showcase_cache, {:waw_components, extracted})
+        extracted
+
+      _ ->
+        Logger.debug("ComponentExtractor.load_components - Cache empty, extracting components...")
+        extracted = extract_all_components()
+        Logger.debug("ComponentExtractor.load_components - Extracted #{length(extracted)} components")
+        :ets.insert(:waw_showcase_cache, {:waw_components, extracted})
+        extracted
+    end
   end
 
   @doc """
@@ -22,11 +42,16 @@ defmodule WawShowcase.ComponentExtractor do
   Parcourt récursivement les sous-dossiers et extrait plusieurs composants par fichier.
   """
   def extract_all_components do
+    require Logger
     waw_path = get_waw_path()
+    Logger.debug("ComponentExtractor.extract_all_components - Waw path: #{inspect(waw_path)}")
+    Logger.debug("ComponentExtractor.extract_all_components - Path exists: #{File.exists?(waw_path)}")
 
     if File.exists?(waw_path) do
-      waw_path
-      |> list_ex_files_recursive()
+      files = list_ex_files_recursive(waw_path)
+      Logger.debug("ComponentExtractor.extract_all_components - Found #{length(files)} files")
+
+      components = files
       |> Enum.flat_map(fn file_path ->
         try do
           relative_path = Path.relative_to(file_path, waw_path)
@@ -35,11 +60,17 @@ defmodule WawShowcase.ComponentExtractor do
           # Extraire tous les composants depuis ce module (peut y en avoir plusieurs)
           extract_all_components_from_module(module_name)
         rescue
-          _ -> []
+          e ->
+            Logger.debug("ComponentExtractor.extract_all_components - Error extracting from #{file_path}: #{inspect(e)}")
+            []
         end
       end)
       |> Enum.filter(& &1 != nil)
+
+      Logger.debug("ComponentExtractor.extract_all_components - Extracted #{length(components)} components")
+      components
     else
+      Logger.warn("ComponentExtractor.extract_all_components - Waw path does not exist: #{inspect(waw_path)}")
       []
     end
   end
@@ -326,9 +357,14 @@ defmodule WawShowcase.ComponentExtractor do
 
   # Récupère le chemin vers le dossier lib/waw de Waw.
   defp get_waw_path do
-    # Essayer de trouver le chemin depuis la dépendance
+    # Essayer d'abord depuis la configuration de l'application
     case Application.get_env(:waw_showcase, :waw_path) do
-      nil -> @waw_path
+      nil ->
+        # Utiliser le chemin standard de la dépendance Mix (deps/waw/lib/waw)
+        # Depuis la racine du projet (où se trouve mix.exs)
+        waw_dep_path = Path.join([File.cwd!(), "deps", "waw", "lib", "waw"])
+        waw_dep_path
+
       path -> path
     end
   end
