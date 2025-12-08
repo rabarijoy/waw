@@ -2109,4 +2109,136 @@ defmodule WawShowcaseWeb.Layouts do
         false
     end
   end
+
+  defp get_title(item, title_field) do
+    case title_field do
+      :sous_categorie -> item.sous_categorie
+      :principal_nom -> item.principal.nom
+      _ -> item.sous_categorie
+    end
+  end
+
+  defp build_preview_classes(assigns) do
+    [
+      "ui-preview-trigger rounded-lg border-2 border-gray-200 bg-white flex items-center justify-center",
+      assigns.preview_padding,
+      assigns.preview_overflow,
+      "cursor-pointer hover:border-gray-300 transition-colors [&_*]:m-0",
+      assigns.preview_min_height
+    ]
+    |> Enum.filter(&(&1 != ""))
+    |> Enum.join(" ")
+  end
+
+  defp build_card_classes(assigns) do
+    card_base_classes = "ui-component-card rounded-xl border border-gray-200 bg-white shadow-sm p-6 flex flex-col gap-3"
+
+    case assigns.col_span_classes do
+      "" -> card_base_classes
+      classes when is_binary(classes) -> [card_base_classes, classes]
+      classes when is_list(classes) -> [card_base_classes | classes]
+      _ -> card_base_classes
+    end
+  end
+
+  @doc """
+  Renders a component card for the UI library.
+  """
+  attr :item, :map, required: true, doc: "the component item data"
+  attr :category, :string, required: true, doc: "the category name"
+  attr :subcategory, :string, default: nil, doc: "optional subcategory for filtering"
+  attr :col_span_classes, :any, default: "", doc: "additional col-span classes for the card (string or list)"
+  attr :preview_padding, :string, default: "p-4", doc: "padding for the preview trigger"
+  attr :preview_min_height, :string, default: "min-h-[10rem]", doc: "minimum height for the preview"
+  attr :preview_overflow, :string, default: "", doc: "overflow classes for the preview"
+  attr :title_field, :atom, default: :sous_categorie, doc: "field to use for the title (:sous_categorie or :principal_nom)"
+
+  def component_card(assigns) do
+    assigns =
+      assigns
+      |> assign(:title, get_title(assigns.item, assigns.title_field))
+      |> assign(:preview_classes, build_preview_classes(assigns))
+      |> assign(:card_classes, build_card_classes(assigns))
+      |> assign(:code, assigns.item.principal.code_source)
+
+    ~H"""
+    <div
+      id={if @item.data_component, do: "component-#{@item.data_component}", else: "ui-component-card-#{String.replace(@item.sous_categorie, " ", "-") |> String.downcase()}"}
+      phx-hook="AutoResizeCard"
+      class={@card_classes}
+      data-component={@item.data_component}
+      data-component-title={@item.sous_categorie}
+      data-component-module={@item[:module] || @item.module || ""}
+      data-component-category={@category}
+      data-component-subcategory={@subcategory}
+      data-component-variantes={Jason.encode!(@item.variantes)}
+      data-component-principal-code={@item.principal.code_source}
+      data-component-principal-nom={@item.principal.nom}
+    >
+      <!-- Aperçu du composant principal -->
+      <div
+        class={@preview_classes}
+        data-ui-preview="true"
+      >
+        <div class="component-preview w-full text-center">
+          <.render_component_preview
+            code_source={@item.principal.code_source}
+            sous_categorie={@item.sous_categorie}
+          />
+        </div>
+      </div>
+
+      <!-- Préviews des variantes (cachées, utilisées par la popup) -->
+      <div class="hidden variant-previews">
+        <div
+          :for={{variant, idx} <- Enum.with_index(flatten_variants_for_preview(@item.variantes))}
+          data-variant-index={idx}
+          data-variant-nom={variant.nom}
+          data-group-nom={variant.group_nom}
+          data-group-idx={variant.group_idx}
+          data-sub-idx={variant.sub_idx}
+        >
+          <div class="rounded-lg border-2 border-gray-200 bg-white flex items-center justify-center p-4 cursor-pointer hover:border-gray-300 transition-colors [&_*]:m-0 min-h-[10rem]">
+            <div class="component-preview-variant w-full text-center">
+              <.render_variant_preview
+                sous_categorie={@item.sous_categorie}
+                variant_nom={variant.nom}
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Bloc titre -->
+      <div>
+        <h3 class="text-base font-semibold text-gray-900 truncate">
+          {@title}
+        </h3>
+      </div>
+
+      <!-- Bloc sous-titre -->
+      <div>
+        <p class="text-sm text-gray-500">
+          {@item[:module] || @item.module || "Module non défini"}
+        </p>
+      </div>
+
+      <!-- Bloc code source avec bouton Copier sur la même ligne (discret) -->
+      <div class="flex gap-2 items-start border-t border-gray-100 pt-3">
+        <div class="flex-1 rounded-md bg-gray-50 border border-gray-200 px-2 py-1.5 max-h-[4rem] overflow-y-auto overflow-x-auto">
+          <pre class="text-xs text-gray-600 leading-relaxed whitespace-pre-wrap">
+            {@code}</pre>
+        </div>
+        <button
+          type="button"
+          class="px-3 py-1.5 text-xs font-medium text-white bg-gray-900 rounded-md hover:bg-gray-800 transition-colors focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 whitespace-nowrap shrink-0"
+          onclick="navigator.clipboard.writeText(this.dataset.code).then(() => { const btn = this; const originalText = btn.textContent; btn.textContent = 'Copié!'; setTimeout(() => { btn.textContent = originalText; }, 2000); })"
+          data-code={@code}
+        >
+          Copier
+        </button>
+      </div>
+    </div>
+    """
+  end
 end

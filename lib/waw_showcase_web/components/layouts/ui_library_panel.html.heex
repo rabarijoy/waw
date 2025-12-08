@@ -153,345 +153,52 @@
 
         <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 auto-rows-[minmax(0,_auto)]" id="ui-components-grid" phx-hook="BentoGrid" style="grid-auto-flow: row;">
           <!-- Texte et Nombres -->
-          <div
+          <.component_card
             :for={item <- text_items}
-            id={if item.data_component, do: "component-#{item.data_component}", else: "ui-component-card-#{String.replace(item.sous_categorie, " ", "-") |> String.downcase()}"}
-            phx-hook="AutoResizeCard"
-            class="ui-component-card rounded-xl border border-gray-200 bg-white shadow-sm p-6 flex flex-col gap-3"
-            data-component={item.data_component}
-            data-component-title={item.sous_categorie}
-            data-component-module={item[:module] || item.module || ""}
-            data-component-category="texte-nombres"
-            data-component-variantes={Jason.encode!(item.variantes)}
-            data-component-principal-code={item.principal.code_source}
-            data-component-principal-nom={item.principal.nom}
-          >
-            <!-- Aperçu du composant principal -->
-            <div
-              class="ui-preview-trigger rounded-lg border-2 border-gray-200 bg-white min-h-[10rem] flex items-center justify-center p-4 cursor-pointer hover:border-gray-300 transition-colors [&_*]:m-0"
-              data-ui-preview="true"
-            >
-              <div class="component-preview w-full text-center">
-                <.render_component_preview
-                  code_source={item.principal.code_source}
-                  sous_categorie={item.sous_categorie}
-                />
-              </div>
-            </div>
-
-            <!-- Préviews des variantes (cachées, utilisées par la popup) -->
-            <div class="hidden variant-previews">
-              <div
-                :for={{variant, idx} <- Enum.with_index(WawShowcaseWeb.Layouts.flatten_variants_for_preview(item.variantes))}
-                data-variant-index={idx}
-                data-variant-nom={variant.nom}
-                data-group-nom={variant.group_nom}
-                data-group-idx={variant.group_idx}
-                data-sub-idx={variant.sub_idx}
-              >
-                <div class="rounded-lg border-2 border-gray-200 bg-white flex items-center justify-center p-4 cursor-pointer hover:border-gray-300 transition-colors [&_*]:m-0 min-h-[10rem]">
-                  <div class="component-preview-variant w-full text-center">
-                    <.render_variant_preview
-                      sous_categorie={item.sous_categorie}
-                      variant_nom={variant.nom}
-                    />
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <!-- Bloc titre -->
-            <div>
-              <h3 class="text-base font-semibold text-gray-900 truncate">
-                {item.sous_categorie}
-              </h3>
-            </div>
-
-            <!-- Bloc sous-titre -->
-            <div>
-              <p class="text-sm text-gray-500">
-                {item[:module] || item.module || "Module non défini"}
-              </p>
-            </div>
-
-            <!-- Bloc code source avec bouton Copier sur la même ligne (discret) -->
-            <% code = item.principal.code_source %>
-            <div class="flex gap-2 items-start border-t border-gray-100 pt-3">
-              <div class="flex-1 rounded-md bg-gray-50 border border-gray-200 px-2 py-1.5 max-h-[4rem] overflow-y-auto overflow-x-auto">
-                <pre class="text-xs text-gray-600 leading-relaxed whitespace-pre-wrap">
-{code}</pre>
-              </div>
-              <button
-                type="button"
-                class="px-3 py-1.5 text-xs font-medium text-white bg-gray-900 rounded-md hover:bg-gray-800 transition-colors focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 whitespace-nowrap shrink-0"
-                onclick="navigator.clipboard.writeText(this.dataset.code).then(() => { const btn = this; const originalText = btn.textContent; btn.textContent = 'Copié!'; setTimeout(() => { btn.textContent = originalText; }, 2000); })"
-                data-code={code}
-              >
-                Copier
-              </button>
-            </div>
-          </div>
+            item={item}
+            category="texte-nombres"
+            preview_padding="p-4"
+            preview_min_height="min-h-[10rem]"
+          />
           <!-- Basiques -->
-          <div
+          <.component_card
             :for={item <- basiques_items}
-            id={if item.data_component, do: "component-#{item.data_component}", else: "ui-component-card-#{String.replace(item.sous_categorie, " ", "-") |> String.downcase()}"}
-            phx-hook="AutoResizeCard"
-            class={[
-              "ui-component-card rounded-xl border border-gray-200 bg-white shadow-sm p-6 flex flex-col gap-3",
-              cond do
-                item.sous_categorie in ["Header", "Footer", "Header des filtres", "Tableau", "Pagination", "Steps", "Onglets"] ->
-                  "md:col-span-2 xl:col-span-3 bento-wide"
-                item.sous_categorie in ["Header de carte", "Modal"] ->
-                  "md:col-span-2 xl:col-span-2 bento-wide"
-                item.sous_categorie == "Accordion" ->
-                  "md:col-span-2 xl:col-span-3 bento-wide"
-                true ->
-                  ""
-              end
-            ]}
-            data-component={item.data_component}
-            data-component-title={item.sous_categorie}
-            data-component-module={item[:module] || item.module || ""}
-            data-component-category="basiques"
-            data-component-subcategory={String.replace(Map.get(item, :groupe, "Autres"), " ", "-") |> String.downcase()}
-            data-component-variantes={Jason.encode!(item.variantes)}
-            data-component-principal-code={item.principal.code_source}
-            data-component-principal-nom={item.principal.nom}
-          >
-            <!-- Aperçu du composant -->
-            <div
-              class={[
-                "ui-preview-trigger rounded-lg border-2 border-gray-200 bg-white flex items-center justify-center p-2 overflow-auto cursor-pointer hover:border-gray-300 transition-colors [&_*]:m-0",
-                if item.sous_categorie in ["Header", "Footer", "Header des filtres"] do
-                  "min-h-[12rem]"
-                else
-                  "min-h-[10rem]"
-                end
-              ]}
-              data-ui-preview="true"
-            >
-              <div class="component-preview w-full text-center">
-                <.render_component_preview code_source={item.principal.code_source} sous_categorie={item.sous_categorie} />
-              </div>
-            </div>
-
-            <!-- Préviews des variantes (cachées, utilisées par la popup) -->
-            <div class="hidden variant-previews">
-              <div
-                :for={{variant, idx} <- Enum.with_index(WawShowcaseWeb.Layouts.flatten_variants_for_preview(item.variantes))}
-                data-variant-index={idx}
-                data-variant-nom={variant.nom}
-                data-group-nom={variant.group_nom}
-                data-group-idx={variant.group_idx}
-                data-sub-idx={variant.sub_idx}
-              >
-                <div class="rounded-lg border-2 border-gray-200 bg-white flex items-center justify-center p-4 cursor-pointer hover:border-gray-300 transition-colors [&_*]:m-0 min-h-[10rem]">
-                  <div class="component-preview-variant w-full text-center">
-                    <.render_variant_preview
-                      sous_categorie={item.sous_categorie}
-                      variant_nom={variant.nom}
-                    />
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <!-- Bloc titre -->
-            <div>
-              <h3 class="text-base font-semibold text-gray-900 truncate">
-                {item.sous_categorie}
-              </h3>
-            </div>
-
-            <!-- Bloc sous-titre -->
-            <div>
-              <p class="text-sm text-gray-500">
-                {item[:module] || item.module || "Module non défini"}
-              </p>
-            </div>
-
-            <!-- Bloc code source avec bouton Copier sur la même ligne (discret) -->
-            <% code = item.principal.code_source %>
-            <div class="flex gap-2 items-start border-t border-gray-100 pt-3">
-              <div class="flex-1 rounded-md bg-gray-50 border border-gray-200 px-2 py-1.5 max-h-[4rem] overflow-y-auto overflow-x-auto">
-                <pre class="text-xs text-gray-600 leading-relaxed whitespace-pre-wrap">
-{code}</pre>
-              </div>
-              <button
-                type="button"
-                class="px-3 py-1.5 text-xs font-medium text-white bg-gray-900 rounded-md hover:bg-gray-800 transition-colors focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 whitespace-nowrap shrink-0"
-                onclick="navigator.clipboard.writeText(this.dataset.code).then(() => { const btn = this; const originalText = btn.textContent; btn.textContent = 'Copié!'; setTimeout(() => { btn.textContent = originalText; }, 2000); })"
-                data-code={code}
-              >
-                Copier
-              </button>
-            </div>
-          </div>
-          <!-- Dates et Heures -->
-          <div
-            :for={item <- dates_heures_items}
-            id={if item.data_component, do: "component-#{item.data_component}", else: "ui-component-card-#{String.replace(item.sous_categorie, " ", "-") |> String.downcase()}"}
-            phx-hook="AutoResizeCard"
-            class="ui-component-card rounded-xl border border-gray-200 bg-white shadow-sm p-6 flex flex-col gap-3"
-            data-component={item.data_component}
-            data-component-title={item.sous_categorie}
-            data-component-module={item[:module] || item.module || ""}
-            data-component-category="dates-heures"
-            data-component-variantes={Jason.encode!(item.variantes)}
-            data-component-principal-code={item.principal.code_source}
-            data-component-principal-nom={item.principal.nom}
-          >
-            <!-- Aperçu du composant principal -->
-            <div
-              class="ui-preview-trigger rounded-lg border-2 border-gray-200 bg-white min-h-[10rem] flex items-center justify-center p-4 cursor-pointer hover:border-gray-300 transition-colors [&_*]:m-0"
-              data-ui-preview="true"
-            >
-              <div class="component-preview w-full text-center">
-                <.render_component_preview
-                  code_source={item.principal.code_source}
-                  sous_categorie={item.sous_categorie}
-                />
-              </div>
-            </div>
-
-            <!-- Préviews des variantes (cachées, utilisées par la popup) -->
-            <div class="hidden variant-previews">
-              <div
-                :for={{variant, idx} <- Enum.with_index(WawShowcaseWeb.Layouts.flatten_variants_for_preview(item.variantes))}
-                data-variant-index={idx}
-                data-variant-nom={variant.nom}
-                data-group-nom={variant.group_nom}
-                data-group-idx={variant.group_idx}
-                data-sub-idx={variant.sub_idx}
-              >
-                <div class="rounded-lg border-2 border-gray-200 bg-white flex items-center justify-center p-4 cursor-pointer hover:border-gray-300 transition-colors [&_*]:m-0 min-h-[10rem]">
-                  <div class="component-preview-variant w-full text-center">
-                    <.render_variant_preview
-                      sous_categorie={item.sous_categorie}
-                      variant_nom={variant.nom}
-                    />
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <!-- Bloc titre -->
-            <div>
-              <h3 class="text-base font-semibold text-gray-900 truncate">
-                {item.principal.nom}
-              </h3>
-            </div>
-
-            <!-- Bloc sous-titre -->
-            <div>
-              <p class="text-sm text-gray-500">
-                {item[:module] || item.module || "Module non défini"}
-              </p>
-            </div>
-
-            <!-- Bloc code source avec bouton Copier sur la même ligne (discret) -->
-            <% code = item.principal.code_source %>
-            <div class="flex gap-2 items-start border-t border-gray-100 pt-3">
-              <div class="flex-1 rounded-md bg-gray-50 border border-gray-200 px-2 py-1.5 max-h-[4rem] overflow-y-auto overflow-x-auto">
-                <pre class="text-xs text-gray-600 leading-relaxed whitespace-pre-wrap">
-{code}</pre>
-              </div>
-              <button
-                type="button"
-                class="px-3 py-1.5 text-xs font-medium text-white bg-gray-900 rounded-md hover:bg-gray-800 transition-colors focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 whitespace-nowrap shrink-0"
-                onclick="navigator.clipboard.writeText(this.dataset.code).then(() => { const btn = this; const originalText = btn.textContent; btn.textContent = 'Copié!'; setTimeout(() => { btn.textContent = originalText; }, 2000); })"
-                data-code={code}
-              >
-                Copier
-              </button>
-            </div>
-          </div>
-          <!-- Cartes -->
-          <div
-            :for={item <- cartes_items}
-            id={if item.data_component, do: "component-#{item.data_component}", else: "ui-component-card-#{String.replace(item.sous_categorie, " ", "-") |> String.downcase()}"}
-            phx-hook="AutoResizeCard"
-            class={[
-              "ui-component-card rounded-xl border border-gray-200 bg-white shadow-sm p-6 flex flex-col gap-3",
-              if item.sous_categorie in ["Header de carte", "Footer de carte"] do
+            item={item}
+            category="basiques"
+            subcategory={String.replace(Map.get(item, :groupe, "Autres"), " ", "-") |> String.downcase()}
+            col_span_classes={cond do
+              item.sous_categorie in ["Header", "Footer", "Header des filtres", "Tableau", "Pagination", "Steps", "Onglets"] ->
+                "md:col-span-2 xl:col-span-3 bento-wide"
+              item.sous_categorie in ["Header de carte", "Modal"] ->
                 "md:col-span-2 xl:col-span-2 bento-wide"
-              else
+              item.sous_categorie == "Accordion" ->
+                "md:col-span-2 xl:col-span-3 bento-wide"
+              true ->
                 ""
-              end
-            ]}
-            data-component={item.data_component}
-            data-component-title={item.sous_categorie}
-            data-component-module={item[:module] || item.module || ""}
-            data-component-category="cartes"
-            data-component-variantes={Jason.encode!(item.variantes)}
-            data-component-principal-code={item.principal.code_source}
-            data-component-principal-nom={item.principal.nom}
-          >
-            <!-- Aperçu du composant principal -->
-            <div
-              class="ui-preview-trigger rounded-lg border-2 border-gray-200 bg-white flex items-center justify-center p-4 cursor-pointer hover:border-gray-300 transition-colors [&_*]:m-0 min-h-[10rem]"
-              data-ui-preview="true"
-            >
-              <div class="component-preview w-full text-center">
-                <.render_component_preview
-                  code_source={item.principal.code_source}
-                  sous_categorie={item.sous_categorie}
-                />
-              </div>
-            </div>
-
-            <!-- Préviews des variantes (cachées, utilisées par la popup) -->
-            <div class="hidden variant-previews">
-              <div
-                :for={{variant, idx} <- Enum.with_index(WawShowcaseWeb.Layouts.flatten_variants_for_preview(item.variantes))}
-                data-variant-index={idx}
-                data-variant-nom={variant.nom}
-                data-group-nom={variant.group_nom}
-                data-group-idx={variant.group_idx}
-                data-sub-idx={variant.sub_idx}
-              >
-                <div class="rounded-lg border-2 border-gray-200 bg-white flex items-center justify-center p-4 cursor-pointer hover:border-gray-300 transition-colors [&_*]:m-0 min-h-[10rem]">
-                  <div class="component-preview-variant w-full text-center">
-                    <.render_variant_preview
-                      sous_categorie={item.sous_categorie}
-                      variant_nom={variant.nom}
-                    />
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <!-- Bloc titre -->
-            <div>
-              <h3 class="text-base font-semibold text-gray-900 truncate">
-                {item.principal.nom}
-              </h3>
-            </div>
-
-            <!-- Bloc sous-titre -->
-            <div>
-              <p class="text-sm text-gray-500">
-                {item[:module] || item.module || "Module non défini"}
-              </p>
-            </div>
-
-            <!-- Bloc code source avec bouton Copier sur la même ligne (discret) -->
-            <% code = item.principal.code_source %>
-            <div class="flex gap-2 items-start border-t border-gray-100 pt-3">
-              <div class="flex-1 rounded-md bg-gray-50 border border-gray-200 px-2 py-1.5 max-h-[4rem] overflow-y-auto overflow-x-auto">
-                <pre class="text-xs text-gray-600 leading-relaxed whitespace-pre-wrap">
-{code}</pre>
-              </div>
-              <button
-                type="button"
-                class="px-3 py-1.5 text-xs font-medium text-white bg-gray-900 rounded-md hover:bg-gray-800 transition-colors focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 whitespace-nowrap shrink-0"
-                onclick="navigator.clipboard.writeText(this.dataset.code).then(() => { const btn = this; const originalText = btn.textContent; btn.textContent = 'Copié!'; setTimeout(() => { btn.textContent = originalText; }, 2000); })"
-                data-code={code}
-              >
-                Copier
-              </button>
-            </div>
-          </div>
+            end}
+            preview_padding="p-2"
+            preview_overflow="overflow-auto"
+            preview_min_height={if item.sous_categorie in ["Header", "Footer", "Header des filtres"], do: "min-h-[12rem]", else: "min-h-[10rem]"}
+          />
+          <!-- Dates et Heures -->
+          <.component_card
+            :for={item <- dates_heures_items}
+            item={item}
+            category="dates-heures"
+            preview_padding="p-4"
+            preview_min_height="min-h-[10rem]"
+            title_field={:principal_nom}
+          />
+          <!-- Cartes -->
+          <.component_card
+            :for={item <- cartes_items}
+            item={item}
+            category="cartes"
+            col_span_classes={if item.sous_categorie in ["Header de carte", "Footer de carte"], do: "md:col-span-2 xl:col-span-2 bento-wide", else: ""}
+            preview_padding="p-4"
+            preview_min_height="min-h-[10rem]"
+            title_field={:principal_nom}
+          />
         </div>
 
         <!-- Section Icônes (séparée de la grille principale) -->
