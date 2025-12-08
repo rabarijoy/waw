@@ -168,10 +168,10 @@
           >
             <!-- Aperçu du composant principal -->
             <div
-              class="ui-preview-trigger rounded-lg border-2 border-gray-200 bg-white min-h-[10rem] grid place-items-center p-2 cursor-pointer hover:border-gray-300 transition-colors [&_*]:m-0"
+              class="ui-preview-trigger rounded-lg border-2 border-gray-200 bg-white min-h-[10rem] flex items-center justify-center p-4 cursor-pointer hover:border-gray-300 transition-colors [&_*]:m-0"
               data-ui-preview="true"
             >
-              <div class="component-preview">
+              <div class="component-preview w-full text-center">
                 <.render_component_preview
                   code_source={item.principal.code_source}
                   sous_categorie={item.sous_categorie}
@@ -189,11 +189,13 @@
                 data-group-idx={variant.group_idx}
                 data-sub-idx={variant.sub_idx}
               >
-                <div class="component-preview-variant">
-                  <.render_variant_preview
-                    sous_categorie={item.sous_categorie}
-                    variant_nom={variant.nom}
-                  />
+                <div class="rounded-lg border-2 border-gray-200 bg-white flex items-center justify-center p-4 cursor-pointer hover:border-gray-300 transition-colors [&_*]:m-0 min-h-[10rem]">
+                  <div class="component-preview-variant w-full text-center">
+                    <.render_variant_preview
+                      sous_categorie={item.sous_categorie}
+                      variant_nom={variant.nom}
+                    />
+                  </div>
                 </div>
               </div>
             </div>
@@ -259,7 +261,7 @@
             <!-- Aperçu du composant -->
             <div
               class={[
-                "ui-preview-trigger rounded-lg border-2 border-gray-200 bg-white grid place-items-center p-2 overflow-auto cursor-pointer hover-border-gray-300 transition-colors [&_*]:m-0",
+                "ui-preview-trigger rounded-lg border-2 border-gray-200 bg-white flex items-center justify-center p-2 overflow-auto cursor-pointer hover:border-gray-300 transition-colors [&_*]:m-0",
                 if item.sous_categorie in ["Header", "Footer", "Header des filtres"] do
                   "min-h-[12rem]"
                 else
@@ -268,7 +270,7 @@
               ]}
               data-ui-preview="true"
             >
-              <div class="component-preview">
+              <div class="component-preview w-full text-center">
                 <.render_component_preview code_source={item.principal.code_source} sous_categorie={item.sous_categorie} />
               </div>
             </div>
@@ -283,11 +285,13 @@
                 data-group-idx={variant.group_idx}
                 data-sub-idx={variant.sub_idx}
               >
-                <div class="component-preview-variant">
-                  <.render_variant_preview
-                    sous_categorie={item.sous_categorie}
-                    variant_nom={variant.nom}
-                  />
+                <div class="rounded-lg border-2 border-gray-200 bg-white flex items-center justify-center p-4 cursor-pointer hover:border-gray-300 transition-colors [&_*]:m-0 min-h-[10rem]">
+                  <div class="component-preview-variant w-full text-center">
+                    <.render_variant_preview
+                      sous_categorie={item.sous_categorie}
+                      variant_nom={variant.nom}
+                    />
+                  </div>
                 </div>
               </div>
             </div>
@@ -339,10 +343,10 @@
           >
             <!-- Aperçu du composant principal -->
             <div
-              class="ui-preview-trigger rounded-lg border-2 border-gray-200 bg-white min-h-[10rem] grid place-items-center p-2 cursor-pointer hover:border-gray-300 transition-colors [&_*]:m-0"
+              class="ui-preview-trigger rounded-lg border-2 border-gray-200 bg-white min-h-[10rem] flex items-center justify-center p-4 cursor-pointer hover:border-gray-300 transition-colors [&_*]:m-0"
               data-ui-preview="true"
             >
-              <div class="component-preview">
+              <div class="component-preview w-full text-center">
                 <.render_component_preview
                   code_source={item.principal.code_source}
                   sous_categorie={item.sous_categorie}
@@ -360,11 +364,13 @@
                 data-group-idx={variant.group_idx}
                 data-sub-idx={variant.sub_idx}
               >
-                <div class="component-preview-variant">
-                  <.render_variant_preview
-                    sous_categorie={item.sous_categorie}
-                    variant_nom={variant.nom}
-                  />
+                <div class="rounded-lg border-2 border-gray-200 bg-white flex items-center justify-center p-4 cursor-pointer hover:border-gray-300 transition-colors [&_*]:m-0 min-h-[10rem]">
+                  <div class="component-preview-variant w-full text-center">
+                    <.render_variant_preview
+                      sous_categorie={item.sous_categorie}
+                      variant_nom={variant.nom}
+                    />
+                  </div>
                 </div>
               </div>
             </div>
@@ -379,7 +385,7 @@
             <!-- Bloc sous-titre -->
             <div>
               <p class="text-sm text-gray-500">
-                {item.sous_categorie}
+                {item[:module] || item.module || "Module non défini"}
               </p>
             </div>
 
@@ -407,7 +413,7 @@
             phx-hook="AutoResizeCard"
             class={[
               "ui-component-card rounded-xl border border-gray-200 bg-white shadow-sm p-6 flex flex-col gap-3",
-              if item.sous_categorie in ["Header de carte"] do
+              if item.sous_categorie in ["Header de carte", "Footer de carte"] do
                 "md:col-span-2 xl:col-span-2 bento-wide"
               else
                 ""
@@ -423,10 +429,10 @@
           >
             <!-- Aperçu du composant principal -->
             <div
-              class="ui-preview-trigger rounded-lg border-2 border-gray-200 bg-white min-h-[10rem] grid place-items-center p-2 cursor-pointer hover-border-gray-300 transition-colors [&_*]:m-0"
+              class="ui-preview-trigger rounded-lg border-2 border-gray-200 bg-white flex items-center justify-center p-4 cursor-pointer hover:border-gray-300 transition-colors [&_*]:m-0 min-h-[10rem]"
               data-ui-preview="true"
             >
-              <div class="component-preview">
+              <div class="component-preview w-full text-center">
                 <.render_component_preview
                   code_source={item.principal.code_source}
                   sous_categorie={item.sous_categorie}
@@ -444,11 +450,13 @@
                 data-group-idx={variant.group_idx}
                 data-sub-idx={variant.sub_idx}
               >
-                <div class="component-preview-variant">
-                  <.render_variant_preview
-                    sous_categorie={item.sous_categorie}
-                    variant_nom={variant.nom}
-                  />
+                <div class="rounded-lg border-2 border-gray-200 bg-white flex items-center justify-center p-4 cursor-pointer hover:border-gray-300 transition-colors [&_*]:m-0 min-h-[10rem]">
+                  <div class="component-preview-variant w-full text-center">
+                    <.render_variant_preview
+                      sous_categorie={item.sous_categorie}
+                      variant_nom={variant.nom}
+                    />
+                  </div>
                 </div>
               </div>
             </div>
@@ -463,7 +471,7 @@
             <!-- Bloc sous-titre -->
             <div>
               <p class="text-sm text-gray-500">
-                {item.sous_categorie}
+                {item[:module] || item.module || "Module non défini"}
               </p>
             </div>
 

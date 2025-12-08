@@ -2661,6 +2661,8 @@ const ModeSwitchHook = {
 const AutoResizeCardHook = {
   mounted() {
     this.checkOverflowDebounced = this.debounce(() => this.checkOverflow(), 100)
+    // Sauvegarder les classes col-span initiales
+    this.originalColSpanClasses = this.getColSpanClasses(this.el)
     this.checkOverflow()
     
     // Observer les changements de taille du contenu
@@ -2682,7 +2684,14 @@ const AutoResizeCardHook = {
   },
 
   updated() {
-    this.checkOverflowDebounced()
+    // Réinitialiser les classes col-span à leur état d'origine avant de recalculer
+    this.resetColSpan()
+    // Réinitialiser aussi minHeight
+    this.el.style.minHeight = ''
+    // Attendre un peu pour que le DOM soit stabilisé avant de recalculer
+    setTimeout(() => {
+      this.checkOverflowDebounced()
+    }, 50)
   },
 
   destroyed() {
@@ -2808,13 +2817,42 @@ const AutoResizeCardHook = {
     return maxSpan
   },
 
+  getColSpanClasses(card) {
+    const classes = card.className.split(' ')
+    return classes.filter(cls => 
+      /^(col-span-\d+|md:col-span-\d+|xl:col-span-\d+)$/.test(cls.trim())
+    )
+  },
+
+  resetColSpan() {
+    const card = this.el
+    // Retirer toutes les classes col-span dynamiques
+    card.className = card.className
+      .replace(/\b(col-span-\d+|md:col-span-\d+|xl:col-span-\d+)\b/g, '')
+      .trim()
+    
+    // Restaurer les classes col-span originales
+    if (this.originalColSpanClasses && this.originalColSpanClasses.length > 0) {
+      this.originalColSpanClasses.forEach(cls => {
+        card.classList.add(cls)
+      })
+    }
+  },
+
   setColSpan(card, colSpan) {
     // Retirer les anciennes classes col-span
     card.className = card.className
       .replace(/\b(col-span-\d+|md:col-span-\d+|xl:col-span-\d+)\b/g, '')
       .trim()
     
-    // Ajouter la nouvelle classe
+    // Restaurer les classes col-span originales d'abord
+    if (this.originalColSpanClasses && this.originalColSpanClasses.length > 0) {
+      this.originalColSpanClasses.forEach(cls => {
+        card.classList.add(cls)
+      })
+    }
+    
+    // Ajouter la nouvelle classe par-dessus
     if (colSpan > 1) {
       card.classList.add(`md:col-span-${colSpan}`, `xl:col-span-${colSpan}`)
     }
