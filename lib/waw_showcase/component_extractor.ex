@@ -70,7 +70,7 @@ defmodule WawShowcase.ComponentExtractor do
       Logger.debug("ComponentExtractor.extract_all_components - Extracted #{length(components)} components")
       components
     else
-      Logger.warn("ComponentExtractor.extract_all_components - Waw path does not exist: #{inspect(waw_path)}")
+      Logger.warning("ComponentExtractor.extract_all_components - Waw path does not exist: #{inspect(waw_path)}")
       []
     end
   end

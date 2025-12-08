@@ -125,7 +125,7 @@ defmodule WawShowcaseWeb.Layouts do
         hidden
       >
         {gettext("Attempting to reconnect")}
-        <.icon name="hero-arrow-path" class="ml-1 size-3 motion-safe:animate-spin" />
+        <.waw_icon name="arrow-triangle-2-circlepath-refresh" size="3" stroke="none" class="ml-1 motion-safe:animate-spin" />
       </.flash>
 
       <.flash
@@ -137,7 +137,7 @@ defmodule WawShowcaseWeb.Layouts do
         hidden
       >
         {gettext("Attempting to reconnect")}
-        <.icon name="hero-arrow-path" class="ml-1 size-3 motion-safe:animate-spin" />
+        <.waw_icon name="arrow-triangle-2-circlepath-refresh" size="3" stroke="none" class="ml-1 motion-safe:animate-spin" />
       </.flash>
     </div>
     """
@@ -158,7 +158,7 @@ defmodule WawShowcaseWeb.Layouts do
         phx-click={JS.dispatch("phx:set-theme")}
         data-phx-theme="system"
       >
-        <.icon name="hero-computer-desktop-micro" class="size-4 opacity-75 hover:opacity-100" />
+        <.waw_icon name="desktop-computer-imac" size="4" stroke="none" class="opacity-75 hover:opacity-100" />
       </button>
 
       <button
@@ -166,7 +166,7 @@ defmodule WawShowcaseWeb.Layouts do
         phx-click={JS.dispatch("phx:set-theme")}
         data-phx-theme="light"
       >
-        <.icon name="hero-sun-micro" class="size-4 opacity-75 hover:opacity-100" />
+        <.waw_icon name="thermometer-sun-fill" size="4" stroke="none" class="opacity-75 hover:opacity-100" />
       </button>
 
       <button
@@ -174,7 +174,7 @@ defmodule WawShowcaseWeb.Layouts do
         phx-click={JS.dispatch("phx:set-theme")}
         data-phx-theme="dark"
       >
-        <.icon name="hero-moon-micro" class="size-4 opacity-75 hover:opacity-100" />
+        <.waw_icon name="circle-fill" size="4" stroke="none" class="opacity-75 hover:opacity-100" />
       </button>
     </div>
     """

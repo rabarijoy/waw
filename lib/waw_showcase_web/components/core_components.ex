@@ -19,7 +19,7 @@ defmodule WawShowcaseWeb.CoreComponents do
       we build on. You will use it for layout, sizing, flexbox, grid, and
       spacing.
 
-    * [Heroicons](https://heroicons.com) - see `icon/1` for usage.
+    * Icons are provided by Waw.Icons - use `<.waw_icon>` component.
 
     * [Phoenix.Component](https://hexdocs.pm/phoenix_live_view/Phoenix.Component.html) -
       the component system used by Phoenix. Some components, such as `<.link>`
@@ -28,6 +28,9 @@ defmodule WawShowcaseWeb.CoreComponents do
   """
   use Phoenix.Component
   use Gettext, backend: WawShowcaseWeb.Gettext
+
+  # Import Waw.Icons pour utiliser waw_icon
+  import Waw.Icons, except: [icon: 1]
 
   alias Phoenix.LiveView.JS
 
@@ -64,15 +67,15 @@ defmodule WawShowcaseWeb.CoreComponents do
         @kind == :info && "alert-info",
         @kind == :error && "alert-error"
       ]}>
-        <.icon :if={@kind == :info} name="hero-information-circle" class="size-5 shrink-0" />
-        <.icon :if={@kind == :error} name="hero-exclamation-circle" class="size-5 shrink-0" />
+        <.waw_icon :if={@kind == :info} name="info-circle-fill" size="5" stroke="none" class="shrink-0" />
+        <.waw_icon :if={@kind == :error} name="exclamationmark-circle-fill" size="5" stroke="none" class="shrink-0" />
         <div>
           <p :if={@title} class="font-semibold">{@title}</p>
           <p>{msg}</p>
         </div>
         <div class="flex-1" />
         <button type="button" class="group self-start cursor-pointer" aria-label={gettext("close")}>
-          <.icon name="hero-x-mark" class="size-5 opacity-40 group-hover:opacity-70" />
+          <.waw_icon name="cancel" size="5" stroke="none" class="opacity-40 group-hover:opacity-70" />
         </button>
       </div>
     </div>
@@ -273,7 +276,7 @@ defmodule WawShowcaseWeb.CoreComponents do
   defp error(assigns) do
     ~H"""
     <p class="mt-1.5 flex gap-2 items-center text-sm text-error">
-      <.icon name="hero-exclamation-circle" class="size-5" />
+      <.waw_icon name="exclamationmark-circle-fill" size="5" stroke="none" />
       {render_slot(@inner_block)}
     </p>
     """
@@ -392,30 +395,16 @@ defmodule WawShowcaseWeb.CoreComponents do
     """
   end
 
-  @doc """
-  Renders a [Heroicon](https://heroicons.com).
-
-  Heroicons come in three styles – outline, solid, and mini.
-  By default, the outline style is used, but solid and mini may
-  be applied by using the `-solid` and `-mini` suffix.
-
-  You can customize the size and colors of the icons by setting
-  width, height, and background color classes.
-
-  Icons are extracted from the `deps/heroicons` directory and bundled within
-  your compiled app.css by the plugin in `assets/vendor/heroicons.js`.
-
-  ## Examples
-
-      <.icon name="hero-x-mark" />
-      <.icon name="hero-arrow-path" class="ml-1 size-3 motion-safe:animate-spin" />
-  """
+  # NOTE: Le composant icon pour heroicons a été supprimé.
+  # Utilisez <.waw_icon> à la place pour les icônes Waw.
+  # Ce composant est conservé temporairement pour éviter les erreurs de compilation
+  # mais ne devrait plus être utilisé.
   attr :name, :string, required: true
   attr :class, :string, default: "size-4"
 
   def icon(%{name: "hero-" <> _} = assigns) do
+    # Fallback silencieux - ne rien rendre
     ~H"""
-    <span class={[@name, @class]} />
     """
   end
 
