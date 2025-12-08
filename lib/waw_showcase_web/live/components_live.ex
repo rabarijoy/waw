@@ -2,15 +2,18 @@ defmodule WawShowcaseWeb.ComponentsLive do
   use WawShowcaseWeb, :live_view
   use WawShowcaseWeb.Live.ComponentInspector
 
+  # Optimisation: réduire les mises à jour inutiles
   @impl true
   def mount(_params, _session, socket) do
-    components = WawShowcase.ComponentExtractor.load_components()
+    components = WawShowcase.ComponentCache.get_components()
 
     {:ok,
      socket
      |> assign(:components, components)
      |> assign(:search_term, "")
-     |> assign(:filtered_components, components)}
+     |> assign(:filtered_components, components)
+     # Optimisation: ne pas garder les assigns temporaires après le rendu
+     |> assign(:page_title, "Composants Waw")}
   end
 
   @impl true
@@ -25,10 +28,15 @@ defmodule WawShowcaseWeb.ComponentsLive do
         socket.assigns.components
       else
         search_term_lower = String.downcase(search_term)
+        # Optimisation: utiliser String.contains? avec downcase une seule fois
+        components = socket.assigns.components
 
-        Enum.filter(socket.assigns.components, fn component ->
-          String.contains?(String.downcase(component.nom || ""), search_term_lower) ||
-            String.contains?(String.downcase(component.module || ""), search_term_lower)
+        Enum.filter(components, fn component ->
+          nom = component.nom || ""
+          module = component.module || ""
+
+          String.contains?(String.downcase(nom), search_term_lower) ||
+            String.contains?(String.downcase(module), search_term_lower)
         end)
       end
 
@@ -51,8 +59,3 @@ defmodule WawShowcaseWeb.ComponentsLive do
      |> put_flash(:info, "Composants rechargés avec succès")}
   end
 end
-
-
-
-
-

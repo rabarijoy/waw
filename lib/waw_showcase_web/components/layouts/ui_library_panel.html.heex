@@ -1,8 +1,8 @@
 <div class="pb-6 px-4">
-  <% text_items = WawShowcase.UIConfig.get_components_by_category("Texte et Nombres") %>
-  <% basiques_items = WawShowcase.UIConfig.get_components_by_category("Basiques") %>
-  <% dates_heures_items = WawShowcase.UIConfig.get_components_by_category("Dates et heures") %>
-  <% cartes_items = WawShowcase.UIConfig.get_components_by_category("Cartes") %>
+  <% text_items = WawShowcase.UIConfigCache.get_components_by_category("Texte et Nombres") %>
+  <% basiques_items = WawShowcase.UIConfigCache.get_components_by_category("Basiques") %>
+  <% dates_heures_items = WawShowcase.UIConfigCache.get_components_by_category("Dates et heures") %>
+  <% cartes_items = WawShowcase.UIConfigCache.get_components_by_category("Cartes") %>
   <% icon_names =
     if function_exported?(Waw.Icons, :icon_list, 0) do
       WawShowcaseWeb.Layouts.filter_valid_icons(Waw.Icons.icon_list())

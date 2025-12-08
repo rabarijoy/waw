@@ -15,8 +15,8 @@ config :waw_showcase, WawShowcaseWeb.Endpoint,
   debug_errors: false,
   secret_key_base: "pUyX906U3bXDcnxE8sEYuMzoIcKqA0mWh3PYZdQR5dJCm1moggvm2L5ibAA58EyX",
   watchers: [
-    esbuild: {Esbuild, :install_and_run, [:waw_showcase, ~w(--sourcemap=inline --watch)]},
-    tailwind: {Tailwind, :install_and_run, [:waw_showcase, ~w(--watch)]}
+    esbuild: {Esbuild, :install_and_run, [:waw_showcase, ~w(--sourcemap=inline --watch --minify)]},
+    tailwind: {Tailwind, :install_and_run, [:waw_showcase, ~w(--watch --minify)]}
   ]
 
 # ## SSL Support

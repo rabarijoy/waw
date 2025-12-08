@@ -16,12 +16,16 @@ defmodule WawShowcase.Application do
       # Attendre un peu pour que les modules soient compilés
       Process.sleep(1000)
       WawShowcase.ComponentExtractor.load_components()
+      # Précharger le cache UIConfig
+      WawShowcase.UIConfigCache.preload_all()
     end)
 
     children = [
       WawShowcaseWeb.Telemetry,
       {DNSCluster, query: Application.get_env(:waw_showcase, :dns_cluster_query) || :ignore},
       {Phoenix.PubSub, name: WawShowcase.PubSub},
+      # Cache pour UIConfig
+      WawShowcase.UIConfigCache,
       # Start a worker by calling: WawShowcase.Worker.start_link(arg)
       # {WawShowcase.Worker, arg},
       # Start to serve requests, typically the last entry

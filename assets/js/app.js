@@ -1972,6 +1972,17 @@ const SpotlightSearchHook = {
       return labels[category] || category
     }
 
+    // Debounce amélioré pour la recherche
+    let searchTimeout = null
+    const debouncedSearch = (term) => {
+      if (searchTimeout) {
+        clearTimeout(searchTimeout)
+      }
+      searchTimeout = setTimeout(() => {
+        searchAllComponents(term)
+      }, 150) // 150ms de debounce pour meilleure performance
+    }
+
     const searchAllComponents = (term) => {
       if (!term || term.trim().length === 0) {
         results = []
@@ -1983,6 +1994,14 @@ const SpotlightSearchHook = {
       results = []
       const grid = document.getElementById("ui-components-grid")
       const iconsSection = document.getElementById("ui-icons-section")
+      
+      // Utiliser requestAnimationFrame pour éviter de bloquer le thread principal
+      requestAnimationFrame(() => {
+        performSearch(searchTerm, grid, iconsSection)
+      })
+    }
+    
+    const performSearch = (searchTerm, grid, iconsSection) => {
 
       // Rechercher dans les cards normales
       if (grid) {
@@ -2167,7 +2186,7 @@ const SpotlightSearchHook = {
     closeButtons.forEach(btn => btn.addEventListener("click", closeModal))
     
     input?.addEventListener("input", (e) => {
-      searchAllComponents(e.target.value)
+      debouncedSearch(e.target.value)
       selectedIndex = -1
     })
 
@@ -2676,10 +2695,10 @@ const AutoResizeCardHook = {
       attributeFilter: ['class', 'style']
     })
     
-    // Observer aussi les changements de taille de la fenêtre
-    this.resizeHandler = () => {
-      setTimeout(() => this.checkOverflow(), 100)
-    }
+    // Observer aussi les changements de taille de la fenêtre avec throttling
+    this.resizeHandler = this.throttle(() => {
+      this.checkOverflowDebounced()
+    }, 200) // Throttle à 200ms pour éviter trop de recalculs
     window.addEventListener('resize', this.resizeHandler)
   },
 
@@ -2712,6 +2731,17 @@ const AutoResizeCardHook = {
       }
       clearTimeout(timeout)
       timeout = setTimeout(later, wait)
+    }
+  },
+  
+  throttle(func, wait) {
+    let inThrottle
+    return function executedFunction(...args) {
+      if (!inThrottle) {
+        func.apply(this, args)
+        inThrottle = true
+        setTimeout(() => (inThrottle = false), wait)
+      }
     }
   },
 
