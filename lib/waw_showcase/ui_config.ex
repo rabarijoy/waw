@@ -521,15 +521,6 @@ defmodule WawShowcase.UIConfig do
 </.input>
 """
           },
-          %{
-            nom: "Sélection multiple",
-            code_source: """
-<.input label="Label" size="sm" type="select">
-<option>option 1</option>
-<option>option 2</option>
-</.input>
-"""
-          },
         ]
       },
       %{
