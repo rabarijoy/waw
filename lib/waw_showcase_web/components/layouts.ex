@@ -915,7 +915,7 @@ defmodule WawShowcaseWeb.Layouts do
 
       "Recherche avec un resultat dans un popup" ->
         ~H"""
-        <Waw.LiveSearch.live_search name="recherche-popup">
+        <Waw.LiveSearch.live_search id="recherche-popup" name="recherche-popup">
         <:results>
         <Waw.LiveSearch.list_group title="Organisations">
         <.waw_li_button>org 1</.waw_li_button>
@@ -1525,7 +1525,7 @@ defmodule WawShowcaseWeb.Layouts do
         </:left>
         <:right>
         <.waw_button label="Actions" size="md" icon="ellipsis-circle" icon_position="right" />
-        <Waw.LiveSearch.live_search name="header-filtres-search" margin_size="lg">
+        <Waw.LiveSearch.live_search id="header-filtres-search" name="header-filtres-search" margin_size="lg">
         <:results>
         <Waw.LiveSearch.list_group title="Organisations">
         <.waw_li_button>org 1</.waw_li_button>
@@ -1692,7 +1692,7 @@ defmodule WawShowcaseWeb.Layouts do
       ## Basiques – Recherche avec un resultat dans un popup
       {"Recherche avec un resultat dans un popup", "Avec filtre"} ->
         ~H"""
-        <Waw.LiveSearch.live_search name="recherche-popup-filtre" has_filter={true}>
+        <Waw.LiveSearch.live_search id="recherche-popup-filtre" name="recherche-popup-filtre" has_filter={true}>
         <:results>
         <Waw.LiveSearch.list_group title="Organisations">
         <.waw_li_button>org 1</.waw_li_button>
