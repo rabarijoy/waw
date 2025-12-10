@@ -13,5 +13,140 @@
   </head>
   <body id="app-body">
     {@inner_content}
+    
+    <%!-- Toast discret pour expliquer le clic droit en mode demo --%>
+    <div
+      id="demo-mode-toast"
+      phx-hook="DemoModeToast"
+      data-toast-delay="2000"
+      class="fixed bottom-6 right-6 z-[9999] opacity-0 transition-all duration-300 pointer-events-auto"
+      style="visibility: hidden; transform: translateY(10px);"
+    >
+      <div class="alert shadow-xl max-w-md border border-base-300 bg-base-100 backdrop-blur-sm">
+        <div class="relative w-full">
+          <div class="absolute left-0 top-0.5">
+            <div class="rounded-full bg-info/10 p-2">
+              <.waw_icon name="lightbulb" size="5" class="text-info" />
+            </div>
+          </div>
+          <div class="pl-14">
+            <h3 class="font-semibold text-sm text-base-content mb-1.5">
+              Astuce
+            </h3>
+            <p class="text-sm text-base-content/80 leading-relaxed mb-3">
+              Utilisez le <strong class="font-semibold">clic droit</strong> sur n'importe quel composant pour voir ses détails et accéder au code.
+            </p>
+            <div class="inline-block space-x-2">
+              <button
+                type="button"
+                data-demo-toast-dismiss
+                class="btn btn-sm btn-primary btn-outline"
+              >
+                Compris
+              </button>
+              <button
+                type="button"
+                data-demo-toast-dismiss
+                data-dont-show-again="true"
+                class="btn btn-sm btn-ghost text-xs"
+              >
+                Ne plus afficher
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <%!-- Toast avec slides pour expliquer les fonctionnalités en mode UI --%>
+    <div
+      id="ui-mode-toast"
+      phx-hook="UIModeToast"
+      data-toast-delay="2000"
+      class="fixed bottom-6 right-6 z-[9999] opacity-0 transition-all duration-300 pointer-events-auto"
+      style="visibility: hidden; transform: translateY(10px);"
+    >
+      <div class="alert shadow-xl max-w-md border border-base-300 bg-base-100 backdrop-blur-sm">
+        <div class="relative w-full">
+          <div class="absolute left-0 top-0.5">
+            <div class="rounded-full bg-info/10 p-2">
+              <.waw_icon name="lightbulb" size="5" class="text-info" />
+            </div>
+          </div>
+          <div class="pl-14">
+            <%!-- Slide 1: Recherche --%>
+            <div data-ui-toast-slide class="hidden">
+              <h3 class="font-semibold text-sm text-base-content mb-1.5">
+                Recherche de composants
+              </h3>
+              <p class="text-sm text-base-content/80 leading-relaxed mb-3">
+                Utilisez la <strong class="font-semibold">barre de recherche</strong> en haut pour trouver rapidement n'importe quel composant par son nom.
+              </p>
+            </div>
+
+            <%!-- Slide 2: Détails du composant --%>
+            <div data-ui-toast-slide class="hidden">
+              <h3 class="font-semibold text-sm text-base-content mb-1.5">
+                Voir les détails
+              </h3>
+              <p class="text-sm text-base-content/80 leading-relaxed mb-3">
+                <strong class="font-semibold">Cliquez</strong> sur un composant pour voir ses détails, ses variantes et ses options de configuration.
+              </p>
+            </div>
+
+            <%!-- Slide 3: Code source --%>
+            <div data-ui-toast-slide class="hidden">
+              <h3 class="font-semibold text-sm text-base-content mb-1.5">
+                Copier le code
+              </h3>
+              <p class="text-sm text-base-content/80 leading-relaxed mb-3">
+                Utilisez le bouton <strong class="font-semibold">"Copier"</strong> pour récupérer le code source du composant et l'utiliser dans votre projet.
+              </p>
+            </div>
+
+            <%!-- Indicateurs de slides --%>
+            <div class="flex gap-1.5 justify-start mb-3">
+              <div data-ui-toast-indicator class="w-1.5 h-1.5 rounded-full bg-info"></div>
+              <div data-ui-toast-indicator class="w-1.5 h-1.5 rounded-full bg-base-300"></div>
+              <div data-ui-toast-indicator class="w-1.5 h-1.5 rounded-full bg-base-300"></div>
+            </div>
+
+            <%!-- Boutons de navigation et actions --%>
+            <div class="inline-block space-x-2">
+              <button
+                type="button"
+                data-ui-toast-prev
+                class="btn btn-sm btn-ghost text-xs hidden"
+              >
+                ← Précédent
+              </button>
+              <button
+                type="button"
+                data-ui-toast-next
+                class="btn btn-sm btn-primary btn-outline"
+              >
+                Suivant →
+              </button>
+              <button
+                type="button"
+                data-ui-toast-finish
+                data-ui-toast-dismiss
+                class="btn btn-sm btn-primary btn-outline hidden"
+              >
+                Compris
+              </button>
+              <button
+                type="button"
+                data-ui-toast-dismiss
+                data-dont-show-again="true"
+                class="btn btn-sm btn-ghost text-xs"
+              >
+                Ne plus afficher
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   </body>
 </html>

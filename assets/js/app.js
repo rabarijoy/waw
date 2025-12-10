@@ -2889,6 +2889,307 @@ const AutoResizeCardHook = {
   }
 }
 
+const DemoModeToastHook = {
+  mounted() {
+    this.storageKey = "waw_showcase_demo_toast_dismissed"
+    this.delay = Number(this.el.dataset.toastDelay || "2000")
+    
+    // Vérifier si on est en mode demo
+    const isDemoMode = () => {
+      // Vérifier d'abord la variable globale currentMode
+      if (typeof currentMode !== "undefined") {
+        return currentMode === "demo"
+      }
+      // Fallback: vérifier l'attribut data-app-mode sur le body
+      const body = document.getElementById("app-body") || document.body
+      if (body && body.dataset.appMode) {
+        return body.dataset.appMode === "demo"
+      }
+      // Fallback: vérifier le bouton demo actif
+      const demoButton = document.querySelector('[data-mode-value="demo"]')
+      return demoButton && demoButton.classList.contains('bg-gray-900')
+    }
+
+    this.dismissHandler = (event) => {
+      const button = event.target?.closest("[data-demo-toast-dismiss]")
+      if (button && this.el.contains(button)) {
+        const dontShowAgain = button.dataset.dontShowAgain === "true"
+        if (dontShowAgain) {
+          localStorage.setItem(this.storageKey, "true")
+        }
+        this.hide()
+      }
+    }
+
+    document.addEventListener("click", this.dismissHandler)
+
+    // Fonction pour vérifier et afficher le toast
+    this.checkAndShow = () => {
+      const dismissed = localStorage.getItem(this.storageKey)
+      const demoMode = isDemoMode()
+      
+      if (!dismissed && demoMode) {
+        if (this.el.style.visibility === "hidden" || this.el.classList.contains("opacity-0")) {
+          if (this.showTimer) {
+            window.clearTimeout(this.showTimer)
+          }
+          this.showTimer = window.setTimeout(() => {
+            this.show()
+          }, this.delay)
+        }
+      } else {
+        this.hide()
+      }
+    }
+
+    // Observer les changements d'attribut sur le body pour détecter les changements de mode
+    const body = document.getElementById("app-body") || document.body
+    if (body) {
+      this.modeObserver = new MutationObserver(() => {
+        this.checkAndShow()
+      })
+      this.modeObserver.observe(body, {
+        attributes: true,
+        attributeFilter: ["data-app-mode"]
+      })
+    }
+
+    // Observer aussi les changements de classes sur les boutons de mode
+    const demoButton = document.querySelector('[data-mode-value="demo"]')
+    if (demoButton) {
+      this.buttonObserver = new MutationObserver(() => {
+        this.checkAndShow()
+      })
+      this.buttonObserver.observe(demoButton, {
+        attributes: true,
+        attributeFilter: ["class"]
+      })
+    }
+
+    // Vérifier au montage après un délai pour laisser le temps au mode d'être appliqué
+    setTimeout(() => this.checkAndShow(), 500)
+  },
+
+  destroyed() {
+    document.removeEventListener("click", this.dismissHandler)
+    if (this.showTimer) {
+      window.clearTimeout(this.showTimer)
+    }
+    if (this.modeObserver) {
+      this.modeObserver.disconnect()
+    }
+    if (this.buttonObserver) {
+      this.buttonObserver.disconnect()
+    }
+  },
+
+  show() {
+    this.el.style.visibility = "visible"
+    this.el.classList.remove("opacity-0")
+    this.el.style.transform = "translateY(0)"
+    requestAnimationFrame(() => {
+      this.el.classList.add("opacity-100")
+    })
+  },
+
+  hide(force = false) {
+    if (force) {
+      this.el.style.visibility = "hidden"
+      this.el.classList.add("opacity-0")
+      this.el.style.transform = "translateY(10px)"
+      if (this.showTimer) {
+        window.clearTimeout(this.showTimer)
+        this.showTimer = null
+      }
+      return
+    }
+
+    this.el.classList.add("opacity-0")
+    this.el.style.transform = "translateY(10px)"
+    window.setTimeout(() => {
+      this.el.style.visibility = "hidden"
+    }, 300)
+  }
+}
+
+const UIModeToastHook = {
+  mounted() {
+    this.storageKey = "waw_showcase_ui_toast_dismissed"
+    this.delay = Number(this.el.dataset.toastDelay || "2000")
+    this.currentSlide = 0
+    this.slides = this.el.querySelectorAll('[data-ui-toast-slide]')
+    this.totalSlides = this.slides.length
+    
+    // Vérifier si on est en mode UI
+    const isUIMode = () => {
+      if (typeof currentMode !== "undefined") {
+        return currentMode === "ui"
+      }
+      const body = document.getElementById("app-body") || document.body
+      if (body && body.dataset.appMode) {
+        return body.dataset.appMode === "ui"
+      }
+      const uiButton = document.querySelector('[data-mode-value="ui"]')
+      return uiButton && uiButton.classList.contains('bg-gray-900')
+    }
+
+    this.dismissHandler = (event) => {
+      const button = event.target?.closest("[data-ui-toast-dismiss]")
+      if (button && this.el.contains(button)) {
+        const dontShowAgain = button.dataset.dontShowAgain === "true"
+        if (dontShowAgain) {
+          localStorage.setItem(this.storageKey, "true")
+        }
+        this.hide()
+      }
+    }
+
+    this.navigationHandler = (event) => {
+      const prevBtn = event.target.closest("[data-ui-toast-prev]")
+      const nextBtn = event.target.closest("[data-ui-toast-next]")
+      
+      if (prevBtn && this.el.contains(prevBtn)) {
+        this.prevSlide()
+      } else if (nextBtn && this.el.contains(nextBtn)) {
+        this.nextSlide()
+      }
+    }
+
+    document.addEventListener("click", this.dismissHandler)
+    document.addEventListener("click", this.navigationHandler)
+
+    this.showSlide = (index) => {
+      this.currentSlide = Math.max(0, Math.min(index, this.totalSlides - 1))
+      this.slides.forEach((slide, i) => {
+        slide.classList.toggle("hidden", i !== this.currentSlide)
+      })
+      
+      // Mettre à jour les boutons de navigation
+      const prevBtn = this.el.querySelector("[data-ui-toast-prev]")
+      const nextBtn = this.el.querySelector("[data-ui-toast-next]")
+      const finishBtn = this.el.querySelector("[data-ui-toast-finish]")
+      
+      if (prevBtn) {
+        prevBtn.classList.toggle("hidden", this.currentSlide === 0)
+      }
+      if (nextBtn) {
+        nextBtn.classList.toggle("hidden", this.currentSlide === this.totalSlides - 1)
+      }
+      if (finishBtn) {
+        finishBtn.classList.toggle("hidden", this.currentSlide !== this.totalSlides - 1)
+      }
+      
+      // Mettre à jour les indicateurs
+      const indicators = this.el.querySelectorAll("[data-ui-toast-indicator]")
+      indicators.forEach((indicator, i) => {
+        indicator.classList.toggle("bg-info", i === this.currentSlide)
+        indicator.classList.toggle("bg-base-300", i !== this.currentSlide)
+      })
+    }
+
+    this.nextSlide = () => {
+      if (this.currentSlide < this.totalSlides - 1) {
+        this.showSlide(this.currentSlide + 1)
+      }
+    }
+
+    this.prevSlide = () => {
+      if (this.currentSlide > 0) {
+        this.showSlide(this.currentSlide - 1)
+      }
+    }
+
+    // Fonction pour vérifier et afficher le toast
+    this.checkAndShow = () => {
+      const dismissed = localStorage.getItem(this.storageKey)
+      const uiMode = isUIMode()
+      
+      if (!dismissed && uiMode) {
+        if (this.el.style.visibility === "hidden" || this.el.classList.contains("opacity-0")) {
+          if (this.showTimer) {
+            window.clearTimeout(this.showTimer)
+          }
+          this.showTimer = window.setTimeout(() => {
+            this.showSlide(0)
+            this.show()
+          }, this.delay)
+        }
+      } else {
+        this.hide()
+      }
+    }
+
+    // Observer les changements d'attribut sur le body pour détecter les changements de mode
+    const body = document.getElementById("app-body") || document.body
+    if (body) {
+      this.modeObserver = new MutationObserver(() => {
+        this.checkAndShow()
+      })
+      this.modeObserver.observe(body, {
+        attributes: true,
+        attributeFilter: ["data-app-mode"]
+      })
+    }
+
+    // Observer aussi les changements de classes sur les boutons de mode
+    const uiButton = document.querySelector('[data-mode-value="ui"]')
+    if (uiButton) {
+      this.buttonObserver = new MutationObserver(() => {
+        this.checkAndShow()
+      })
+      this.buttonObserver.observe(uiButton, {
+        attributes: true,
+        attributeFilter: ["class"]
+      })
+    }
+
+    // Vérifier au montage après un délai pour laisser le temps au mode d'être appliqué
+    setTimeout(() => this.checkAndShow(), 500)
+  },
+
+  destroyed() {
+    document.removeEventListener("click", this.dismissHandler)
+    document.removeEventListener("click", this.navigationHandler)
+    if (this.showTimer) {
+      window.clearTimeout(this.showTimer)
+    }
+    if (this.modeObserver) {
+      this.modeObserver.disconnect()
+    }
+    if (this.buttonObserver) {
+      this.buttonObserver.disconnect()
+    }
+  },
+
+  show() {
+    this.el.style.visibility = "visible"
+    this.el.classList.remove("opacity-0")
+    this.el.style.transform = "translateY(0)"
+    requestAnimationFrame(() => {
+      this.el.classList.add("opacity-100")
+    })
+  },
+
+  hide(force = false) {
+    if (force) {
+      this.el.style.visibility = "hidden"
+      this.el.classList.add("opacity-0")
+      this.el.style.transform = "translateY(10px)"
+      if (this.showTimer) {
+        window.clearTimeout(this.showTimer)
+        this.showTimer = null
+      }
+      return
+    }
+
+    this.el.classList.add("opacity-0")
+    this.el.style.transform = "translateY(10px)"
+    window.setTimeout(() => {
+      this.el.style.visibility = "hidden"
+    }, 300)
+  }
+}
+
 const hooks = {
   ...colocatedHooks,
   ThemeManager: ThemeManagerHook,
@@ -2898,7 +3199,9 @@ const hooks = {
   UICategory: UICategoryHook,
   BentoGrid: BentoGrid,
   ModeSwitch: ModeSwitchHook,
-  AutoResizeCard: AutoResizeCardHook
+  AutoResizeCard: AutoResizeCardHook,
+  DemoModeToast: DemoModeToastHook,
+  UIModeToast: UIModeToastHook
 }
 
 const csrfToken = document.querySelector("meta[name='csrf-token']").getAttribute("content")
