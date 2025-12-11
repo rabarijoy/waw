@@ -1940,6 +1940,7 @@ const SpotlightSearchHook = {
     const input = document.getElementById("ui-spotlight-input")
     const resultsList = document.getElementById("ui-spotlight-results-list")
     const noResults = document.getElementById("ui-spotlight-no-results")
+    const resultsCount = document.getElementById("ui-spotlight-results-count")
     const closeButtons = modal.querySelectorAll("[data-spotlight-close]")
     
     let selectedIndex = -1
@@ -1947,6 +1948,7 @@ const SpotlightSearchHook = {
 
     const openModal = () => {
       modal.classList.remove("hidden")
+      if (resultsCount) resultsCount.classList.add("hidden")
       setTimeout(() => {
         input?.focus()
       }, 100)
@@ -1958,6 +1960,7 @@ const SpotlightSearchHook = {
       if (input) input.value = ""
       selectedIndex = -1
       results = []
+      if (resultsCount) resultsCount.classList.add("hidden")
       document.body.style.overflow = ""
     }
 
@@ -1987,6 +1990,7 @@ const SpotlightSearchHook = {
       if (!term || term.trim().length === 0) {
         results = []
         renderResults()
+        updateResultsCount("")
         return
       }
 
@@ -2062,6 +2066,29 @@ const SpotlightSearchHook = {
       }
 
       renderResults()
+      updateResultsCount(searchTerm)
+    }
+
+    const updateResultsCount = (searchTerm) => {
+      if (!resultsCount) return
+      
+      if (!searchTerm || searchTerm.trim().length === 0) {
+        resultsCount.classList.add("hidden")
+        return
+      }
+      
+      const count = results.length
+      let countText
+      if (count === 0) {
+        countText = "Aucun résultat"
+      } else if (count === 1) {
+        countText = "1 résultat trouvé"
+      } else {
+        countText = `${count} résultats trouvés`
+      }
+      
+      resultsCount.querySelector("span").textContent = countText
+      resultsCount.classList.remove("hidden")
     }
 
     const renderResults = () => {
