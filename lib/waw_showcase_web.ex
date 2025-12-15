@@ -91,7 +91,7 @@ defmodule WawShowcaseWeb do
       import Waw.Icons, except: [icon: 1]
       import Waw.Flash, except: [flash: 1, flash_group: 1]
       import Waw.Header, except: [waw_navbar: 1]
-      import Waw.Delegates
+      import Waw.Delegates, except: [waw_block_separator: 1]
       import Waw.Tooltip
       import Waw.LiveFilter
       import Waw.Steps

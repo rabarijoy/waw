@@ -108,3 +108,291 @@
                 (next_ls 0.23.4) lib/next_ls.ex:45: NextLS.init/2
                 (gen_lsp 0.11.0) lib/gen_lsp.ex:220: GenLSP.init/1
                 (stdlib 6.2) proc_lib.erl:329: :proc_lib.init_p_do_apply/3
+
+09:42:34.595 [info] Loading 157 CA(s) from :otp store
+
+09:42:34.858 [notice] Application next_ls exited: NextLS.Application.start(:normal, []) returned an error: shutdown: failed to start child: NextLS.LSPSupervisor
+    ** (EXIT) shutdown: failed to start child: NextLS
+        ** (EXIT) an exception was raised:
+            ** (ErlangError) Erlang error: :enoent
+                (elixir 1.17.3) lib/system.ex:1114: System.cmd("elixir", ["--short-version"], [])
+                (next_ls 0.23.4) lib/next_ls.ex:45: NextLS.init/2
+                (gen_lsp 0.11.0) lib/gen_lsp.ex:220: GenLSP.init/1
+                (stdlib 6.2) proc_lib.erl:329: :proc_lib.init_p_do_apply/3
+
+09:42:38.498 [info] Loading 157 CA(s) from :otp store
+
+09:42:38.837 [notice] Application next_ls exited: NextLS.Application.start(:normal, []) returned an error: shutdown: failed to start child: NextLS.LSPSupervisor
+    ** (EXIT) shutdown: failed to start child: NextLS
+        ** (EXIT) an exception was raised:
+            ** (ErlangError) Erlang error: :enoent
+                (elixir 1.17.3) lib/system.ex:1114: System.cmd("elixir", ["--short-version"], [])
+                (next_ls 0.23.4) lib/next_ls.ex:45: NextLS.init/2
+                (gen_lsp 0.11.0) lib/gen_lsp.ex:220: GenLSP.init/1
+                (stdlib 6.2) proc_lib.erl:329: :proc_lib.init_p_do_apply/3
+
+09:42:41.727 [info] Loading 157 CA(s) from :otp store
+
+09:42:41.852 [notice] Application next_ls exited: NextLS.Application.start(:normal, []) returned an error: shutdown: failed to start child: NextLS.LSPSupervisor
+    ** (EXIT) shutdown: failed to start child: NextLS
+        ** (EXIT) an exception was raised:
+            ** (ErlangError) Erlang error: :enoent
+                (elixir 1.17.3) lib/system.ex:1114: System.cmd("elixir", ["--short-version"], [])
+                (next_ls 0.23.4) lib/next_ls.ex:45: NextLS.init/2
+                (gen_lsp 0.11.0) lib/gen_lsp.ex:220: GenLSP.init/1
+                (stdlib 6.2) proc_lib.erl:329: :proc_lib.init_p_do_apply/3
+
+09:42:44.541 [info] Loading 157 CA(s) from :otp store
+
+09:42:44.675 [notice] Application next_ls exited: NextLS.Application.start(:normal, []) returned an error: shutdown: failed to start child: NextLS.LSPSupervisor
+    ** (EXIT) shutdown: failed to start child: NextLS
+        ** (EXIT) an exception was raised:
+            ** (ErlangError) Erlang error: :enoent
+                (elixir 1.17.3) lib/system.ex:1114: System.cmd("elixir", ["--short-version"], [])
+                (next_ls 0.23.4) lib/next_ls.ex:45: NextLS.init/2
+                (gen_lsp 0.11.0) lib/gen_lsp.ex:220: GenLSP.init/1
+                (stdlib 6.2) proc_lib.erl:329: :proc_lib.init_p_do_apply/3
+
+09:42:47.476 [info] Loading 157 CA(s) from :otp store
+
+09:42:47.625 [notice] Application next_ls exited: NextLS.Application.start(:normal, []) returned an error: shutdown: failed to start child: NextLS.LSPSupervisor
+    ** (EXIT) shutdown: failed to start child: NextLS
+        ** (EXIT) an exception was raised:
+            ** (ErlangError) Erlang error: :enoent
+                (elixir 1.17.3) lib/system.ex:1114: System.cmd("elixir", ["--short-version"], [])
+                (next_ls 0.23.4) lib/next_ls.ex:45: NextLS.init/2
+                (gen_lsp 0.11.0) lib/gen_lsp.ex:220: GenLSP.init/1
+                (stdlib 6.2) proc_lib.erl:329: :proc_lib.init_p_do_apply/3
+
+09:22:38.685 [info] Loading 157 CA(s) from :otp store
+
+09:22:40.667 id=0 [debug] handled request client -> server initialize in 1106ms
+
+09:22:40.738 [debug] sent notification server -> client window/logMessage
+
+09:22:40.758 [debug] handled notification client -> server textDocument/didOpen in 72ms
+
+09:22:40.779 [debug] NextLS v0.23.4 has initialized!
+
+09:22:40.779 [debug] sent notification server -> client window/logMessage
+
+09:22:40.779 [debug] Log file located at /Users/aj/Dev/Waw Showcase/.elixir-tools/next-ls.log
+
+09:22:40.783 [debug] sent notification server -> client window/logMessage
+
+09:22:40.783 [info] [extension] Credo initializing with options %NextLS.InitOpts.Extensions.Credo{enable: true, cli_options: []}
+
+09:22:40.783 id=34 [debug] sent request server -> client client/registerCapability
+
+09:22:40.886 id=1 [debug] handled request client -> server textDocument/documentSymbol in 179ms
+
+09:22:40.979 id=2 [debug] handled request client -> server textDocument/documentSymbol in 593µs
+
+09:22:45.235 [debug] sent notification server -> client window/logMessage
+
+09:22:45.235 [warning] Failed to unzip and install the bundled Elixir archive.
+
+** (MatchError) no match of right hand side value: {"** (ArgumentError) cannot escape #Reference<0.708982407.22413313.32652>. The supported values are: lists, tuples, maps, atoms, numbers, bitstrings, PIDs and remote functions in the format &Mod.fun/arity\n    (elixir 1.17.3) src/elixir_quote.erl:500: :elixir_quote.argument_error/1\n    (elixir 1.17.3) src/elixir_quote.erl:409: :elixir_quote.do_quote_simple_list/3\n    (elixir 1.17.3) src/elixir_quote.erl:409: :elixir_quote.do_quote_simple_list/3\n    (elixir 1.17.3) src/elixir_quote.erl:149: :elixir_quote.do_escape/2\n    (elixir 1.17.3) src/elixir_quote.erl:355: :elixir_quote.do_quote/2\n    (elixir 1.17.3) src/elixir_quote.erl:409: :elixir_quote.do_quote_simple_list/3\n    (elixir 1.17.3) src/elixir_quote.erl:409: :elixir_quote.do_quote_simple_list/3\n    /Users/aj/Dev/Waw Showcase/config/config.exs:74: (file)\n", 1}
+    (next_ls 0.23.4) lib/next_ls/runtime/bundled_elixir.ex:55: NextLS.Runtime.BundledElixir.install/2
+    (next_ls 0.23.4) lib/next_ls.ex:882: NextLS.handle_notification/2
+    (gen_lsp 0.11.0) lib/gen_lsp.ex:528: anonymous fn/2 in GenLSP.loop/3
+    (telemetry 1.3.0) /Users/runner/work/next-ls/next-ls/deps/telemetry/src/telemetry.erl:324: :telemetry.span/3
+    (gen_lsp 0.11.0) lib/gen_lsp.ex:524: anonymous fn/4 in GenLSP.loop/3
+    (gen_lsp 0.11.0) lib/gen_lsp.ex:601: anonymous fn/4 in GenLSP.attempt/4
+    (elixir 1.17.3) lib/task/supervised.ex:101: Task.Supervised.invoke_mfa/2
+
+
+
+09:22:45.235 [debug] sent notification server -> client window/logMessage
+
+09:22:45.235 [debug] Booting runtimes...
+
+09:22:45.254 id=1667 [debug] sent request server -> client window/workDoneProgress/create
+
+09:22:45.272 [debug] sent notification server -> client $/progress
+
+09:22:45.443 [debug] sent notification server -> client window/logMessage
+
+09:22:45.443 [info] Beginning DB migration...
+
+09:22:45.501 [debug] sent notification server -> client window/logMessage
+
+09:22:45.501 [info] Database is being upgraded from version 0 to 7.
+
+This will trigger a full recompilation in order to re-index your codebase.
+
+
+09:22:45.541 [debug] sent notification server -> client window/logMessage
+
+09:22:45.544 [info] Finished DB migration...
+
+09:22:45.544 [debug] sent notification server -> client window/logMessage
+
+09:22:45.544 [info] Booting runtime for Waw Showcase.
+
+- elixir: /Users/aj/.asdf/shims/elixir
+- zombie wrapper script: /Users/aj/Library/Application Support/.burrito/next_ls_erts-15.2_0.23.4/lib/next_ls-0.23.4/priv/cmd
+- working_dir: /Users/aj/Dev/Waw%20Showcase
+- command: /Users/aj/.asdf/shims/elixir --no-halt --sname nextls-runtime-1765779765544485542 --cookie HHYKTHK2JHVUZI3HDBMAF64GPJFPN4AV4Y7CQDE27SSFQKZPVAFQ==== -S mix loadpaths --no-compile
+
+Environment: 
+
+LSP=nextls
+NEXTLS_PARENT_PID=g1h3Nm5leHQtbHMtMTc2NTc3OTc1OTAyOTA1OTEyNUBNYWNCb29rLUFpci1kZS1SYWJhcmlqYW9uYQAAAOgAAAAAaT+pMA==
+MIX_ENV=dev
+MIX_TARGET=host
+MIX_BUILD_ROOT=.elixir-tools/_build
+ROOTDIR=false
+BINDIR=false
+RELEASE_ROOT=false
+RELEASE_SYS_CONFIG=false
+PATH=/Users/aj/.asdf/shims:/Users/aj/Library/Application Support/.burrito/next_ls_erts-15.2_0.23.4/bin:/Users/aj/.asdf/shims:/opt/homebrew/opt/asdf/libexec/bin:/Applications/Lando.app/Contents/Resources/bin:/Applications/Lando.app/Contents/Resources/bin:/Users/aj/.codeium/windsurf/bin:/opt/homebrew/opt/openjdk@11/bin:/Users/aj/.lando/bin:/Library/Frameworks/Python.framework/Versions/3.13/bin:/opt/homebrew/bin:/opt/homebrew/sbin:/usr/local/bin:/System/Cryptexes/App/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/local/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/appleinternal/bin:/Library/Apple/usr/bin:/Applications/Wireshark.app/Contents/MacOS:/usr/local/share/dotnet:~/.dotnet/tools
+
+
+09:22:45.547 [debug] handled notification client -> server initialized in 4872ms
+
+09:22:45.646 [debug] sent notification server -> client window/logMessage
+
+09:22:45.646 [info] No version is set for command elixir
+Consider adding one of the following versions in your config file at /Users/aj/Dev/Waw%20Showcase/.tool-versions
+elixir 1.19.2-otp-28
+elixir 1.18.4-otp-28
+
+
+09:22:45.647 [debug] sent notification server -> client $/progress
+
+09:22:45.667 [debug] sent notification server -> client window/logMessage
+
+09:22:45.667 [error] Runtime for folder Waw Showcase failed to initialize
+
+09:22:45.691 [debug] sent notification server -> client window/logMessage
+
+09:22:45.691 [info] The runtime for Waw Showcase has successfully shut down.
+
+09:22:50.152 id=3 [debug] handled request client -> server textDocument/documentSymbol in 745µs
+
+09:22:50.448 id=4 [debug] handled request client -> server textDocument/documentSymbol in 496µs
+
+09:23:32.017 [debug] handled notification client -> server textDocument/didClose in 17ms
+
+09:23:32.044 [debug] handled notification client -> server textDocument/didOpen in 683µs
+
+09:23:32.044 id=5 [debug] handled request client -> server textDocument/documentSymbol in 288µs
+
+09:23:32.409 id=6 [debug] handled request client -> server textDocument/documentSymbol in 217µs
+
+09:23:32.483 [debug] handled notification client -> server $/cancelRequest in 60ms
+
+09:23:32.484 [debug] handled notification client -> server textDocument/didOpen in 588µs
+
+09:23:32.508 id=7 [debug] handled request client -> server textDocument/documentSymbol in 24ms
+
+09:23:32.763 id=8 [debug] handled request client -> server textDocument/documentSymbol in 2ms
+
+09:26:07.330 [debug] handled notification client -> server textDocument/didClose in 2ms
+
+09:26:07.331 [debug] handled notification client -> server textDocument/didOpen in 602µs
+
+09:26:07.336 id=9 [debug] handled request client -> server textDocument/documentSymbol in 5ms
+
+09:26:07.606 id=10 [debug] handled request client -> server textDocument/documentSymbol in 696µs
+
+09:26:12.898 [debug] handled notification client -> server textDocument/didClose in 141µs
+
+09:26:12.917 [debug] handled notification client -> server textDocument/didOpen in 373µs
+
+09:26:12.929 id=11 [debug] handled request client -> server textDocument/documentSymbol in 1ms
+
+09:26:13.208 id=12 [debug] handled request client -> server textDocument/documentSymbol in 615µs
+
+09:26:17.812 [debug] handled notification client -> server textDocument/didClose in 13ms
+
+09:26:28.185 [debug] handled notification client -> server workspace/didChangeWatchedFiles in 31ms
+
+09:27:22.368 [debug] handled notification client -> server textDocument/didOpen in 18ms
+
+09:27:22.390 id=13 [debug] handled request client -> server textDocument/documentSymbol in 17ms
+
+09:27:22.591 id=14 [debug] handled request client -> server textDocument/documentSymbol in 6ms
+
+09:27:23.185 [debug] handled notification client -> server textDocument/didClose in 3ms
+
+09:27:23.201 [debug] handled notification client -> server textDocument/didOpen in 1ms
+
+09:27:23.204 id=15 [debug] handled request client -> server textDocument/documentSymbol in 911µs
+
+09:27:23.615 id=16 [debug] handled request client -> server textDocument/documentSymbol in 59ms
+
+09:27:23.960 [debug] handled notification client -> server textDocument/didClose in 134µs
+
+09:27:23.974 [debug] handled notification client -> server textDocument/didOpen in 194µs
+
+09:27:24.017 id=17 [debug] handled request client -> server textDocument/documentSymbol in 15ms
+
+09:27:24.271 id=18 [debug] handled request client -> server textDocument/documentSymbol in 562µs
+
+09:27:31.603 [debug] handled notification client -> server textDocument/didClose in 29ms
+
+09:27:31.723 [debug] handled notification client -> server textDocument/didOpen in 328µs
+
+09:27:31.743 id=19 [debug] handled request client -> server textDocument/documentSymbol in 5ms
+
+09:27:31.894 id=20 [debug] handled request client -> server textDocument/documentSymbol in 858µs
+
+09:27:49.446 [debug] handled notification client -> server textDocument/didClose in 501µs
+
+09:28:00.152 [debug] handled notification client -> server textDocument/didOpen in 1ms
+
+09:28:00.257 id=21 [debug] handled request client -> server textDocument/documentSymbol in 105ms
+
+09:28:00.417 id=22 [debug] handled request client -> server textDocument/documentSymbol in 3ms
+
+09:29:00.474 [debug] handled notification client -> server $/cancelRequest in 165µs
+
+09:32:24.862 [debug] handled notification client -> server workspace/didChangeWatchedFiles in 31ms
+
+09:32:25.050 [debug] handled notification client -> server textDocument/didChange in 224ms
+
+09:32:29.964 [debug] handled notification client -> server $/setTrace in 194ms
+
+09:32:32.201 [debug] handled notification client -> server textDocument/didSave in 75ms
+
+09:32:32.570 [debug] handled notification client -> server workspace/didChangeWatchedFiles in 19ms
+
+09:32:44.685 id=24 [debug] handled request client -> server textDocument/documentSymbol in 3ms
+
+09:32:44.994 id=25 [debug] handled request client -> server textDocument/documentSymbol in 9ms
+
+09:32:54.795 id=26 [debug] handled request client -> server textDocument/documentSymbol in 2ms
+
+09:32:56.186 id=27 [debug] handled request client -> server textDocument/documentSymbol in 994µs
+
+09:33:02.033 [debug] handled notification client -> server $/cancelRequest in 1ms
+
+09:33:03.731 [debug] handled notification client -> server textDocument/didSave in 28ms
+
+09:33:03.954 [debug] handled notification client -> server workspace/didChangeWatchedFiles in 2ms
+
+09:33:11.085 [debug] handled notification client -> server $/cancelRequest in 1ms
+
+09:40:01.962 [debug] handled notification client -> server textDocument/didChange in 1ms
+
+09:40:02.088 id=30 [debug] handled request client -> server textDocument/documentSymbol in 2ms
+
+09:40:02.088 [debug] handled notification client -> server workspace/didChangeWatchedFiles in 382µs
+
+09:40:05.467 id=31 [debug] handled request client -> server textDocument/documentSymbol in 907µs
+
+09:40:12.040 [debug] handled notification client -> server workspace/didChangeWatchedFiles in 2072ms
+
+09:40:15.058 [debug] handled notification client -> server textDocument/didSave in 471µs
+
+09:40:15.484 [debug] handled notification client -> server workspace/didChangeWatchedFiles in 3ms
+
+09:45:03.159 [debug] handled notification client -> server textDocument/didOpen in 1ms
+
+09:45:03.497 [debug] handled notification client -> server workspace/didChangeWatchedFiles in 819µs
+
+09:45:06.149 [debug] handled notification client -> server textDocument/didSave in 7ms
+
+09:45:06.439 [debug] handled notification client -> server workspace/didChangeWatchedFiles in 10ms
