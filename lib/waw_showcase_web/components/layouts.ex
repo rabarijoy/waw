@@ -6,7 +6,7 @@ defmodule WawShowcaseWeb.Layouts do
   use WawShowcaseWeb, :html
 
   # Import des helpers Waw (waw_date, waw_time, etc.)
-  import Waw.Delegates
+  import Waw.Delegates, except: [waw_block_separator: 1]
   # Import direct des helpers de dates pour <.date>, <.date_time>, <.interval>, <.time>, <.relative_time>
   import Waw.Text.Dates, only: [date: 1, date_time: 1, interval: 1, time: 1, relative_time: 1]
 
