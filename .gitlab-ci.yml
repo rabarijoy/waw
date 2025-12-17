@@ -2,7 +2,8 @@ stages:
   - deploy
 deploy_showcase_staging:
   variables:
-    PATH: /home/gitlab-runner/.asdf/shims:/home/gitlab-runner/.asdf/bin:/usr/local/bin:/usr/bin:/bin:/usr/local/games:/usr/games:/sbin:/usr/sbin:usr/local/sbin
+    PATH: /home/gitlab-runner/.asdf/shims:/home/gitlab-runner/.asdf/bin:/usr/local/bin:/usr/bin:/bin:/usr/local/games:/usr/games
+
   #  MIX_ENV: prod
   stage: deploy
   except:
