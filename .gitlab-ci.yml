@@ -1,0 +1,25 @@
+stages:
+  - deploy
+deploy_showcase_staging:
+  variables:
+    PATH: /home/gitlab-runner/.asdf/shims:/home/gitlab-runner/.asdf/bin:/usr/local/bin:/usr/bin:/bin:/usr/local/games:/usr/games:/sbin:/usr/sbin:usr/local/sbin
+    MIX_ENV: prod
+  stage: test
+  tags:
+    - Debian12
+  only:
+    - main
+  before_script:
+    - "VERSION=$(echo $CI_COMMIT_TAG| cut -d'-' -f 2)"
+    - git fetch
+    - git checkout -f $CI_COMMIT_TAG
+    - asdf install
+    - mix local.rebar --if-missing --force
+    - mix local.hex --if-missing --force
+    - HEX_HTTP_CONCURRENCY=1 HEX_HTTP_TIMEOUT=120 mix setup
+    - mix assets.deploy
+    - mix release --force --overwrite
+    - tar cvf waw.tar.gz _build/
+  script:
+    - scp -P 2202 $CI_PROJECT_DIR/waw-showcase.tar.gz $DEPLOY_USER@$DEPLOY_SERVER:/tmp
+    - ssh -p 2202 $DEPLOY_USER@$DEPLOY_SERVER deploy-waw-showcase $VERSION
