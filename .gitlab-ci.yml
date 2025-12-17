@@ -10,7 +10,7 @@ deploy_showcase_staging:
   tags:
     - Debian12
   only:
-    - /^waw-showcase-.*$/
+    - /^waw_showcase-.*$/
   before_script:
     - "VERSION=$(echo $CI_COMMIT_TAG| cut -d'-' -f 2)"
     - git fetch
