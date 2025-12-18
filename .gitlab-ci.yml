@@ -9,7 +9,7 @@ deploy_showcase_staging:
   except:
     - branches
   tags:
-    - Debian12
+    - Debian11
   only:
     - /^waw_showcase-.*$/
   before_script:
