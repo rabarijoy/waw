@@ -818,3 +818,23 @@ elixir 1.18.4-otp-28
 11:24:23.102 [debug] handled notification client -> server workspace/didChangeWatchedFiles in 2ms
 
 11:24:28.190 [debug] handled notification client -> server workspace/didChangeWatchedFiles in 14ms
+
+11:50:01.782 id=83 [debug] handled request client -> server textDocument/hover in 1003ms
+
+12:06:45.376 [debug] handled notification client -> server textDocument/didChange in 10ms
+
+12:06:45.377 [debug] handled notification client -> server textDocument/didSave in 3ms
+
+12:06:45.649 id=84 [debug] handled request client -> server textDocument/documentSymbol in 2ms
+
+12:06:45.683 id=85 [debug] handled request client -> server textDocument/documentSymbol in 890µs
+
+12:06:45.708 [debug] handled notification client -> server workspace/didChangeWatchedFiles in 8ms
+
+12:07:06.827 [debug] handled notification client -> server textDocument/didSave in 15ms
+
+12:07:07.197 [debug] handled notification client -> server workspace/didChangeWatchedFiles in 33ms
+
+12:08:57.806 [debug] handled notification client -> server textDocument/didSave in 1ms
+
+12:08:58.187 [debug] handled notification client -> server workspace/didChangeWatchedFiles in 9ms
