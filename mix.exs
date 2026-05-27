@@ -56,8 +56,7 @@ defmodule WawShowcase.MixProject do
       {:jason, "~> 1.2"},
       {:dns_cluster, "~> 0.2.0"},
       {:bandit, "~> 1.5"},
-      # {:waw, path: "/Volumes/PortableSSD/School/CNED/2A/Stage/waw-components"},
-      {:waw, git: "ssh://git@git.tag-ip.com:22448/tag-ip/ui/waw-components.git", branch: "main"}
+      {:waw, path: "vendor/waw"}
     ]
   end
 
