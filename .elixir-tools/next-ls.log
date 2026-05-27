@@ -838,3 +838,150 @@ elixir 1.18.4-otp-28
 12:08:57.806 [debug] handled notification client -> server textDocument/didSave in 1ms
 
 12:08:58.187 [debug] handled notification client -> server workspace/didChangeWatchedFiles in 9ms
+
+14:22:09.271 id=86 [debug] handled request client -> server shutdown in 304ms
+
+14:37:32.050 [info] Loading 157 CA(s) from :otp store
+
+14:37:37.493 id=0 [debug] handled request client -> server initialize in 2575ms
+
+14:37:37.578 [debug] sent notification server -> client window/logMessage
+
+14:37:37.618 [debug] handled notification client -> server textDocument/didOpen in 112ms
+
+14:37:37.661 [debug] NextLS v0.23.4 has initialized!
+
+14:37:37.661 [debug] sent notification server -> client window/logMessage
+
+14:37:37.661 [debug] Log file located at /Users/aj/Dev/Waw Showcase/.elixir-tools/next-ls.log
+
+14:37:37.692 [debug] sent notification server -> client window/logMessage
+
+14:37:37.692 [info] [extension] Credo initializing with options %NextLS.InitOpts.Extensions.Credo{enable: true, cli_options: []}
+
+14:37:37.692 id=1698 [debug] sent request server -> client client/registerCapability
+
+14:37:37.979 id=1 [debug] handled request client -> server textDocument/documentSymbol in 473ms
+
+14:37:37.979 id=2 [debug] handled request client -> server textDocument/documentSymbol in 158ms
+
+14:37:51.963 [debug] sent notification server -> client window/logMessage
+
+14:37:51.963 [warning] Failed to unzip and install the bundled Elixir archive.
+
+** (MatchError) no match of right hand side value: {"** (ArgumentError) cannot escape #Reference<0.4010766491.1009385474.163508>. The supported values are: lists, tuples, maps, atoms, numbers, bitstrings, PIDs and remote functions in the format &Mod.fun/arity\n    (elixir 1.17.3) src/elixir_quote.erl:500: :elixir_quote.argument_error/1\n    (elixir 1.17.3) src/elixir_quote.erl:409: :elixir_quote.do_quote_simple_list/3\n    (elixir 1.17.3) src/elixir_quote.erl:409: :elixir_quote.do_quote_simple_list/3\n    (elixir 1.17.3) src/elixir_quote.erl:149: :elixir_quote.do_escape/2\n    (elixir 1.17.3) src/elixir_quote.erl:355: :elixir_quote.do_quote/2\n    (elixir 1.17.3) src/elixir_quote.erl:409: :elixir_quote.do_quote_simple_list/3\n    (elixir 1.17.3) src/elixir_quote.erl:409: :elixir_quote.do_quote_simple_list/3\n    /Users/aj/Dev/Waw Showcase/config/config.exs:74: (file)\n", 1}
+    (next_ls 0.23.4) lib/next_ls/runtime/bundled_elixir.ex:55: NextLS.Runtime.BundledElixir.install/2
+    (next_ls 0.23.4) lib/next_ls.ex:882: NextLS.handle_notification/2
+    (gen_lsp 0.11.0) lib/gen_lsp.ex:528: anonymous fn/2 in GenLSP.loop/3
+    (telemetry 1.3.0) /Users/runner/work/next-ls/next-ls/deps/telemetry/src/telemetry.erl:324: :telemetry.span/3
+    (gen_lsp 0.11.0) lib/gen_lsp.ex:524: anonymous fn/4 in GenLSP.loop/3
+    (gen_lsp 0.11.0) lib/gen_lsp.ex:601: anonymous fn/4 in GenLSP.attempt/4
+    (elixir 1.17.3) lib/task/supervised.ex:101: Task.Supervised.invoke_mfa/2
+
+
+
+14:37:51.964 [debug] sent notification server -> client window/logMessage
+
+14:37:51.964 [debug] Booting runtimes...
+
+14:37:52.078 id=1730 [debug] sent request server -> client window/workDoneProgress/create
+
+14:37:52.240 [debug] sent notification server -> client $/progress
+
+14:37:52.825 [debug] sent notification server -> client window/logMessage
+
+14:37:52.825 [info] Beginning DB migration...
+
+14:37:53.101 [debug] sent notification server -> client window/logMessage
+
+14:37:53.101 [info] Database is being upgraded from version 0 to 7.
+
+This will trigger a full recompilation in order to re-index your codebase.
+
+
+14:37:53.123 [debug] sent notification server -> client window/logMessage
+
+14:37:53.123 [info] Finished DB migration...
+
+14:37:53.124 [debug] sent notification server -> client window/logMessage
+
+14:37:53.124 [info] Booting runtime for Waw Showcase.
+
+- elixir: /Users/aj/.asdf/shims/elixir
+- zombie wrapper script: /Users/aj/Library/Application Support/.burrito/next_ls_erts-15.2_0.23.4/lib/next_ls-0.23.4/priv/cmd
+- working_dir: /Users/aj/Dev/Waw%20Showcase
+- command: /Users/aj/.asdf/shims/elixir --no-halt --sname nextls-runtime-1766057873123730720 --cookie HHYKTHK2JHVUZI3HDBMAF64GPJFPN4AV4Y7CQDE27SSFQKZPVAFQ==== -S mix loadpaths --no-compile
+
+Environment: 
+
+LSP=nextls
+NEXTLS_PARENT_PID=g1h3Nm5leHQtbHMtMTc2NjA1Nzg1MjY1Nzg1Mjc5MkBNYWNCb29rLUFpci1kZS1SYWJhcmlqYW9uYQAAAOgAAAAAaUPnfg==
+MIX_ENV=dev
+MIX_TARGET=host
+MIX_BUILD_ROOT=.elixir-tools/_build
+ROOTDIR=false
+BINDIR=false
+RELEASE_ROOT=false
+RELEASE_SYS_CONFIG=false
+PATH=/Users/aj/.asdf/shims:/Users/aj/Library/Application Support/.burrito/next_ls_erts-15.2_0.23.4/bin:/Users/aj/.asdf/shims:/opt/homebrew/opt/asdf/libexec/bin:/Applications/Lando.app/Contents/Resources/bin:/Applications/Lando.app/Contents/Resources/bin:/Users/aj/.codeium/windsurf/bin:/opt/homebrew/opt/openjdk@11/bin:/Users/aj/.lando/bin:/Library/Frameworks/Python.framework/Versions/3.13/bin:/opt/homebrew/bin:/opt/homebrew/sbin:/usr/local/bin:/System/Cryptexes/App/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/local/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/appleinternal/bin:/Library/Apple/usr/bin:/Applications/Wireshark.app/Contents/MacOS:/usr/local/share/dotnet:~/.dotnet/tools
+
+
+14:37:53.145 [debug] handled notification client -> server initialized in 15644ms
+
+14:37:53.342 [debug] sent notification server -> client window/logMessage
+
+14:37:53.343 [info] No version is set for command elixir
+Consider adding one of the following versions in your config file at /Users/aj/Dev/Waw%20Showcase/.tool-versions
+elixir 1.19.2-otp-28
+elixir 1.18.4-otp-28
+
+
+14:37:53.343 [debug] sent notification server -> client $/progress
+
+14:37:53.358 [debug] sent notification server -> client window/logMessage
+
+14:37:53.358 [error] Runtime for folder Waw Showcase failed to initialize
+
+14:37:53.360 [debug] sent notification server -> client window/logMessage
+
+14:37:53.365 [info] The runtime for Waw Showcase has successfully shut down.
+
+14:38:23.197 id=3 [debug] handled request client -> server textDocument/documentSymbol in 1ms
+
+14:38:23.502 id=4 [debug] handled request client -> server textDocument/documentSymbol in 919µs
+
+14:56:39.739 [debug] handled notification client -> server $/cancelRequest in 63ms
+
+14:56:44.499 [debug] handled notification client -> server $/cancelRequest in 156µs
+
+09:52:26.166 [debug] handled notification client -> server textDocument/didOpen in 5ms
+
+09:52:26.223 id=7 [debug] handled request client -> server textDocument/documentSymbol in 59ms
+
+09:52:26.230 id=8 [debug] handled request client -> server textDocument/documentSymbol in 66ms
+
+09:52:45.333 [debug] handled notification client -> server $/cancelRequest in 140µs
+
+09:52:46.817 [debug] handled notification client -> server $/cancelRequest in 149µs
+
+09:52:47.290 [debug] handled notification client -> server $/cancelRequest in 124µs
+
+09:52:47.914 [debug] handled notification client -> server $/cancelRequest in 207µs
+
+09:52:48.477 [debug] handled notification client -> server $/cancelRequest in 149µs
+
+09:52:49.243 [debug] handled notification client -> server $/cancelRequest in 124µs
+
+09:52:49.871 [debug] handled notification client -> server $/cancelRequest in 149µs
+
+09:52:50.177 [debug] handled notification client -> server $/cancelRequest in 143µs
+
+10:05:01.320 [debug] handled notification client -> server textDocument/didClose in 177ms
+
+10:16:08.316 id=17 [debug] handled request client -> server textDocument/documentSymbol in 8ms
+
+11:21:51.269 [debug] handled notification client -> server $/setTrace in 57ms
+
+11:22:20.297 [debug] handled notification client -> server $/setTrace in 130µs
+
+11:22:21.730 [debug] handled notification client -> server $/setTrace in 261µs

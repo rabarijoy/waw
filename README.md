@@ -38,7 +38,7 @@ Waw Showcase permet de :
 **Note** : Si vous souhaitez utiliser une version locale de `waw-components` au lieu de la version Git :
 1. Commentez la ligne 60 de `mix.exs` (la dépendance Git)
 2. Décommentez et modifiez la ligne 59 avec le chemin vers votre version locale : `{:waw, path: "/chemin/vers/waw-components"}`
-3. Exécutez `mix deps.get` pour mettre à jour les dépendances
+3. Exécutez `mix deps.get` pour metxtre à jour les dépendances
 4. Redémarrez le serveur (`mix phx.server`)
 
 ### Installation
